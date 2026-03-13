@@ -18,7 +18,9 @@ type CreatorReportName = (typeof CREATOR_REPORT_NAMES)[number]
 function getReportParam(searchParams: URLSearchParams): string {
   const direct = searchParams.get('report')
   if (direct) return direct.trim()
-  for (const [key, value] of searchParams.entries()) {
+  const entries = Array.from(searchParams.entries())
+  for (let i = 0; i < entries.length; i++) {
+    const [key, value] = entries[i]
     if (key.trim().toLowerCase() === 'report') return value.trim()
   }
   return ''
