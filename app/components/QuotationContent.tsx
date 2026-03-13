@@ -5,6 +5,13 @@ import { QuotationData } from '@/lib/types'
 import { formatCurrency } from '@/lib/quotation-utils'
 import { calculateTax } from '@/lib/tax-calculator'
 
+/** True if field has displayable value (hide row when false) */
+function hasValue(v: unknown): boolean {
+  if (v == null) return false
+  const s = String(v).trim()
+  return s !== ''
+}
+
 interface QuotationContentProps {
   data: QuotationData
   shippingData?: any
@@ -48,12 +55,24 @@ export default function QuotationContent({ data, shippingData, billingData }: Qu
     <td style={{ width: '45%', verticalAlign: 'top', border: '1px solid #000', padding: '12px' }}>
       <table style={{ width: '100%', border: 'none' }}>
         <tbody>
-          <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Quotation No</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.quotationNumber}</td></tr>
-          <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Date</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.date}</td></tr>
-          <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Buyer&apos;s Enquiry No</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.buyerEnquiryNo || ''}</td></tr>
-          <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Terms Of Payment</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.termsOfPayment || ''}</td></tr>
-          <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Inco Terms</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.incoTerms || ''}</td></tr>
-          <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Terms Of Delivery</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.termsOfDelivery || ''}</td></tr>
+          {hasValue(data.quotationNumber) && (
+            <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Quotation No</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.quotationNumber}</td></tr>
+          )}
+          {hasValue(data.date) && (
+            <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Date</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.date}</td></tr>
+          )}
+          {hasValue(data.buyerEnquiryNo) && (
+            <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Buyer&apos;s Enquiry No</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.buyerEnquiryNo}</td></tr>
+          )}
+          {hasValue(data.termsOfPayment) && (
+            <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Terms Of Payment</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.termsOfPayment}</td></tr>
+          )}
+          {hasValue(data.incoTerms) && (
+            <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Inco Terms</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.incoTerms}</td></tr>
+          )}
+          {hasValue(data.termsOfDelivery) && (
+            <tr><td style={{ border: 'none', padding: '4px 0' }}><strong>Terms Of Delivery</strong></td><td style={{ border: 'none', padding: '4px 0' }}>{data.termsOfDelivery}</td></tr>
+          )}
         </tbody>
       </table>
     </td>

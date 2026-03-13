@@ -1,6 +1,14 @@
 'use client'
 
-import { CoreCoverPageData } from '@/lib/types'
+import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
+
+/** Format AED values for display */
+function formatAED(value: string | number | undefined): string {
+  if (value === undefined || value === null) return '0.00'
+  const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
+  if (isNaN(num)) return '0.00'
+  return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
 
 /** True if field has displayable value (hide row/section when false) */
 function hasValue(v: unknown): boolean {
@@ -9,15 +17,40 @@ function hasValue(v: unknown): boolean {
   return s !== ''
 }
 
-export type DoorCoreViewMode = 'simple' | 'approved'
-
-interface DoorCoreQuotationContentProps {
-  data: CoreCoverPageData
-  /** 'simple' = no signature (default); 'approved' = show signature when data.Approval === 'Approved' */
-  viewMode?: DoorCoreViewMode
+interface FooterData {
+  trade_name: string
+  location: string
 }
 
-interface FooterData {
+function getSignatureFooterData(subDivisions?: string): FooterData {
+  const sub = (subDivisions || '').trim()
+  switch (sub) {
+    case 'AJMAN':
+      return { trade_name: 'IDEAL SPECIAL PRODUCTS FZC', location: '94956 , Abu Dhabi' }
+    case 'FUJAIRAH':
+      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '48143, Dubai, UAE' }
+    case 'ABU DHABI':
+      return { trade_name: 'IDEAL FIRESTOP TRADING - L.L.C - S.P.C', location: '94956, Abu Dhabi' }
+    case 'DUBAI':
+      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '48143, Dubai, UAE' }
+    case 'RAS AL KHAIMAH':
+      return { trade_name: 'IDEAL FIRESTOP TRADING LLC ', location: '48143, Dubai, UAE' }
+    case 'SHARJAH':
+      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '66976, Sharjah, UAE' }
+    case 'Export':
+      return { trade_name: 'IDEAL SPECIAL PRODUCTS FZC', location: '94956 , Abu Dhabi' }
+    case 'IDEAL FITOUTS':
+      return {
+        trade_name: 'Ideal Fitout Decoration Design & Fit-Out Co. L.L.C',
+        location: 'Unit 1108, 51 Tower ,Business Bay, Dubai, UAE PO.Box: 94956',
+      }
+    default:
+      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '48143, Dubai, UAE' }
+  }
+}
+
+/** Footer data for print footer (trade name, contact, certs) - matches DoorCore */
+interface DoorCoreStyleFooterData {
   trade_name: string
   phone: string
   location: string
@@ -26,7 +59,7 @@ interface FooterData {
   website: string
 }
 
-function getFooterData(subDivisions?: string): FooterData {
+function getFooterData(subDivisions?: string): DoorCoreStyleFooterData {
   const sub = (subDivisions || '').trim()
   switch (sub) {
     case 'ABU DHABI':
@@ -135,24 +168,29 @@ function getSalesPersonDetails(
     default:
       return {
         name: name || '—',
-        designation: 'Designation not available',
-        contact: 'Contact not available',
+        designation: 'Sales Executive',
+        contact: '+971 50 306 3428',
         signature,
       }
   }
 }
 
-function formatAED(value: string | number | undefined): string {
-  if (value === undefined || value === null) return '0.00'
-  const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
-  if (isNaN(num)) return '0.00'
-  return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const LOGO_IDEAL_FITOUTS = 'https://i.ibb.co/nsrVgzqF/Screenshot-2025-04-08-131618.png'
+const LOGO_IDEAL_FIRESTOP = 'https://i.ibb.co/3KVzWsK/Screenshot-2025-04-08-131639.png'
+
+export type DoorSet2ViewMode = 'simple' | 'approved'
+
+interface QuotationLogDoorSet2ContentProps {
+  data: QuotationLogDoorSet2Data
+  /** 'simple' = no signature (default); 'approved' = show signature when SalesPerson_Approval_Status === 'Approved' */
+  viewMode?: DoorSet2ViewMode
 }
 
-export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: DoorCoreQuotationContentProps) {
+export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' }: QuotationLogDoorSet2ContentProps) {
   const footerData = getFooterData(data.Sub_Divisions)
+  const signatureFooter = getSignatureFooterData(data.Sub_Divisions)
   const salesDetails = getSalesPersonDetails(data.Sales_Person)
-  const approvalStatus = (data.Approval ?? '').trim()
+  const approvalStatus = (data.SalesPerson_Approval_Status ?? data.Approval ?? '').toString().trim()
   const showSignature = approvalStatus === 'Approved' && viewMode === 'approved'
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
@@ -160,19 +198,44 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
   const sealDescHTML = data.Seal_Description?.trim()
     ? data.Seal_Description.replace(/\n/g, '<br />')
     : ''
+  const showIntumescentSeal =
+    (data.Seals_Require1 ?? '').toString().trim() === 'Yes' &&
+    (data.Intumescent_seals ?? '').toString().trim() !== ''
+
+  const division = (data.Division ?? '').trim()
+  const logoSrc =
+    division === 'Ideal Fitouts'
+      ? LOGO_IDEAL_FITOUTS
+      : division === 'Ideal Firestop'
+        ? LOGO_IDEAL_FIRESTOP
+        : LOGO_IDEAL_FIRESTOP
+
+  // Normalize subforms to arrays (Zoho may return array or single object)
+  const toItemsArray = (val: unknown): QuotationLogDoorSet2Item[] =>
+    val == null ? [] : Array.isArray(val) ? (val as QuotationLogDoorSet2Item[]) : [val as QuotationLogDoorSet2Item]
+  const toSectionArray = (section: unknown): QuotationLogDoorSet2SubItem[] =>
+    section == null ? [] : Array.isArray(section) ? (section as QuotationLogDoorSet2SubItem[]) : [section as QuotationLogDoorSet2SubItem]
+
+  // 4 subforms: Items_Details (main door table) + Section_1, Section_2, Section_3. Show Section_X only when it has at least one row.
+  const items = toItemsArray(data.Items_Details)
+  const section1 = toSectionArray(data.Section_1)
+  const section2 = toSectionArray(data.Section_2)
+  const section3 = toSectionArray(data.Section_3)
+  const showSection1 = section1.length > 0
+  const showSection2 = section2.length > 0
+  const showSection3 = section3.length > 0
 
   return (
-    <div className="door-core-quotation-container">
+    <div className="door-core-quotation-container door-set-2-quotation">
       <div className="door-core-static-pattern" aria-hidden />
       <table className="door-core-page-layout">
-        {/* Header: repeats on every printed page */}
         <thead>
           <tr>
             <td className="door-core-layout-header-cell">
               <div className="door-core-header-logo-crop">
                 <img
-                  src="https://i.ibb.co/bjs2kFm4/Screenshot-2026-01-13-171206.png"
-                  alt="Ideal"
+                  src={logoSrc}
+                  alt={division || 'Ideal'}
                   className="door-core-header-logo-img"
                 />
               </div>
@@ -182,7 +245,6 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
         <tfoot>
           <tr>
             <td className="door-core-layout-footer-cell">
-              {/* Top row: Trade Name (left) + Certification logos (right) */}
               <div className="door-core-footer-row door-core-footer-top">
                 <div className="door-core-footer-left">
                   <span className="door-core-footer-trade-label">Trade Name: </span>
@@ -196,7 +258,6 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                   />
                 </div>
               </div>
-              {/* Contact row: phone, email, website, location (only when subdivision has them) */}
               {(footerData.phone || footerData.email1 || footerData.website || footerData.location) && (
                 <>
                   <hr className="door-core-footer-hr" />
@@ -266,7 +327,6 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
         <tbody>
           <tr>
             <td className="door-core-layout-ell">
-              {/* Cover details block - no duplicate logo; header already shows logo on every page */}
               <div className="door-core-details-block">
                 <h1 className="door-core-cover-title">
                   <u>Quotation</u>
@@ -284,16 +344,14 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     <div className="door-core-details-value">{data.Quotation_Submission_Date}</div>
                   </div>
                 )}
-                {hasValue(data.Organization_Name1) && (
+                {(hasValue(data.Organization_Name1) || hasValue(data.Emirates)) && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>To:</strong></div>
-                    <div className="door-core-details-value">{data.Organization_Name1}</div>
-                  </div>
-                )}
-                {hasValue(data.Emirates) && (
-                  <div className="door-core-details-row">
-                    <div className="door-core-details-label" />
-                    <div className="door-core-details-value">{data.Emirates}, U.A.E</div>
+                    <div className="door-core-details-value">
+                      {data.Organization_Name1 ?? ''}
+                      {(data.Organization_Name1 || data.Emirates) && <br />}
+                      {data.Emirates ?? ''}{data.Emirates ? ', U.A.E' : ''}
+                    </div>
                   </div>
                 )}
                 {data.Project_Name?.trim() && (
@@ -316,55 +374,54 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                 )}
 
                 <br />
-                <strong>Dear&nbsp;&nbsp;&nbsp;</strong>{data.Customer_Name1 ?? '—'}<br />
+                <strong>Dear&nbsp;&nbsp;</strong>{data.Customer_Name1 ?? '—'}<br />
                 <p className="door-core-intro-p">
                   We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ:
                 </p>
-                <br />
 
                 {data.Scope_field?.trim() && (
                   <div className="door-core-details-row">
-                    <div className="door-core-details-label">Scope:</div>
+                    <div className="door-core-details-label"><strong>Scope:</strong></div>
                     <div className="door-core-details-value">{data.Scope_field}</div>
                   </div>
                 )}
                 {data.FR_Core?.trim() && (
                   <div className="door-core-details-row">
-                    <div className="door-core-details-label">FR Core:</div>
+                    <div className="door-core-details-label"><strong>FR Core:</strong></div>
                     <div className="door-core-details-value">{data.FR_Core}</div>
                   </div>
                 )}
                 {data.Acoustic_Core?.trim() && (
                   <div className="door-core-details-row">
-                    <div className="door-core-details-label">Acoustic Core:</div>
+                    <div className="door-core-details-label"><strong>Acoustic Core:</strong></div>
                     <div className="door-core-details-value">{data.Acoustic_Core}</div>
                   </div>
                 )}
                 {data.Facing?.trim() && (
                   <div className="door-core-details-row">
-                    <div className="door-core-details-label">Facing:</div>
+                    <div className="door-core-details-label"><strong>Facing:</strong></div>
                     <div className="door-core-details-value">{data.Facing}</div>
                   </div>
                 )}
                 {data.Lipping?.trim() && (
                   <div className="door-core-details-row">
-                    <div className="door-core-details-label">Lipping:</div>
+                    <div className="door-core-details-label"><strong>Lipping:</strong></div>
                     <div className="door-core-details-value">{data.Lipping}</div>
                   </div>
                 )}
                 {data.Finish?.trim() && (
                   <div className="door-core-details-row">
-                    <div className="door-core-details-label">Finish:</div>
+                    <div className="door-core-details-label"><strong>Finish:</strong></div>
                     <div className="door-core-details-value">{data.Finish}</div>
                   </div>
                 )}
-                {data.Intumescent_seals?.trim() && (
+                {showIntumescentSeal && (
                   <div className="door-core-seal-row">
                     <div className="door-core-seal-label">Intumescent seal:</div>
-                    <div className="door-core-seal-value">{data.Intumescent_seals}</div>
+                    <div className="door-core-seal-value">{data.Intumescent_seals ?? ''}</div>
                   </div>
                 )}
-                {sealDescHTML && (
+                {showIntumescentSeal && sealDescHTML && (
                   <div className="door-core-seal-row">
                     <div className="door-core-seal-label">Seal description:</div>
                     <div className="door-core-seal-value" dangerouslySetInnerHTML={{ __html: sealDescHTML }} />
@@ -376,95 +433,256 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     <div className="door-core-seal-value">{data.Acoustic_Seals}</div>
                   </div>
                 )}
+                {data.Hardware?.trim() && (
+                  <div className="door-core-seal-row">
+                    <div className="door-core-seal-label">Hardware set:</div>
+                    <div className="door-core-seal-value">{data.Hardware}</div>
+                  </div>
+                )}
               </div>
 
-              {/* BOQ table section */}
               <div className="door-core-table-section">
-                <table className="door-core-product-table">
+                <table className="door-core-product-table door-set-2-product-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '30px' }}>SR. No</th>
-                      <th>Door Ref</th>
-                      <th>Door Leaf width (mm)</th>
-                      <th>Door Leaf Height (mm)</th>
+                      <th>S.No</th>
+                      <th>Door Leaf</th>
+                      <th>Product Ref</th>
+                      <th>Fire Rating (mins)</th>
+                      <th>Acoustic Rating (db)</th>
+                      <th>Door Leaf Size Width (mm)</th>
+                      <th>Door Leaf Size Height (mm)</th>
+                      <th>Jamb (mm)</th>
                       <th>Leaf Thick (mm)</th>
                       <th>Door Type</th>
-                      <th>Product Ref</th>
-                      <th>Acoustic Rating (db)</th>
-                      <th>Fire Rating (mins)</th>
                       <th>Vision Panel (mm)</th>
-                      <th>Qty.</th>
-                      <th>Unit Price (AED)</th>
-                      <th>Total Unit Price (AED)</th>
+                      <th>Hardware Set</th>
+                      <th>Unit</th>
+                      <th className="door-core-text-right">Qty</th>
+                      <th className="door-core-text-right">Unit Price (AED)</th>
+                      <th className="door-core-text-right">Total Price (AED)</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {(data.BOQ || []).map((record, idx) => (
+                    {items.map((record, idx) => (
                       <tr key={idx}>
                         <td>{record.S_No1 ?? ''}</td>
                         <td>{record.Door_Ref ?? ''}</td>
-                        <td>{record.Door_Leaf_Width_mm ?? ''}</td>
+                        <td>{record.Product_Ref ?? ''}</td>
+                        <td>{record.Fire_Rating_Min ?? ''}</td>
+                        <td>{record.Acoustic_Rating_db ?? ''}</td>
+                        <td>{record.Door_Leaf_width_mm ?? ''}</td>
                         <td>{record.Door_Leaf_Height_mm ?? ''}</td>
+                        <td>{record.Jamb_mm ?? ''}</td>
                         <td>{record.Leaf_Thick_mm ?? ''}</td>
                         <td>{record.Door_Type ?? ''}</td>
-                        <td>{record.Product_Ref ?? ''}</td>
-                        <td>{record.Acoustic_Rating_db ?? ''}</td>
-                        <td>{record.Fire_Rating_mins ?? ''}</td>
-                        <td>{record.Vision_Panel_mm ?? ''}</td>
-                        <td>{record.Qty1 ?? ''}</td>
-                        <td>{record.Unit_Price_AED1 != null ? formatAED(record.Unit_Price_AED1) : ''}</td>
-                        <td>{record.Total_Unit_Price_AED1 != null ? formatAED(record.Total_Unit_Price_AED1) : ''}</td>
+                        <td>{record.Vision_Panel_MM ?? ''}</td>
+                        <td>{record.Hardware_Set ?? ''}</td>
+                        <td>{record.Unit1 ?? ''}</td>
+                        <td className="door-core-text-right">{record.Quantity1 ?? ''}</td>
+                        <td className="door-core-text-right">
+                          {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
+                        </td>
+                        <td className="door-core-text-right">
+                          {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
+                        </td>
                       </tr>
                     ))}
-                    <tr>
-                      <td colSpan={12} className="door-core-total-label">
-                        Total Amount AED :-
+                    <tr className="door-core-subtotal">
+                      <td colSpan={13} className="door-core-text-right">
+                        <strong>Total Quantity:</strong>
                       </td>
-                      <td className="door-core-total-value">{formatAED(data.Total_Amount_AED)}</td>
+                      <td className="door-core-text-right">{data.Total_Quantity ?? ''}</td>
+                      <td />
+                      <td />
                     </tr>
-                    <tr>
-                      <td colSpan={12} className="door-core-total-label">
-                        VAT 5% AED :-
-                      </td>
-                      <td className="door-core-total-value">{formatAED(data.VAT_5)}</td>
-                    </tr>
-                    {hasDiscount && (
-                      <tr>
-                        <td colSpan={12} className="door-core-total-label">
-                          Less Special Discount AED :-
-                        </td>
-                        <td className="door-core-total-value">{formatAED(data.Provision_for_Less_Special_Discount_AED)}</td>
-                      </tr>
-                    )}
-                    <tr>
-                      <td colSpan={12} className="door-core-total-label">
-                        Grand Total AED :-
-                      </td>
-                      <td className="door-core-total-value">{formatAED(data.Grand_Total_AED)}</td>
+                    <tr className="door-core-subtotal">
+                      <td colSpan={14} />
+                      <td className="door-core-text-right"><strong>Sub Total:</strong></td>
+                      <td className="door-core-text-right">{formatAED(data.Sub_Total)}</td>
                     </tr>
                   </tbody>
                 </table>
 
-                <br />
-                {hasValue(data.Payment_Terms1) && (
+                {/* Section_1: show when data.Section_1 != null (match Zoho template) */}
+                {showSection1 && (
                   <>
-                    <div className="door-core-payment-section">
-                      <strong>1. Payment Terms</strong>
-                      <p className="door-core-terms-p">{data.Payment_Terms1}</p>
-                    </div>
-                    <br />
+                    <div className="door-core-section-title">{data.SubForm_Header ?? ''}</div>
+                    <table className="door-core-product-table door-core-subform-table">
+                      <thead>
+                        <tr>
+                          <th>S.No</th>
+                          <th>Description</th>
+                          <th className="door-core-text-right">Qty</th>
+                          <th className="door-core-text-right">Unit Price (AED)</th>
+                          <th className="door-core-text-right">Total Price (AED)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {section1.map((row, idx) => (
+                          <tr key={idx}>
+                            <td>{row.S_No1 ?? ''}</td>
+                            <td>{row.Description ?? ''}</td>
+                            <td className="door-core-text-right">{row.Qty1 ?? ''}</td>
+                            <td className="door-core-text-right">
+                              {row.Unit_Price1 != null ? formatAED(row.Unit_Price1) : ''}
+                            </td>
+                            <td className="door-core-text-right">
+                              {row.Total_Amount_AED != null ? formatAED(row.Total_Amount_AED) : ''}
+                            </td>
+                          </tr>
+                        ))}
+                        <tr className="door-core-subtotal">
+                          <td colSpan={3} />
+                          <td className="door-core-text-right"><strong>Sub Total:</strong></td>
+                          <td className="door-core-text-right">{formatAED(data.Sub_Total1)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </>
                 )}
+
+                {/* Section_2: show when data.Section_2 != null (match Zoho template) */}
+                {showSection2 && (
+                  <>
+                    <div className="door-core-section-title">{data.SubForm_Header1 ?? ''}</div>
+                    <table className="door-core-product-table door-core-subform-table">
+                      <thead>
+                        <tr>
+                          <th>S.No</th>
+                          <th>Description</th>
+                          <th className="door-core-text-right">Qty</th>
+                          <th className="door-core-text-right">Unit Price (AED)</th>
+                          <th className="door-core-text-right">Total Price (AED)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {section2.map((row, idx) => (
+                          <tr key={idx}>
+                            <td>{row.S_No1 ?? ''}</td>
+                            <td>{row.Description ?? ''}</td>
+                            <td className="door-core-text-right">{row.Qty1 ?? ''}</td>
+                            <td className="door-core-text-right">
+                              {row.Unit_Price1 != null ? formatAED(row.Unit_Price1) : ''}
+                            </td>
+                            <td className="door-core-text-right">
+                              {row.Total_Amount_AED != null ? formatAED(row.Total_Amount_AED) : ''}
+                            </td>
+                          </tr>
+                        ))}
+                        <tr className="door-core-subtotal">
+                          <td colSpan={3} />
+                          <td className="door-core-text-right"><strong>Sub Total:</strong></td>
+                          <td className="door-core-text-right">{formatAED(data.Sub_Total2)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </>
+                )}
+
+                {/* Section_3: show when data.Section_3 != null (match Zoho template) */}
+                {showSection3 && (
+                  <>
+                    <div className="door-core-section-title">{data.Subform_Header2 ?? ''}</div>
+                    <table className="door-core-product-table door-core-subform-table">
+                      <thead>
+                        <tr>
+                          <th>S.No</th>
+                          <th>Description</th>
+                          <th className="door-core-text-right">Qty</th>
+                          <th className="door-core-text-right">Unit Price (AED)</th>
+                          <th className="door-core-text-right">Total Price (AED)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {section3.map((row, idx) => (
+                          <tr key={idx}>
+                            <td>{row.S_No1 ?? ''}</td>
+                            <td>{row.Description ?? ''}</td>
+                            <td className="door-core-text-right">{row.Qty1 ?? ''}</td>
+                            <td className="door-core-text-right">
+                              {row.Unit_Price1 != null ? formatAED(row.Unit_Price1) : ''}
+                            </td>
+                            <td className="door-core-text-right">
+                              {row.Total_Amount_AED != null ? formatAED(row.Total_Amount_AED) : ''}
+                            </td>
+                          </tr>
+                        ))}
+                        <tr className="door-core-subtotal">
+                          <td colSpan={3} />
+                          <td className="door-core-text-right"><strong>Sub Total:</strong></td>
+                          <td className="door-core-text-right">{formatAED(data.Sub_Total3)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </>
+                )}
+
+                <table className="door-core-product-table door-core-totals-table">
+                  <tbody>
+                    <tr className="door-core-totals-row">
+                      <td colSpan={10} />
+                      <td className="door-core-text-right">
+                        <strong>Total Amount (AED):</strong>
+                      </td>
+                      <td className="door-core-text-right door-core-total-value">
+                        {formatAED(data.Total_Amount_AED)}
+                      </td>
+                      <td />
+                    </tr>
+                    {hasDiscount && (
+                      <tr className="door-core-totals-row">
+                        <td colSpan={10} />
+                        <td className="door-core-text-right">
+                          <strong>Less Special Discount (AED):</strong>
+                        </td>
+                        <td className="door-core-text-right">
+                          {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                        </td>
+                        <td />
+                      </tr>
+                    )}
+                    <tr className="door-core-totals-row">
+                      <td colSpan={10} />
+                      <td className="door-core-text-right">
+                        <strong>VAT 5% (AED):</strong>
+                      </td>
+                      <td className="door-core-text-right">
+                        {formatAED(data.VAT_5_AED)}
+                      </td>
+                      <td />
+                    </tr>
+                    <tr className="door-core-totals-row">
+                      <td colSpan={10} />
+                      <td className="door-core-text-right">
+                        <strong>Grand Total (AED):</strong>
+                      </td>
+                      <td className="door-core-text-right door-core-total-value" style={{ fontSize: '14px', fontWeight: 'bold', backgroundColor: '#e8f4fd' }}>
+                        {formatAED(data.Grand_Total_AED)}
+                      </td>
+                      <td />
+                    </tr>
+                  </tbody>
+                </table>
+
+                {hasValue(data.Payment_Terms1) && (
+                  <>
+                    <strong>1. Payment Terms</strong>
+                    <p className="door-core-terms-p">{data.Payment_Terms1}</p>
+                  </>
+                )}
+
                 {hasValue(data.Validity) && (
                   <>
                     <strong>2. Validity</strong>
                     <p className="door-core-terms-p">{data.Validity}</p>
-                    <br />
                   </>
                 )}
+
                 {hasValue(data.Notes1) && (
                   <>
                     <strong>3. Notes</strong>
+                    <p className="door-core-terms-p">1. The following are excluded from our scope:</p>
                     <div
                       className="door-core-notes-p door-core-notes-html"
                       dangerouslySetInnerHTML={{ __html: data.Notes1 ?? '' }}
@@ -476,14 +694,15 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                   <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>
                   <p>Assuring you of our best services at all times.</p>
                 </div>
-                <br />
 
-                {/* Wrapper: signature block can flow to previous page when space allows; spacer keeps footer at bottom of last page */}
                 <div className="door-core-last-page-wrap">
                   <div className="door-core-signature-block">
                     <p>Thanks and Regards</p>
                     <br />
-                    <strong>For Firestop Trading Establishment</strong>
+                    <strong>For {signatureFooter.trade_name}</strong>
+                    <br />
+                    <br />
+                    <p>Address : {signatureFooter.location}</p>
                     <br />
                     {salesDetails.name}
                     <br />
@@ -525,7 +744,16 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                         )}
                       </div>
                     ) : (
-                      <div style={{ marginBottom: '60px' }} />
+                      <div style={{ textAlign: 'right', fontSize: '17px', fontWeight: 'bold' }}>
+                        Signature:<br />
+                        <span
+                          style={{
+                            borderBottom: '2px solid #000',
+                            width: '150px',
+                            display: 'inline-block',
+                          }}
+                        />
+                      </div>
                     )}
                   </div>
                   <div className="door-core-last-page-spacer" />

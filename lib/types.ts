@@ -243,6 +243,172 @@ export interface DoorCoreQuotationResponse {
   error?: string
 }
 
+/** Quotation_Log_Door_Set_2: line item from Items_Details */
+export interface QuotationLogDoorSet2Item {
+  S_No1?: string | number
+  Door_Ref?: string
+  Product_Ref?: string
+  Fire_Rating_Min?: string | number
+  Acoustic_Rating_db?: string | number
+  Door_Leaf_width_mm?: string | number
+  Door_Leaf_Height_mm?: string | number
+  Jamb_mm?: string | number
+  Leaf_Thick_mm?: string | number
+  Door_Type?: string
+  Vision_Panel_MM?: string | number
+  Hardware_Set?: string
+  Unit1?: string
+  Quantity1?: string | number
+  Unit_Price1?: string | number
+  Amount_AED?: string | number
+  [key: string]: any
+}
+
+/** Quotation_Log_Door_Set_2: subform row (Section_1, Section_2, Section_3) */
+export interface QuotationLogDoorSet2SubItem {
+  S_No1?: string | number
+  Description?: string
+  Qty1?: string | number
+  Unit_Price1?: string | number
+  Total_Amount_AED?: string | number
+  [key: string]: any
+}
+
+/** Quotation_Log_Door_Set_2 report record (same app as Door Core, different report) */
+export interface QuotationLogDoorSet2Data {
+  ID: string
+  Quotation_No?: string
+  Quotation_Submission_Date?: string
+  Organization_Name1?: string
+  Emirates?: string
+  Project_Name?: string
+  Project_Location?: string
+  Subject_field?: string
+  Customer_Name1?: string
+  Scope_field?: string
+  FR_Core?: string
+  Acoustic_Core?: string
+  Facing?: string
+  Lipping?: string
+  Finish?: string
+  Intumescent_seals?: string
+  Seal_Description?: string
+  Acoustic_Seals?: string
+  Hardware?: string
+  Seals_Require1?: string
+  Division?: string
+  Sub_Divisions?: string
+  Items_Details?: QuotationLogDoorSet2Item[]
+  Total_Quantity?: string | number
+  Sub_Total?: string | number
+  Section_1?: QuotationLogDoorSet2SubItem[]
+  Section_2?: QuotationLogDoorSet2SubItem[]
+  Section_3?: QuotationLogDoorSet2SubItem[]
+  SubForm_Header?: string
+  SubForm_Header1?: string
+  Subform_Header2?: string
+  Sub_Total1?: string | number
+  Sub_Total2?: string | number
+  Sub_Total3?: string | number
+  Total_Amount_AED?: string | number
+  Provision_for_Less_Special_Discount_AED?: string | number
+  VAT_5_AED?: string | number
+  Grand_Total_AED?: string | number
+  Payment_Terms1?: string
+  Validity?: string
+  Notes1?: string
+  Sales_Person?: string
+  /** When "Approved", signature can be shown when view=approved in URL */
+  SalesPerson_Approval_Status?: string
+  Salesperson_Email?: string
+  /** Legacy field name (same as SalesPerson_Approval_Status) */
+  Approval?: string
+  [key: string]: any
+}
+
+export interface QuotationLogDoorSet2Response {
+  code: number
+  data?: QuotationLogDoorSet2Data[]
+  error?: string
+}
+
+/** Quotation_Log_Fitout_2: line item (Items_Details) */
+export interface QuotationLogFitout2Item {
+  S_No1?: string | number
+  Item_Description?: string
+  Quantity1?: string | number
+  Unit_Price?: string | number
+  Amount_AED1?: string | number
+  [key: string]: any
+}
+
+/** Quotation_Log_Fitout_2: line item (Items_Details1) */
+export interface QuotationLogFitout2Item1 {
+  S_No1?: string | number
+  Item_Description?: string
+  Quantity1?: string | number
+  Unit_Price1?: string | number
+  Amount_AED?: string | number
+  [key: string]: any
+}
+
+/** Quotation_Log_Fitout_2: subform row (SubForm1, SubForm2) */
+export interface QuotationLogFitout2SubItem {
+  S_No1?: string | number
+  Item_Description?: string
+  Qty1?: string | number
+  Unit_Price1?: string | number
+  Amount_AED?: string | number
+  [key: string]: any
+}
+
+/** Quotation_Log_Fitout_2 report record (idealfitout app) */
+export interface QuotationLogFitout2Data {
+  ID: string
+  Division?: string
+  Sub_Divisions?: string
+  Quotation_No?: string
+  Quotation_Submission_Date?: string
+  Organization_Name1?: string
+  Emirates?: string
+  Project?: string
+  Project_Name?: string
+  Project_Location?: string
+  Subject_field?: string
+  Customer_Name1?: string
+  Subform_Header?: string
+  Items_Details?: QuotationLogFitout2Item[]
+  Sub_Total?: string | number
+  Subform_Header1?: string
+  Items_Details1?: QuotationLogFitout2Item1[]
+  Sub_Total1?: string | number
+  Subform_Header2?: string
+  SubForm1?: QuotationLogFitout2SubItem[]
+  Sub_Total2?: string | number
+  Subform_Header3?: string
+  SubForm2?: QuotationLogFitout2SubItem[]
+  Sub_Total3?: string | number
+  Total_Amount_AED1?: string | number
+  Provision_for_Less_Special_Discount_AED?: string | number
+  Total_amount_after_discount_AED?: string | number
+  VAT_5?: string | number
+  Grand_Total_AED1?: string | number
+  Payment_Terms?: string
+  Validity?: string
+  Notes?: string
+  Notes1?: string
+  Sales_Person?: string
+  [key: string]: any
+}
+
+export interface QuotationLogFitout2Response {
+  code: number
+  data?: QuotationLogFitout2Data[]
+  response?: { result?: { rows?: unknown[] } }
+  result?: { rows?: unknown[] }
+  error?: string
+}
+
 export interface ShippingMaster {
   ID: string
   [key: string]: any

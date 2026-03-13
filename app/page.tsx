@@ -11,8 +11,50 @@ import SLSQuotationContent from './components/SLSQuotationContent'
 import GKDQuotationContent from './components/GKDQuotationContent'
 import BVKQuotationContent from './components/BVKQuotationContent'
 import DoorCoreQuotationContent from './components/DoorCoreQuotationContent'
-import { ZohoQuotationResponse, ShippingMasterResponse, BillingMasterResponse, TemplateType, ZohoQuotation, QuotationData, DoorCoreQuotationResponse, CoreCoverPageData } from '@/lib/types'
+import QuotationLogDoorSet2Content from './components/QuotationLogDoorSet2Content'
+import QuotationFitoutContent from './components/QuotationFitoutContent'
+import { ZohoQuotationResponse, ShippingMasterResponse, BillingMasterResponse, TemplateType, ZohoQuotation, QuotationData, DoorCoreQuotationResponse, CoreCoverPageData, QuotationLogDoorSet2Data, QuotationLogDoorSet2Response, QuotationLogFitout2Data, QuotationLogFitout2Response } from '@/lib/types'
 import { transformQuotationData, determineTemplateType } from '@/lib/quotation-utils'
+
+/** Normalize Door Set 2 record so all 4 subforms are read from API (handles different key names/nesting) */
+function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): QuotationLogDoorSet2Data {
+  const pick = (keys: string[]): unknown => {
+    for (const k of keys) {
+      const v = raw[k]
+      if (v !== undefined && v !== null) return v
+    }
+    return undefined
+  }
+  return {
+    ...raw,
+    ID: String(raw.ID ?? ''),
+    Items_Details: pick(['Items_Details', 'items_details', 'Items Details']) as QuotationLogDoorSet2Data['Items_Details'],
+    Section_1: pick(['Section_1', 'section_1', 'Section 1']) as QuotationLogDoorSet2Data['Section_1'],
+    Section_2: pick(['Section_2', 'section_2', 'Section 2']) as QuotationLogDoorSet2Data['Section_2'],
+    Section_3: pick(['Section_3', 'section_3', 'Section 3']) as QuotationLogDoorSet2Data['Section_3'],
+    SalesPerson_Approval_Status: pick(['SalesPerson_Approval_Status', 'Approval']) as string | undefined,
+    Salesperson_Email: pick(['Salesperson_Email', 'Salesperson_Email']) as string | undefined,
+  } as QuotationLogDoorSet2Data
+}
+
+/** Normalize Quotation_Log_Fitout_2 record (handles different key names from API) */
+function normalizeQuotationLogFitout2Record(raw: Record<string, unknown>): QuotationLogFitout2Data {
+  const pick = (keys: string[]): unknown => {
+    for (const k of keys) {
+      const v = raw[k]
+      if (v !== undefined && v !== null) return v
+    }
+    return undefined
+  }
+  return {
+    ...raw,
+    ID: String(raw.ID ?? ''),
+    Items_Details: pick(['Items_Details', 'items_details']) as QuotationLogFitout2Data['Items_Details'],
+    Items_Details1: pick(['Items_Details1', 'items_details1']) as QuotationLogFitout2Data['Items_Details1'],
+    SubForm1: pick(['SubForm1', 'subform1', 'Sub Form1']) as QuotationLogFitout2Data['SubForm1'],
+    SubForm2: pick(['SubForm2', 'subform2', 'Sub Form2']) as QuotationLogFitout2Data['SubForm2'],
+  } as QuotationLogFitout2Data
+}
 
 // Mock data for WMW template design testing
 const getMockWMWData = (): QuotationData => ({
@@ -124,6 +166,9 @@ export default function QuotationPage() {
   const [error, setError] = useState<string | null>(null)
   const [templateType, setTemplateType] = useState<TemplateType>('WI')
   const [doorCoreData, setDoorCoreData] = useState<CoreCoverPageData | null>(null)
+  const [doorSet2Data, setDoorSet2Data] = useState<QuotationLogDoorSet2Data | null>(null)
+  const [doorSet1Data, setDoorSet1Data] = useState<QuotationLogDoorSet2Data | null>(null)
+  const [fitoutData, setFitoutData] = useState<QuotationLogFitout2Data | null>(null)
 
   useEffect(() => {
     const fetchQuotation = async () => {
@@ -132,13 +177,86 @@ export default function QuotationPage() {
         report === 'door_core' ||
         report === 'Quotation_Log_Door_Core' ||
         report === 'Core_Cover_page_Report'
+      const useDoorSet2 = report === 'Quotation_Log_Door_Set_2'
+      const useDoorSet1 = report === 'Quotation_Door_Set1_Report'
+      const useFitout = report === 'Quotation_Log_Fitout_2' || report === 'Quotation_Report'
 
       try {
         setLoading(true)
         setError(null)
         setDoorCoreData(null)
+        setDoorSet2Data(null)
+        setDoorSet1Data(null)
+        setFitoutData(null)
 
         const id = searchParams.get('id') || searchParams.get('perm') || ''
+
+        if (useFitout) {
+          if (!id) {
+            throw new Error('Fitout quotation requires id or perm in URL (e.g. ?report=Quotation_Log_Fitout_2&id=123 or ?report=Quotation_Report&id=123)')
+          }
+          const fitoutReport = report === 'Quotation_Report' ? 'Quotation_Report' : 'Quotation_Log_Fitout_2'
+          const response = await fetch(
+            `/api/zoho-door-core?id=${encodeURIComponent(id)}&report=${encodeURIComponent(fitoutReport)}`
+          )
+          const data = await response.json() as QuotationLogFitout2Response & { response?: { result?: { rows?: unknown[] } }; result?: { rows?: unknown[] }; data?: unknown[] }
+          if (!response.ok) {
+            throw new Error((data as { error?: string }).error || 'No Quotation_Log_Fitout_2 data found')
+          }
+          const rows = Array.isArray(data.data)
+            ? data.data
+            : (data.response?.result?.rows ?? data.result?.rows ?? [])
+          if (!rows.length) {
+            throw new Error((data as { error?: string }).error || 'No Quotation_Log_Fitout_2 data found')
+          }
+          const rawRecord = (rows[0] ?? {}) as Record<string, unknown>
+          setFitoutData(normalizeQuotationLogFitout2Record(rawRecord))
+          return
+        }
+
+        if (useDoorSet1) {
+          if (!id) {
+            throw new Error('Quotation_Door_Set1_Report requires id or perm in URL (e.g. ?report=Quotation_Door_Set1_Report&id=123)')
+          }
+          const response = await fetch(
+            `/api/zoho-door-core?id=${encodeURIComponent(id)}&report=${encodeURIComponent('Quotation_Door_Set1_Report')}`
+          )
+          const data = await response.json() as QuotationLogDoorSet2Response & { response?: { result?: { rows?: unknown[] } }; result?: { rows?: unknown[] } }
+          if (!response.ok || data.code !== 3000) {
+            throw new Error((data as { error?: string }).error || 'No Quotation_Door_Set1_Report data found')
+          }
+          const rows = Array.isArray(data.data)
+            ? data.data
+            : (data.response?.result?.rows ?? data.result?.rows ?? [])
+          if (!rows.length) {
+            throw new Error((data as { error?: string }).error || 'No Quotation_Door_Set1_Report data found')
+          }
+          const rawRecord = (rows[0] ?? {}) as Record<string, unknown>
+          setDoorSet1Data(normalizeQuotationLogDoorSet2Record(rawRecord))
+          return
+        }
+
+        if (useDoorSet2) {
+          if (!id) {
+            throw new Error('Quotation_Log_Door_Set_2 requires id or perm in URL (e.g. ?report=Quotation_Log_Door_Set_2&id=123)')
+          }
+          const response = await fetch(
+            `/api/zoho-door-core?id=${encodeURIComponent(id)}&report=${encodeURIComponent('Quotation_Log_Door_Set_2')}`
+          )
+          const data = await response.json() as QuotationLogDoorSet2Response & { response?: { result?: { rows?: unknown[] } }; result?: { rows?: unknown[] } }
+          if (!response.ok || data.code !== 3000) {
+            throw new Error((data as { error?: string }).error || 'No Quotation_Log_Door_Set_2 data found')
+          }
+          const rows = Array.isArray(data.data)
+            ? data.data
+            : (data.response?.result?.rows ?? data.result?.rows ?? [])
+          if (!rows.length) {
+            throw new Error((data as { error?: string }).error || 'No Quotation_Log_Door_Set_2 data found')
+          }
+          const rawRecord = (rows[0] ?? {}) as Record<string, unknown>
+          setDoorSet2Data(normalizeQuotationLogDoorSet2Record(rawRecord))
+          return
+        }
 
         if (useDoorCore) {
           if (!id) {
@@ -339,22 +457,39 @@ export default function QuotationPage() {
       )}
 
       {error && (
-        <div style={{ textAlign: 'center', padding: '40px', color: '#d32f2f' }}>
-          <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Error loading quotation</div>
-          <div>{error}</div>
-          <div style={{ marginTop: '16px', fontSize: '14px' }}>
-            <Link href="/" style={{ color: '#1e40af', textDecoration: 'underline' }}>
-              Try again
-            </Link>
+        <div className="quotation-error-card">
+          <div className="quotation-error-icon" aria-hidden>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
           </div>
+          <div className="quotation-error-title">Error loading quotation</div>
+          <div className="quotation-error-message">{error}</div>
+          <Link href="/" className="quotation-error-action">
+            Try again
+          </Link>
         </div>
       )}
 
-      {!loading && !error && doorCoreData && (
+      {!loading && !error && fitoutData && (
+        <QuotationFitoutContent data={fitoutData} viewMode={viewMode} />
+      )}
+
+      {!loading && !error && !fitoutData && doorSet1Data && (
+        <QuotationLogDoorSet2Content data={doorSet1Data} viewMode={viewMode} />
+      )}
+
+      {!loading && !error && !fitoutData && !doorSet1Data && doorSet2Data && (
+        <QuotationLogDoorSet2Content data={doorSet2Data} viewMode={viewMode} />
+      )}
+
+      {!loading && !error && !fitoutData && !doorSet1Data && !doorSet2Data && doorCoreData && (
         <DoorCoreQuotationContent data={doorCoreData} viewMode={viewMode} />
       )}
 
-      {!loading && !error && !doorCoreData && quotationData && (
+      {!loading && !error && !fitoutData && !doorSet1Data && !doorSet2Data && !doorCoreData && quotationData && (
         <>
           {templateType === 'EXPORT' ? (
             <ExportQuotationContent

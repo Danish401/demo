@@ -1,9 +1,36 @@
+import { readFile, writeFile } from 'fs/promises'
+import { join } from 'path'
+
 const DEFAULT_ACCOUNTS_DOMAIN = 'accounts.zoho.in'
 const SAFETY_BUFFER_MS = 5 * 60 * 1000 // Refresh 5 minutes before expiry
-const CRON_REFRESH_INTERVAL_MS = 10 * 60 * 1000 // 10 minutes for cron job
+const CRON_REFRESH_INTERVAL_MS = 55 * 60 * 1000 // 55 minutes – cron runs every hour
+const TOKEN_FILE = '.zoho-token.json'
 
 let cached: { access_token: string; expires_at: number } | null = null
 let lastRefreshTime: number = 0
+
+async function loadPersistedToken(): Promise<{ access_token: string; expires_at: number } | null> {
+  try {
+    const path = join(process.cwd(), TOKEN_FILE)
+    const raw = await readFile(path, 'utf-8')
+    const data = JSON.parse(raw) as { access_token?: string; expires_at?: number }
+    if (data?.access_token && typeof data.expires_at === 'number' && data.expires_at > Date.now()) {
+      return { access_token: data.access_token, expires_at: data.expires_at }
+    }
+  } catch {
+    // File missing or invalid – ignore
+  }
+  return null
+}
+
+async function persistToken(access_token: string, expires_at: number): Promise<void> {
+  try {
+    const path = join(process.cwd(), TOKEN_FILE)
+    await writeFile(path, JSON.stringify({ access_token, expires_at }), 'utf-8')
+  } catch {
+    // e.g. read-only filesystem (Vercel); in-memory cache still used
+  }
+}
 
 /**
  * Clears the cached token (useful when token is invalid/expired)
@@ -71,6 +98,16 @@ export async function getAccessToken(forceRefresh = false): Promise<string> {
     cached = null
   }
 
+  // Use persisted token from file if still valid (helps after deploy/restart)
+  if (!forceRefresh && !cached) {
+    const persisted = await loadPersistedToken()
+    if (persisted) {
+      cached = persisted
+      lastRefreshTime = now
+      return cached.access_token
+    }
+  }
+
   const domain = process.env.ZOHO_ACCOUNTS_DOMAIN?.trim() || DEFAULT_ACCOUNTS_DOMAIN
   const tokenUrl = domain.startsWith('http') ? domain : `https://${domain}/oauth/v2/token`
 
@@ -100,14 +137,14 @@ export async function getAccessToken(forceRefresh = false): Promise<string> {
   const expiresInSeconds = data.expires_in_sec || data.expires_in || 3600
   const expiresInMs = expiresInSeconds * 1000
 
+  const expires_at = now + expiresInMs - SAFETY_BUFFER_MS
   cached = {
     access_token: data.access_token,
-    // Set expiry with safety buffer (refresh 5 minutes before actual expiry)
-    expires_at: now + expiresInMs - SAFETY_BUFFER_MS,
+    expires_at,
   }
 
-  // Update last refresh time for cron monitoring
   lastRefreshTime = now
+  await persistToken(data.access_token, expires_at)
 
   return data.access_token
 }

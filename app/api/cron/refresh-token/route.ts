@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken, clearTokenCache } from '@/lib/zoho'
 
 /**
- * Cron job endpoint to refresh Zoho access token every 10 minutes
- * 
- * This endpoint should be called by:
- * - Vercel Cron (if deployed on Vercel): Add to vercel.json
- * - External cron service (cron-job.org, EasyCron, etc.)
- * - Server cron job
- * 
- * Security: Add a secret header to prevent unauthorized access
+ * Cron job endpoint to refresh Zoho access token every hour.
+ * Uses ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN from env.
+ * New token is cached in memory and persisted to .zoho-token.json when writable.
+ *
+ * Called by:
+ * - Vercel Cron (vercel.json: "0 * * * *")
+ * - External cron (cron-job.org, EasyCron, etc.) – hit GET/POST every hour
+ *
+ * Security: Set CRON_SECRET in env and send header x-cron-secret when using external cron.
  */
 export async function GET(request: NextRequest) {
   try {
