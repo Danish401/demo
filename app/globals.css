@@ -7,8 +7,7 @@
 html,
 body {
   max-width: 210mm;
-  margin: 0 auto;
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0 auto;   font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
   color: #000;
   background: #fff;
@@ -29,6 +28,46 @@ body {
   display: none;
 }
 
+/* Header shown only on first page of quotation content */
+.quotation-content-section .screen-only-header {
+  display: block;
+}
+
+/* Show repeating header on screen */
+.quotation-content-section .repeating-header {
+  display: table-header-group;
+}
+
+/* Quotation title styling */
+.quotation-title {
+  display: block;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+/* Performa Invoice title styling */
+.performa-invoice-title {
+  display: block;
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  margin-top: 0;
+}
+
+/* Performa Invoice content section */
+.performa-invoice-content-section {
+  border: 1px solid #000;
+  padding: 16px;
+  margin-bottom: 24px;
+  page-break-inside: avoid;
+}
+
 /* Standard Conditions: hidden on screen, shown when printing (after quotation) */
 .conditions-for-print {
   display: none;
@@ -36,14 +75,34 @@ body {
   padding-top: 0;
 }
 
+/* Hide parent border in print for export template */
 @media print {
+  .export-quotation-container {
+    border: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 5mm 10mm !important;
+  }
+  
+  /* Prevent page breaks inside sections - move whole div to next page */
+  .export-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Prevent page breaks inside table rows for export template */
+  .export-quotation-container table tbody tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
   /* A4 sheet: 21cm x 29.7cm - reserve fixed space from edges so content is not cut off */
   @page {
     size: A4;
-    margin-top: 1.5cm;
-    margin-bottom: 2cm;
-    margin-left: 1.5cm;
-    margin-right: 1.5cm;
+    margin-top: 1cm;
+    margin-bottom: 1cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
   }
   body {
     print-color-adjust: exact;
@@ -56,16 +115,13 @@ body {
   .quotation-doc {
     padding: 8px 16px !important;
   }
-  /* Repeating header: table thead repeats on each page; no extra spacing */
+  /* Header should show only on first page of quotation content section */
   .print-doc-table {
     border-collapse: collapse;
     border-spacing: 0;
   }
   .print-doc-table thead {
-    display: table-header-group;
-  }
-  .print-doc-table thead tr {
-    margin: 0;
+    display: none !important;
   }
   .print-doc-table tbody tr td {
     padding-top: 0 !important;
@@ -73,8 +129,43 @@ body {
   .print-header {
     display: none !important;
   }
-  .screen-only-header {
+  /* Make header repeat on each page of quotation content section */
+  .quotation-content-section table {
+    border: none;
+  }
+  .quotation-content-section .repeating-header {
+    display: table-header-group !important;
+  }
+  .quotation-content-section .repeating-header tr {
+    display: table-row;
+  }
+  .quotation-content-section .repeating-header td {
+    display: table-cell;
+  }
+  /* Hide header in conditions section */
+  .conditions-for-print .repeating-header,
+  .conditions-for-print .screen-only-header {
     display: none !important;
+  }
+  /* Show header on screen */
+  .quotation-content-section .repeating-header {
+    display: table-header-group;
+  }
+  /* Quotation title - show only on first page in print */
+  .quotation-title {
+    display: block !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  /* Performa Invoice title - show only on first page in print */
+  .performa-invoice-title {
+    display: block !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  /* Hide title if it would appear on a page break */
+  .quotation-content-section {
+    position: relative;
   }
   /* Remove gap after repeated header: no top margin on first content in tbody */
   .print-doc-table tbody td > *:first-child {
@@ -88,13 +179,565 @@ body {
   .quotation-doc table tfoot {
     display: table-row-group;
   }
+  /* Door Core: header and footer must repeat on every printed page */
+  .quotation-doc .door-core-page-layout thead {
+    display: table-header-group !important;
+  }
+  .quotation-doc .door-core-page-layout tfoot {
+    display: table-footer-group !important;
+  }
   /* Keep Remarks + DOC NO. with content above when possible to avoid a short page */
   .quotation-doc table:last-of-type {
     page-break-after: avoid;
   }
+  /* Prevent sections from splitting across pages */
+  .quotation-content-section,
+  .performa-invoice-content-section {
+    page-break-inside: avoid !important;
+    /* Remove all borders in print */
+    border: none !important;
+  }
+  /* Quotation title - show only on first page */
+  .quotation-title {
+    display: block !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  /* Performa Invoice title - show only on first page */
+  .performa-invoice-title {
+    display: block !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  /* Hide quotation/performa invoice title on subsequent pages */
+  .quotation-content-section:not(:first-of-type) .quotation-title,
+  .performa-invoice-content-section:not(:first-of-type) .performa-invoice-title {
+      display: none !important;
+  }
+  .conditions-for-print {
+    page-break-inside: avoid !important;
+    page-break-before: always !important;
+    /* Remove all borders in print */
+    border: none !important;
+  }
   .quotation-doc .conditions-for-print h1 {
     page-break-after: avoid;
+    page-break-before: avoid;
   }
+  
+  /* Prevent tables from splitting across pages */
+  .quotation-content-section table,
+  .conditions-for-print table {
+    page-break-inside: avoid;
+  }
+  
+  /* Prevent individual sections from splitting */
+  .quotation-content-section > * {
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure Description Of Goods table headers are visible in print */
+  .goods-description-table thead {
+    display: table-header-group !important;
+  }
+  
+  .goods-description-table thead th {
+    display: table-cell !important;
+    background-color: #f5f5f5 !important;
+    font-weight: bold !important;
+    border: 1px solid #000 !important;
+  }
+  
+  /* GKD Template - Repeating Header and Footer on every page */
+  .gkd-quotation-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 5mm 10mm !important;
+  }
+  
+  .gkd-print-table {
+    border: none !important;
+  }
+  
+  /* Show header and footer on every printed page including first */
+  .gkd-print-table thead.gkd-print-header-row {
+    display: table-header-group !important;
+  }
+  
+  .gkd-print-table tfoot.gkd-print-footer-row {
+    display: table-footer-group !important;
+  }
+  
+  .gkd-print-header-row td,
+  .gkd-print-footer-row td {
+    display: table-cell !important;
+  }
+  
+  /* Ensure header and footer appear on every page including first */
+  .gkd-print-header {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  .gkd-print-footer {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Force tfoot to display on first page */
+  .gkd-print-table {
+    border-collapse: collapse !important;
+  }
+  
+  .gkd-print-table tfoot {
+    display: table-footer-group !important;
+  }
+  
+  /* Left-align signatory name in print */
+  .gkd-signatory-name {
+    text-align: left !important;
+  }
+  
+  /* BVK Template - Repeating Header and Footer on every page */
+  .bvk-quotation-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 5mm 10mm !important;
+  }
+  
+  .bvk-print-table {
+    border: none !important;
+  }
+  
+  /* Show header and footer on every printed page */
+  .bvk-print-table thead.bvk-print-header-row {
+    display: table-header-group !important;
+  }
+  
+  .bvk-print-table tfoot.bvk-print-footer-row {
+    display: table-footer-group !important;
+  }
+  
+  .bvk-print-header-row td,
+  .bvk-print-footer-row td {
+    display: table-cell !important;
+  }
+  
+  /* Ensure header and footer appear on every page */
+  .bvk-print-header {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  .bvk-print-footer {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  
+  /* Force tfoot to display on first page */
+  .bvk-print-table {
+    border-collapse: collapse !important;
+  }
+  
+  .bvk-print-table tfoot {
+    display: table-footer-group !important;
+  }
+
+  /* ══ Export Template - Repeating Header on every printed page ══ */
+  .export-quotation-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 5mm 10mm !important;
+  }
+
+  .export-print-table {
+    border: none !important;
+    border-collapse: collapse !important;
+  }
+
+  .export-print-table thead.export-print-header-row {
+    display: table-header-group !important;
+  }
+
+  .export-print-header-row td {
+    display: table-cell !important;
+  }
+
+  .export-print-header {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* ══ Door Core Quotation - Repeating header/footer, A4 layout ══ */
+  .door-core-quotation-container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    border: none !important;
+  }
+  .door-core-page-layout {
+    height: 100% !important;
+    border: none !important;
+  }
+  .door-core-page-layout thead {
+    display: table-header-group !important;
+  }
+  .door-core-page-layout tfoot {
+    display: table-footer-group !important;
+  }
+  .door-core-layout-footer-cell {
+    height: 100px !important;
+  }
+  .door-core-signature-block {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+  .door-core-product-table tr {
+    page-break-inside: avoid;
+  }
+  .door-core-details-block {
+    page-break-inside: avoid !important;
+  }
+  /* Allow content to flow; avoid forcing a new page (no unnecessary blank pages) */
+  .door-core-table-section {
+    page-break-before: auto;
+  }
+  /* Remove all borders from Door Core header/footer/body cells in print */
+  .door-core-layout-header-cell,
+  .door-core-layout-footer-cell,
+  .door-core-layout-ell {
+    border: none !important;
+  }
+  /* Force header to repeat on every page (explicit for all engines) */
+  .door-core-page-layout thead,
+  .door-core-quotation-container .door-core-page-layout thead {
+    display: table-header-group !important;
+    visibility: visible !important;
+  }
+  .door-core-page-layout thead tr {
+    display: table-row !important;
+  }
+  .door-core-page-layout thead td {
+    display: table-cell !important;
+  }
+  /* Signature block: allow flowing to previous page when there is space (no forced new page) */
+  .door-core-last-page-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    page-break-before: auto !important;
+    min-height: 0 !important;
+    flex: 1 1 auto !important;
+    page-break-inside: avoid !important;
+  }
+  /* Spacer fills remaining space so footer is always at bottom of last page (with or without content) */
+  .door-core-last-page-spacer {
+    flex: 1 1 auto !important;
+    min-height: 160mm !important;
+  }
+  .door-core-layout-ell {
+    min-height: 0 !important;
+  }
+}
+
+/* GKD Template - Show header/footer on screen (once) */
+.gkd-print-table thead.gkd-print-header-row {
+  display: table-header-group;
+}
+
+.gkd-print-table tfoot.gkd-print-footer-row {
+  display: table-footer-group;
+}
+
+/* Ensure footer is visible on screen */
+.gkd-print-table tfoot {
+  display: table-footer-group;
+}
+
+/* BVK Template - Show header/footer on screen (once) */
+.bvk-print-table thead.bvk-print-header-row {
+  display: table-header-group;
+}
+
+.bvk-print-table tfoot.bvk-print-footer-row {
+  display: table-footer-group;
+}
+
+/* Ensure footer is visible on screen */
+.bvk-print-table tfoot {
+  display: table-footer-group;
+}
+
+/* ══ Export Template - Repeating Header on every printed page ══ */
+.export-print-table thead.export-print-header-row {
+  display: table-header-group;
+}
+
+.export-print-table {
+  border-collapse: collapse;
+}
+
+/* ══ Door Core Quotation (Ideal Firestop / Core_Cover_page) ══ */
+.door-core-quotation-container {
+  font-family: Arial, sans-serif;
+  background: #fff;
+  max-width: 100%;
+}
+.door-core-static-pattern {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 320px;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(243, 156, 18, 0.35) 2px, transparent 2px);
+  background-size: 16px 16px;
+  opacity: 0.55;
+  pointer-events: none;
+  clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
+  z-index: 0;
+}
+.door-core-page-layout {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  position: relative;
+  z-index: 1;
+}
+.door-core-page-layout > thead {
+  display: table-header-group;
+}
+.door-core-page-layout > tfoot {
+  display: table-footer-group;
+}
+.door-core-layout-header-cell {
+  padding: 10px 10% 6px 10%;
+  border: none;
+  background: #fff;
+}
+.door-core-header-no-logo .door-core-header-logo-crop {
+  display: none;
+}
+.door-core-header-no-logo {
+  padding: 6px 10% 6px 10%;
+}
+.door-core-layout-footer-cell {
+  padding: 6px 10% 8px 10%;
+  border: none;
+  background: #fff;
+}
+.door-core-layout-ell {
+  padding: 10px 10%;
+  vertical-align: top;
+  display: flex;
+  flex-direction: column;
+}
+.door-core-header-logo-crop {
+  width: 360px;
+  overflow: hidden;
+}
+.door-core-header-logo-img {
+  height: 80px;
+  width: auto;
+  display: block;
+}
+.door-core-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.door-core-footer-top {
+  align-items: flex-start;
+}
+.door-core-footer-left {
+  width: 70%;
+  font-size: 12px;
+  color: #4b5563;
+}
+.door-core-footer-trade-label {
+  color: #4b5563;
+  font-weight: 400;
+}
+.door-core-footer-trade-name {
+  color: #2563eb;
+  font-weight: 600;
+}
+.door-core-footer-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.door-core-footer-right img,
+.door-core-footer-certs {
+  height: 45px;
+  display: block;
+}
+.door-core-footer-hr {
+  border: none;
+  border-top: 1px solid #93c5fd;
+  margin: 8px 0 10px 0;
+}
+.door-core-footer-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 1.5em;
+  font-size: 12px;
+  color: #374151;
+}
+.door-core-footer-contact .door-core-icon,
+.door-core-footer-contact .door-core-globe-icon {
+  color: #f97316;
+  flex-shrink: 0;
+}
+.door-core-footer-contact-item {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+.door-core-footer-email-block {
+  align-items: flex-start;
+}
+.door-core-footer-email-lines {
+  display: inline-block;
+  line-height: 1.35;
+}
+.door-core-footer-bottom {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 11px;
+}
+.door-core-icon,
+.door-core-globe-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin-right: 4px;
+  color: #f97316;
+}
+.door-core-distributor-text {
+  font-size: 11px;
+  color: #4b5563;
+  font-weight: 400;
+}
+.door-core-brand-name {
+  color: #2563eb;
+  font-weight: 600;
+}
+.door-core-details-row,
+.door-core-seal-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.door-core-details-label,
+.door-core-seal-label {
+  flex: 0 0 30%;
+  font-weight: bold;
+}
+.door-core-details-value,
+.door-core-seal-value {
+  flex: 1 1 70%;
+  white-space: normal;
+  word-break: break-word;
+}
+.door-core-cover-title {
+  text-align: center;
+  margin-top: -1%;
+  margin-bottom: 25px;
+  font-size: 32px;
+}
+.door-core-intro-p {
+  margin-top: 8px;
+}
+.door-core-product-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.door-core-product-table th,
+.door-core-product-table td {
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+.door-core-product-table th {
+  background-color: #f2f3f5;
+  font-size: 12px;
+}
+.door-core-product-table thead {
+  display: table-row-group;
+}
+.door-core-product-table tbody {
+  display: table-row-group;
+}
+.door-core-total-label {
+  text-align: right;
+  font-weight: bold;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+.door-core-total-value {
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+.door-core-payment-section .door-core-terms-p {
+  margin-left: 1%;
+  font-size: 13px;
+}
+.door-core-notes-p.door-core-notes-html {
+  margin-left: 0;
+  font-size: 13px;
+}
+.door-core-notes-html ol,
+.door-core-notes-html ul {
+  margin: 0.5em 0 0.5em 1.2em;
+  padding-left: 1em;
+}
+.door-core-notes-html li {
+  margin-bottom: 0.25em;
+}
+.door-core-notes-html div {
+  margin: 0;
+}
+.door-core-terms {
+  margin-top: 10px;
+  font-size: 13px;
+}
+.door-core-terms p {
+  margin-bottom: 5px;
+}
+.door-core-last-page-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.door-core-signature-block {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.door-core-last-page-spacer {
+  flex: 1 1 auto;
+  min-height: 20px;
+}
+.door-core-page-layout thead {
+  display: table-header-group;
+}
+.door-core-page-layout tfoot {
+  display: table-footer-group;
+}
+
+/* Ensure Description Of Goods table headers are visible on both screen and print/PDF */
+.goods-description-table thead {
+  display: table-header-group !important;
+}
+
+.goods-description-table thead th {
+  display: table-cell !important;
+  background-color: #f5f5f5 !important;
+  font-weight: bold !important;
 }
 
 /* Print button */
@@ -119,6 +762,29 @@ body {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid #000;
+}
+
+/* Door Core: no outer black border on page layout / A4 sheet */
+.quotation-doc .door-core-quotation-container,
+.quotation-doc .door-core-page-layout {
+  border: none !important;
+}
+
+/* Door Core: remove unnecessary borders from header/footer/body layout cells (no black lines) */
+.quotation-doc .door-core-layout-header-cell,
+.quotation-doc .door-core-layout-footer-cell,
+.quotation-doc .door-core-layout-ell {
+  border: none !important;
+}
+
+/* Remove border from table inside quotation-content-section (div has its own border) */
+.quotation-content-section > table {
+  border: none !important;
+}
+
+/* Wrapper table should not have border */
+.quotation-doc .print-doc-table {
+  border: none !important;
 }
 
 .quotation-doc th,
@@ -147,6 +813,21 @@ body {
 .quotation-doc .amount-in-words {
   font-style: italic;
   padding: 8px 0;
+}
+
+/* Quotation content section - first div with border */
+.quotation-content-section {
+  border: 1px solid #000;
+  padding: 16px;
+  margin-bottom: 24px;
+  page-break-inside: avoid;
+}
+
+/* Conditions section - second div with border */
+.conditions-for-print {
+  border: 1px solid #000;
+  padding: 16px;
+  page-break-inside: avoid;
 }
 
 .conditions-doc h1 {
