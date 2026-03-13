@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import PrintButton from './components/PrintButton'
@@ -155,7 +155,7 @@ function getDoorCoreViewMode(searchParams: URLSearchParams): 'simple' | 'approve
   return view === 'approved' ? 'approved' : 'simple'
 }
 
-export default function QuotationPage() {
+function QuotationPageInner() {
   const searchParams = useSearchParams()
   const viewMode = getDoorCoreViewMode(searchParams)
   const [quotationData, setQuotationData] = useState<any>(null)
@@ -555,5 +555,13 @@ export default function QuotationPage() {
         </>
       )}
     </main>
+  )
+}
+
+export default function QuotationPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 24, textAlign: 'center' }}>Loading...</div>}>
+      <QuotationPageInner />
+    </Suspense>
   )
 }

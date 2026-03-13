@@ -274,7 +274,7 @@ export default function GKDQuotationContent({ data, shippingData, billingData, r
 
                     {/* Column 3 - ISO Certifications (Right) */}
                     <div style={{ width: '33%', textAlign: 'right' }}>
-                      {isoCertifications.map((cert, index) => (
+                      {isoCertifications.map((cert: string, index: number) => (
                         <div key={index} style={{ marginBottom: '4px' }}>{cert}</div>
                       ))}
                     </div>

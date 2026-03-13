@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import './globals.css'
 import ZohoTokenLoader from './components/ZohoTokenLoader'
 
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <ZohoTokenLoader />
+        <Suspense fallback={null}>
+          <ZohoTokenLoader />
+        </Suspense>
         {children}
       </body>
     </html>
