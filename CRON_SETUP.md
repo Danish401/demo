@@ -1,23 +1,25 @@
 # Zoho Token Refresh Cron Job Setup
 
-This document explains how to set up the automatic token refresh cron job that runs every 10 minutes.
+This document explains how to set up the automatic token refresh cron job.
 
 ## Overview
 
-The cron job automatically refreshes the Zoho access token every 10 minutes to prevent token expiration errors. The endpoint is located at `/api/cron/refresh-token`.
+The cron job refreshes the Zoho access token and persists it when possible. The endpoint is at `/api/cron/refresh-token`.
+
+**Vercel Hobby plan:** Cron jobs can run only **once per day**. The app is configured for a daily cron (`0 0 * * *` = midnight UTC). The access token also refreshes **on-demand** when any API call needs it and the cached token is expired, so the app works 24/7 without needing hourly cron.
 
 ## Setup Options
 
-### Option 1: Vercel Cron (Recommended for Vercel Deployments)
+### Option 1: Vercel Cron (Hobby = once per day)
 
-If you're deploying to Vercel, the cron job is already configured in `vercel.json`:
+Cron is configured in `vercel.json` to run **once per day** so it works on the free Hobby plan:
 
 ```json
 {
   "crons": [
     {
       "path": "/api/cron/refresh-token",
-      "schedule": "*/10 * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
@@ -25,8 +27,8 @@ If you're deploying to Vercel, the cron job is already configured in `vercel.jso
 
 **Steps:**
 1. Deploy your application to Vercel
-2. The cron job will automatically run every 10 minutes
-3. No additional configuration needed!
+2. The cron runs once daily (midnight UTC)
+3. Token is also refreshed on-demand when expired—no premium plan needed
 
 **Security (Optional):**
 Add a `CRON_SECRET` environment variable in Vercel:
@@ -47,7 +49,7 @@ Use any external cron service to call the endpoint:
 **Configuration:**
 - **URL:** `https://your-domain.com/api/cron/refresh-token`
 - **Method:** GET or POST
-- **Schedule:** Every 10 minutes (`*/10 * * * *`)
+- **Schedule:** e.g. once per day (`0 0 * * *`) for Hobby compatibility, or every hour (`0 * * * *`) if you use an external service
 - **Headers (Optional):** `x-cron-secret: your-secret-key` (if CRON_SECRET is set)
 
 ### Option 3: Server Cron Job (Linux/Unix)
@@ -58,13 +60,13 @@ If you have server access, add to crontab:
 # Edit crontab
 crontab -e
 
-# Add this line (runs every 10 minutes)
-*/10 * * * * curl -X GET https://your-domain.com/api/cron/refresh-token
+# Add this line (runs once per day at midnight)
+0 0 * * * curl -X GET https://your-domain.com/api/cron/refresh-token
 ```
 
 Or with secret header:
 ```bash
-*/10 * * * * curl -X GET -H "x-cron-secret: your-secret-key" https://your-domain.com/api/cron/refresh-token
+0 0 * * * curl -X GET -H "x-cron-secret: your-secret-key" https://your-domain.com/api/cron/refresh-token
 ```
 
 ### Option 4: Windows Task Scheduler
@@ -73,7 +75,7 @@ For Windows servers:
 
 1. Open Task Scheduler
 2. Create Basic Task
-3. Set trigger: "Daily" → "Repeat task every: 10 minutes"
+3. Set trigger: "Daily" (e.g. once per day)
 4. Action: "Start a program"
 5. Program: `curl.exe`
 6. Arguments: `-X GET https://your-domain.com/api/cron/refresh-token`
@@ -114,10 +116,12 @@ Expected response:
 ## Monitoring
 
 The cron job will:
-- ✅ Refresh the token every 10 minutes
+- ✅ Refresh the token when it runs (e.g. once per day on Vercel Hobby)
 - ✅ Clear old cache before refreshing
 - ✅ Return success/error status
 - ✅ Log timestamp for monitoring
+
+**On-demand refresh:** When the cached token is expired, any API request that needs Zoho will trigger a refresh automatically, so the app stays working even with only a daily cron.
 
 ## Troubleshooting
 
@@ -135,11 +139,7 @@ The cron job will:
 
 ## Schedule Format
 
-The cron schedule `*/10 * * * *` means:
-- Every 10 minutes
-- Every hour
-- Every day
-- Every month
-- Every day of week
+- `0 0 * * *` = once per day at midnight UTC (Vercel Hobby–compatible)
+- `0 * * * *` = every hour (requires Vercel Pro)
 
-You can customize this in `vercel.json` or your cron service.
+You can customize this in `vercel.json`; on Hobby, use at most one run per day.

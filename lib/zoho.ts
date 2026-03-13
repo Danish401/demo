@@ -3,7 +3,7 @@ import { join } from 'path'
 
 const DEFAULT_ACCOUNTS_DOMAIN = 'accounts.zoho.in'
 const SAFETY_BUFFER_MS = 5 * 60 * 1000 // Refresh 5 minutes before expiry
-const CRON_REFRESH_INTERVAL_MS = 55 * 60 * 1000 // 55 minutes – cron runs every hour
+const CRON_REFRESH_INTERVAL_MS = 23 * 60 * 60 * 1000 // 23 hours – cron runs once per day (Vercel Hobby)
 const TOKEN_FILE = '.zoho-token.json'
 
 let cached: { access_token: string; expires_at: number } | null = null

@@ -2,13 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAccessToken, clearTokenCache } from '@/lib/zoho'
 
 /**
- * Cron job endpoint to refresh Zoho access token every hour.
+ * Cron job endpoint to refresh Zoho access token.
  * Uses ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN from env.
  * New token is cached in memory and persisted to .zoho-token.json when writable.
  *
- * Called by:
- * - Vercel Cron (vercel.json: "0 * * * *")
- * - External cron (cron-job.org, EasyCron, etc.) – hit GET/POST every hour
+ * Vercel Hobby: only one cron run per day is allowed. Schedule is "0 0 * * *" (daily).
+ * Token also refreshes on-demand when expired (getAccessToken), so the app works 24/7.
  *
  * Security: Set CRON_SECRET in env and send header x-cron-secret when using external cron.
  */
