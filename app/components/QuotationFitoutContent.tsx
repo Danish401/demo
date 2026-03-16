@@ -477,11 +477,11 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     <table className="quotation-fitout-product-table quotation-fitout-totals-table">
                       <tbody>
                         <tr className="quotation-fitout-total-row">
-                          <td style={{ width: '60%' }} colSpan={10} />
-                          <td style={{ width: '12%' }}>
+                          <td colSpan={10} />
+                          <td className="quotation-fitout-totals-label">
                             <strong>Total Amount (AED):</strong>
                           </td>
-                          <td style={{ width: '6%' }} className="quotation-fitout-text-right">
+                          <td className="quotation-fitout-totals-value quotation-fitout-text-right">
                             {formatAED(data.Total_Amount_AED1 ?? 0)}
                           </td>
                         </tr>
@@ -489,19 +489,19 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           <>
                             <tr className="quotation-fitout-total-row">
                               <td colSpan={10} />
-                              <td>
+                              <td className="quotation-fitout-totals-label">
                                 <strong>Less Special Discount (AED):</strong>
                               </td>
-                              <td className="quotation-fitout-text-right">
+                              <td className="quotation-fitout-totals-value quotation-fitout-text-right">
                                 {formatAED(data.Provision_for_Less_Special_Discount_AED)}
                               </td>
                             </tr>
                             <tr className="quotation-fitout-total-row">
                               <td colSpan={10} />
-                              <td>
+                              <td className="quotation-fitout-totals-label">
                                 <strong>Total Amount After Discount AED:</strong>
                               </td>
-                              <td className="quotation-fitout-text-right">
+                              <td className="quotation-fitout-totals-value quotation-fitout-text-right">
                                 {formatAED(data.Total_amount_after_discount_AED)}
                               </td>
                             </tr>
@@ -509,19 +509,19 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         )}
                         <tr className="quotation-fitout-total-row">
                           <td colSpan={10} />
-                          <td>
+                          <td className="quotation-fitout-totals-label">
                             <strong>VAT 5% (AED):</strong>
                           </td>
-                          <td className="quotation-fitout-text-right">
+                          <td className="quotation-fitout-totals-value quotation-fitout-text-right">
                             {formatAED(data.VAT_5 ?? 0)}
                           </td>
                         </tr>
                         <tr className="quotation-fitout-total-row">
                           <td colSpan={10} />
-                          <td>
+                          <td className="quotation-fitout-totals-label">
                             <strong>Grand Total (AED):</strong>
                           </td>
-                          <td className="quotation-fitout-text-right">
+                          <td className="quotation-fitout-totals-value quotation-fitout-text-right">
                             {formatAED(data.Grand_Total_AED1 ?? 0)}
                           </td>
                         </tr>

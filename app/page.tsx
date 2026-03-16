@@ -348,6 +348,15 @@ function QuotationPageInner() {
     }
   }, [templateType, rawQuotationData])
 
+  // Set browser title and show Ideal Fitout when viewing fitout quotation
+  useEffect(() => {
+    if (fitoutData) {
+      const prev = document.title
+      document.title = 'Ideal Fitout'
+      return () => { document.title = prev }
+    }
+  }, [fitoutData])
+
   // Create header quotation/invoice cell with dynamic data or placeholder
   // For WMW and WMW2 templates, use the structured format with borders
   const headerQuotationCell = (templateType === 'WMW' || templateType === 'WMW2') ? (

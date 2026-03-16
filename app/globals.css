@@ -1356,11 +1356,35 @@ body {
   font-weight: bold;
   background-color: #f9f9f9;
 }
+.quotation-fitout-totals-table {
+  width: 100%;
+  table-layout: auto;
+}
 .quotation-fitout-totals-table tbody tr.quotation-fitout-total-row td {
   border: 1px solid #ddd;
   padding: 6px;
   font-weight: bold;
   background-color: #f9f9f9;
+}
+.quotation-fitout-totals-table tbody tr.quotation-fitout-total-row td:first-child {
+  width: 50%;
+  max-width: 50%;
+}
+.quotation-fitout-totals-table .quotation-fitout-totals-label {
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  overflow: visible;
+  vertical-align: top;
+  width: 38%;
+  min-width: 14em;
+}
+.quotation-fitout-totals-table .quotation-fitout-totals-value {
+  white-space: nowrap;
+  overflow: visible;
+  min-width: 10em;
+  width: 12%;
 }
 .quotation-fitout-terms-p {
   margin-left: 1%;
