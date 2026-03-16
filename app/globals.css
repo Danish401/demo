@@ -767,19 +767,22 @@ body {
 .door-core-seal-row {
   display: flex;
   justify-content: space-between;
-  font-size: 16px;
+  font-size: 12px;
   margin-bottom: 4px;
 }
 .door-core-details-label,
 .door-core-seal-label {
   flex: 0 0 30%;
   font-weight: bold;
+  font-size: 12px;
 }
 .door-core-details-value,
 .door-core-seal-value {
   flex: 1 1 70%;
   white-space: normal;
   word-break: break-word;
+  font-size: 12px;
+  min-width: 0;
 }
 .door-core-cover-title {
   text-align: center;
@@ -826,7 +829,7 @@ body {
 }
 .door-core-section-title {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 12px;
   margin: 15px 0 8px 0;
   color: #333;
 }
@@ -838,61 +841,60 @@ body {
   margin-bottom: 10px;
 }
 
-/* Door Set 2: main product table column widths (S.No wide enough for header text, Qty/Unit/Total consistent) */
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(1),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(1) {
-  width: 5%;
-  min-width: 4em;
-  box-sizing: border-box;
-}
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(2),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(2),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(3),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(3) {
-  min-width: 3.5em;
-}
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(14),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(14) {
-  width: 6%;
-  min-width: 3em;
-}
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(15),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(16),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(16) {
-  width: 10%;
-  min-width: 5em;
-  box-sizing: border-box;
-}
 .door-set-2-quotation .door-core-table-section {
   width: 100%;
   max-width: 100%;
+  overflow-x: auto;
 }
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table,
 .door-set-2-quotation .door-core-subform-table {
   width: 100% !important;
   max-width: 100% !important;
-  table-layout: fixed;
+  table-layout: auto;
   box-sizing: border-box;
 }
 
-/* Door Set 2: keep all header text inside cells – smaller font, wrap, no overflow */
+/* Door Set 2: min-widths only – columns size by content (less data = narrower, more data = wider); Unit column a bit wider */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(1),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(1) { min-width: 2.5em; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(2),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(2) { min-width: 3em; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(3),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(3) { min-width: 4em; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(13),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(13) { min-width: 3.5em; }  /* Unit – slightly wider */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(14),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(14) { min-width: 2.5em; }  /* Qty */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(15),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(16),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(16) { min-width: 4.5em; }  /* Unit Price, Total */
+
+/* Door Set 2: keep all content inside cells – wrap text, no overflow */
 .door-set-2-quotation .door-core-product-table th {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: break-word;
-  overflow: visible;
   box-sizing: border-box;
   vertical-align: top;
   padding: 5px 4px;
   line-height: 1.2;
+  overflow: hidden;
 }
 .door-set-2-quotation .door-core-product-table td {
   box-sizing: border-box;
-  overflow: visible;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  overflow: hidden;
+  font-size: 12px;
+  vertical-align: top;
+  padding: 5px 4px;
+  line-height: 1.2;
 }
 
 /* Door Set 2: subform tables – S.No wide enough for header; Qty, Unit Price, Total Price same as main; Description wider */
@@ -933,11 +935,11 @@ body {
 }
 .door-core-payment-section .door-core-terms-p {
   margin-left: 1%;
-  font-size: 13px;
+  font-size: 12px;
 }
 .door-core-notes-p.door-core-notes-html {
   margin-left: 0;
-  font-size: 13px;
+  font-size: 12px;
 }
 .door-core-notes-html ol,
 .door-core-notes-html ul {
@@ -964,10 +966,23 @@ body {
 }
 .door-core-terms {
   margin-top: 10px;
-  font-size: 13px;
+  font-size: 12px;
 }
 .door-core-terms p {
   margin-bottom: 5px;
+}
+.door-core-signature-label,
+.door-core-signature-line {
+  font-size: 12px;
+}
+.door-core-signature-placeholder {
+  font-size: 12px;
+  color: #666;
+}
+.door-core-grand-total-cell {
+  font-size: 12px;
+  font-weight: bold;
+  background-color: #e8f4fd;
 }
 .door-core-last-page-wrap {
   display: flex;

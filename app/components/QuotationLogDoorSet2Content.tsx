@@ -657,7 +657,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       <td className="door-core-text-right">
                         <strong>Grand Total (AED):</strong>
                       </td>
-                      <td className="door-core-text-right door-core-total-value" style={{ fontSize: '14px', fontWeight: 'bold', backgroundColor: '#e8f4fd' }}>
+                      <td className="door-core-text-right door-core-total-value" className="door-core-grand-total-cell">
                         {formatAED(data.Grand_Total_AED)}
                       </td>
                       <td />
@@ -735,16 +735,16 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                                 marginBottom: '4px',
                               }}
                             />
-                            <strong style={{ fontSize: '17px' }}>Signature</strong>
+                            <strong className="door-core-signature-label">Signature</strong>
                           </>
                         ) : (
-                          <span style={{ fontSize: '14px', color: '#666' }}>
+                          <span className="door-core-signature-placeholder">
                             Signature not on file for this salesperson.
                           </span>
                         )}
                       </div>
                     ) : (
-                      <div style={{ textAlign: 'right', fontSize: '17px', fontWeight: 'bold' }}>
+                      <div className="door-core-signature-line">
                         Signature:<br />
                         <span
                           style={{
