@@ -271,15 +271,17 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     <table className="quotation-fitout-product-table">
                       <colgroup>
                         <col style={{ width: '5%' }} />
-                        <col style={{ width: '55%' }} />
+                        <col style={{ width: '50%' }} />
                         <col style={{ width: '10%' }} />
-                        <col style={{ width: '15%' }} />
-                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '10%' }} />
+                        <col style={{ width: '12%' }} />
+                        <col style={{ width: '13%' }} />
                       </colgroup>
                       <thead>
                         <tr>
                           <th>S.No</th>
                           <th>Description</th>
+                          <th>Unit</th>
                           <th>Qty</th>
                           <th>Unit Price (AED)</th>
                           <th>Total Price (AED)</th>
@@ -290,6 +292,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           <tr key={idx}>
                             <td>{record.S_No1 ?? ''}</td>
                             <td>{record.Item_Description ?? ''}</td>
+                            <td>{record.Unit ?? ''}</td>
                             <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
                             <td className="quotation-fitout-text-right">
                               {record.Unit_Price != null ? formatAED(record.Unit_Price) : ''}
@@ -300,8 +303,8 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           </tr>
                         ))}
                         <tr className="quotation-fitout-subtotal">
-                          <td colSpan={3} />
-                          <td colSpan={1}>
+                          <td colSpan={4} />
+                          <td>
                             <strong>Sub Total:</strong>
                           </td>
                           <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total)}</td>
@@ -320,15 +323,17 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     <table className="quotation-fitout-product-table">
                       <colgroup>
                         <col style={{ width: '5%' }} />
-                        <col style={{ width: '55%' }} />
+                        <col style={{ width: '50%' }} />
                         <col style={{ width: '10%' }} />
-                        <col style={{ width: '15%' }} />
-                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '10%' }} />
+                        <col style={{ width: '12%' }} />
+                        <col style={{ width: '13%' }} />
                       </colgroup>
                       <thead>
                         <tr>
                           <th>S.No</th>
                           <th>Description</th>
+                          <th>Unit</th>
                           <th>Qty</th>
                           <th>Unit Price (AED)</th>
                           <th>Total Price (AED)</th>
@@ -339,6 +344,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           <tr key={idx}>
                             <td>{record.S_No1 ?? ''}</td>
                             <td>{record.Item_Description ?? ''}</td>
+                            <td>{record.Unit1 ?? ''}</td>
                             <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
                             <td className="quotation-fitout-text-right">
                               {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
@@ -349,7 +355,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           </tr>
                         ))}
                         <tr className="quotation-fitout-subtotal">
-                          <td colSpan={3} />
+                          <td colSpan={4} />
                           <td>
                             <strong>Sub Total:</strong>
                           </td>
@@ -369,15 +375,17 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     <table className="quotation-fitout-product-table">
                       <colgroup>
                         <col style={{ width: '5%' }} />
-                        <col style={{ width: '55%' }} />
+                        <col style={{ width: '50%' }} />
                         <col style={{ width: '10%' }} />
-                        <col style={{ width: '15%' }} />
-                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '10%' }} />
+                        <col style={{ width: '12%' }} />
+                        <col style={{ width: '13%' }} />
                       </colgroup>
                       <thead>
                         <tr>
                           <th>S.No</th>
                           <th>Description</th>
+                          <th>Unit</th>
                           <th>Qty</th>
                           <th>Unit Price (AED)</th>
                           <th>Total Price (AED)</th>
@@ -388,6 +396,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           <tr key={idx}>
                             <td>{record.S_No1 ?? ''}</td>
                             <td>{record.Item_Description ?? ''}</td>
+                            <td>{record.Unit1 ?? ''}</td>
                             <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
                             <td className="quotation-fitout-text-right">
                               {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
@@ -398,7 +407,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           </tr>
                         ))}
                         <tr className="quotation-fitout-subtotal">
-                          <td colSpan={3} />
+                          <td colSpan={4} />
                           <td>
                             <strong>Sub Total:</strong>
                           </td>
@@ -418,15 +427,17 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     <table className="quotation-fitout-product-table">
                       <colgroup>
                         <col style={{ width: '5%' }} />
-                        <col style={{ width: '55%' }} />
+                        <col style={{ width: '50%' }} />
                         <col style={{ width: '10%' }} />
-                        <col style={{ width: '15%' }} />
-                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '10%' }} />
+                        <col style={{ width: '12%' }} />
+                        <col style={{ width: '13%' }} />
                       </colgroup>
                       <thead>
                         <tr>
                           <th>S.No</th>
                           <th>Description</th>
+                          <th>Unit</th>
                           <th>Qty</th>
                           <th>Unit Price (AED)</th>
                           <th>Total Price (AED)</th>
@@ -437,6 +448,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           <tr key={idx}>
                             <td>{record.S_No1 ?? ''}</td>
                             <td>{record.Item_Description ?? ''}</td>
+                            <td>{record.Unit1 ?? ''}</td>
                             <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
                             <td className="quotation-fitout-text-right">
                               {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
@@ -447,7 +459,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           </tr>
                         ))}
                         <tr className="quotation-fitout-subtotal">
-                          <td colSpan={3} />
+                          <td colSpan={4} />
                           <td>
                             <strong>Sub Total:</strong>
                           </td>

@@ -332,9 +332,10 @@ export interface QuotationLogDoorSet2Response {
   error?: string
 }
 
-/** Quotation_Log_Fitout_2: line item (Items_Details) */
+/** Quotation_Log_Fitout_2: line item (Items_Details) – main form uses Unit */
 export interface QuotationLogFitout2Item {
   S_No1?: string | number
+  Unit?: string
   Item_Description?: string
   Quantity1?: string | number
   Unit_Price?: string | number
@@ -342,9 +343,10 @@ export interface QuotationLogFitout2Item {
   [key: string]: any
 }
 
-/** Quotation_Log_Fitout_2: line item (Items_Details1) */
+/** Quotation_Log_Fitout_2: line item (Items_Details1) – subform uses Unit1 */
 export interface QuotationLogFitout2Item1 {
   S_No1?: string | number
+  Unit1?: string
   Item_Description?: string
   Quantity1?: string | number
   Unit_Price1?: string | number
@@ -352,9 +354,10 @@ export interface QuotationLogFitout2Item1 {
   [key: string]: any
 }
 
-/** Quotation_Log_Fitout_2: subform row (SubForm1, SubForm2) */
+/** Quotation_Log_Fitout_2: subform row (SubForm1, SubForm2) – subform uses Unit1 */
 export interface QuotationLogFitout2SubItem {
   S_No1?: string | number
+  Unit1?: string
   Item_Description?: string
   Qty1?: string | number
   Unit_Price1?: string | number
