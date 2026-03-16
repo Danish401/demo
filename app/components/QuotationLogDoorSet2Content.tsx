@@ -657,7 +657,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       <td className="door-core-text-right">
                         <strong>Grand Total (AED):</strong>
                       </td>
-                      <td className="door-core-text-right door-core-total-value" className="door-core-grand-total-cell">
+                      <td className="door-core-text-right door-core-total-value door-core-grand-total-cell">
                         {formatAED(data.Grand_Total_AED)}
                       </td>
                       <td />
