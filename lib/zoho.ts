@@ -142,16 +142,17 @@ export async function getAccessToken(forceRefresh = false): Promise<string> {
     })
 
     const data = await res.json().catch(() => ({}))
+    const errorField =
+      (typeof data?.error_description === 'string' && data.error_description) ||
+      (typeof data?.error === 'string' && data.error) ||
+      ''
+    const hasAccessToken = typeof data?.access_token === 'string' && Boolean(data.access_token)
 
-    if (!res.ok) {
+    if (!res.ok || !hasAccessToken) {
       // Clear cache on error
       cached = null
 
-      const errorText = (() => {
-        if (typeof data?.error_description === 'string') return data.error_description
-        if (typeof data?.error === 'string') return data.error
-        return JSON.stringify(data)
-      })()
+      const errorText = errorField || JSON.stringify(data)
 
       // Zoho commonly uses: "You have made too many requests continuously..."
       if (errorText.toLowerCase().includes('too many requests continuously')) {
@@ -159,18 +160,21 @@ export async function getAccessToken(forceRefresh = false): Promise<string> {
         cooldownUntil = Date.now() + 5 * 60 * 1000 // 5 minutes
       }
 
-      throw new Error(`Zoho token error: ${JSON.stringify(data)}`)
+      if (typeof errorText === 'string' && errorText.toLowerCase().includes('invalid_code')) {
+        // This usually means the refresh token / OAuth parameters are invalid in the deployed env.
+        cooldownUntil = Date.now() + 5 * 60 * 1000 // reduce repeated failures
+        throw new Error(
+          'Zoho OAuth error: invalid_code. Check production env vars (ZOHO_REFRESH_TOKEN, ZOHO_CLIENT_ID/ZOHO_CLIENT_SECRET, and ZOHO_ACCOUNTS_DOMAIN).'
+        )
+      }
+
+      throw new Error(`Zoho token error: ${errorText}`)
     }
 
-    // Use actual expires_in from Zoho response (in seconds), convert to milliseconds
-    // Default to 3600 seconds (1 hour) if not provided
+    // Use actual expires_in from Zoho response (in seconds), convert to milliseconds.
+    // Default to 3600 seconds (1 hour) if not provided.
     const expiresInSeconds = data.expires_in_sec || data.expires_in || 3600
     const expiresInMs = expiresInSeconds * 1000
-
-    if (typeof data.access_token !== 'string' || !data.access_token) {
-      cached = null
-      throw new Error(`Zoho token response missing access_token: ${JSON.stringify(data)}`)
-    }
 
     const expires_at = Date.now() + expiresInMs - SAFETY_BUFFER_MS
     const tokenObj = {
