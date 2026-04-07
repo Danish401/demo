@@ -343,7 +343,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                   <span className="door-core-salutation-name">{plainZohoDisplayText(data.Customer_Name1)}</span>
                 </p>
                 <p className="door-core-intro-p">
-                  We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ:
+                  We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ
                 </p>
                 <br />
 
@@ -427,38 +427,38 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     {(data.BOQ || []).map((record, idx) => (
                       <tr key={idx}>
                         <td>{record.S_No1 ?? ''}</td>
-                        <td>{record.Door_Ref ?? ''}</td>
+                        <td style={{ textAlign: 'right' }}>{record.Door_Ref ?? ''}</td>
                         <td>{record.Door_Leaf_Width_mm ?? ''}</td>
                         <td>{record.Door_Leaf_Height_mm ?? ''}</td>
                         <td>{record.Leaf_Thick_mm ?? ''}</td>
-                        <td>{record.Door_Type ?? ''}</td>
-                        <td>{record.Product_Ref ?? ''}</td>
+                        <td style={{ textAlign: 'right' }}>{record.Door_Type ?? ''}</td>
+                        <td style={{ textAlign: 'right' }}>{record.Product_Ref ?? ''}</td>
                         <td>{record.Acoustic_Rating_db ?? ''}</td>
                         <td>{record.Fire_Rating_mins ?? ''}</td>
-                        <td>{record.Vision_Panel_mm ?? ''}</td>
+                        <td style={{ textAlign: 'right' }}>{record.Vision_Panel_mm ?? ''}</td>
                         <td>{record.Qty1 ?? ''}</td>
-                        <td>{record.Unit_Price_AED1 != null ? formatAED(record.Unit_Price_AED1) : ''}</td>
-                        <td>{record.Total_Unit_Price_AED1 != null ? formatAED(record.Total_Unit_Price_AED1) : ''}</td>
+                        <td style={{ textAlign: 'right' }}>{record.Unit_Price_AED1 != null ? formatAED(record.Unit_Price_AED1) : ''}</td>
+                        <td style={{ textAlign: 'right' }}>{record.Total_Unit_Price_AED1 != null ? formatAED(record.Total_Unit_Price_AED1) : ''}</td>
                       </tr>
                     ))}
                     <tr>
                       <td colSpan={12} className="door-core-total-label">
                         Total Amount AED :-
                       </td>
-                      <td className="door-core-total-value">{formatAED(data.Total_Amount_AED)}</td>
+                      <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.Total_Amount_AED)}</td>
                     </tr>
                     <tr>
                       <td colSpan={12} className="door-core-total-label">
                         VAT 5% AED :-
                       </td>
-                      <td className="door-core-total-value">{formatAED(data.VAT_5)}</td>
+                      <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.VAT_5)}</td>
                     </tr>
                     {hasDiscount && (
                       <tr>
                         <td colSpan={12} className="door-core-total-label">
                           Less Special Discount AED :-
                         </td>
-                        <td className="door-core-total-value">{formatAED(data.Provision_for_Less_Special_Discount_AED)}</td>
+                        <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.Provision_for_Less_Special_Discount_AED)}</td>
                       </tr>
                     )}
                     <tr>
@@ -469,7 +469,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                           {formatAedAmountInWords(data.Grand_Total_AED)}
                         </div>
                       </td>
-                      <td className="door-core-total-value">{formatAED(data.Grand_Total_AED)}</td>
+                      <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.Grand_Total_AED)}</td>
                     </tr>
                   </tbody>
                 </table>

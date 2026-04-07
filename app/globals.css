@@ -982,6 +982,7 @@ body {
 .door-core-total-value {
   border: 1px solid #ddd;
   padding: 5px;
+  text-align: right;
 }
 
 .door-core-text-right {
