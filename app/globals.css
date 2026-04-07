@@ -7,7 +7,8 @@
 html,
 body {
   max-width: 210mm;
-  margin: 0 auto;   font-family: Arial, Helvetica, sans-serif;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 11px;
   color: #000;
   background: #fff;
@@ -83,19 +84,19 @@ body {
     width: 100% !important;
     padding: 5mm 10mm !important;
   }
-  
+
   /* Prevent page breaks inside sections - move whole div to next page */
   .export-section {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  
+
   /* Prevent page breaks inside table rows for export template */
   .export-quotation-container table tbody tr {
     page-break-inside: avoid;
     break-inside: avoid;
   }
-  
+
   /* A4 sheet: 21cm x 29.7cm - reserve fixed space from edges so content is not cut off */
   @page {
     size: A4;
@@ -104,92 +105,115 @@ body {
     margin-left: 0.5cm;
     margin-right: 0.5cm;
   }
+
   body {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
+
   .no-print {
     display: none !important;
   }
+
   /* Reduce page padding so content starts closer to header */
   .quotation-doc {
     padding: 8px 16px !important;
   }
+
   /* Header should show only on first page of quotation content section */
   .print-doc-table {
     border-collapse: collapse;
     border-spacing: 0;
   }
+
   .print-doc-table thead {
     display: none !important;
   }
+
   .print-doc-table tbody tr td {
     padding-top: 0 !important;
   }
+
   .print-header {
     display: none !important;
   }
+
   /* Make header repeat on each page of quotation content section */
   .quotation-content-section table {
     border: none;
   }
+
   .quotation-content-section .repeating-header {
     display: table-header-group !important;
   }
+
   .quotation-content-section .repeating-header tr {
     display: table-row;
   }
+
   .quotation-content-section .repeating-header td {
     display: table-cell;
   }
+
   /* Hide header in conditions section */
   .conditions-for-print .repeating-header,
   .conditions-for-print .screen-only-header {
     display: none !important;
   }
+
   /* Show header on screen */
   .quotation-content-section .repeating-header {
     display: table-header-group;
   }
+
   /* Quotation title - show only on first page in print */
   .quotation-title {
     display: block !important;
     page-break-after: avoid;
     page-break-inside: avoid;
   }
+
   /* Performa Invoice title - show only on first page in print */
   .performa-invoice-title {
     display: block !important;
     page-break-after: avoid;
     page-break-inside: avoid;
   }
+
   /* Hide title if it would appear on a page break */
   .quotation-content-section {
     position: relative;
   }
+
   /* Remove gap after repeated header: no top margin on first content in tbody */
-  .print-doc-table tbody td > *:first-child {
+  .print-doc-table tbody td>*:first-child {
     margin-top: 0 !important;
   }
+
   .conditions-for-print {
     display: block !important;
     padding-top: 12px;
   }
+
   /* Total INR: show tfoot only once at end of table, not repeated at bottom of each page */
   .quotation-doc table tfoot {
     display: table-row-group;
   }
+
   /* Door Core: header and footer must repeat on every printed page */
   .quotation-doc .door-core-page-layout thead {
     display: table-header-group !important;
   }
+
   .quotation-doc .door-core-page-layout tfoot {
     display: table-footer-group !important;
   }
+
   /* Keep Remarks + DOC NO. with content above when possible to avoid a short page */
   .quotation-doc table:last-of-type {
     page-break-after: avoid;
   }
+
   /* Prevent sections from splitting across pages */
   .quotation-content-section,
   .performa-invoice-content-section {
@@ -197,148 +221,153 @@ body {
     /* Remove all borders in print */
     border: none !important;
   }
+
   /* Quotation title - show only on first page */
   .quotation-title {
     display: block !important;
     page-break-after: avoid;
     page-break-inside: avoid;
   }
+
   /* Performa Invoice title - show only on first page */
   .performa-invoice-title {
     display: block !important;
     page-break-after: avoid;
     page-break-inside: avoid;
   }
+
   /* Hide quotation/performa invoice title on subsequent pages */
   .quotation-content-section:not(:first-of-type) .quotation-title,
   .performa-invoice-content-section:not(:first-of-type) .performa-invoice-title {
-      display: none !important;
+    display: none !important;
   }
+
   .conditions-for-print {
     page-break-inside: avoid !important;
     page-break-before: always !important;
     /* Remove all borders in print */
     border: none !important;
   }
+
   .quotation-doc .conditions-for-print h1 {
     page-break-after: avoid;
     page-break-before: avoid;
   }
-  
+
   /* Prevent tables from splitting across pages */
   .quotation-content-section table,
   .conditions-for-print table {
     page-break-inside: avoid;
   }
-  
+
   /* Prevent individual sections from splitting */
-  .quotation-content-section > * {
+  .quotation-content-section>* {
     page-break-inside: avoid;
   }
-  
+
   /* Ensure Description Of Goods table headers are visible in print */
   .goods-description-table thead {
     display: table-header-group !important;
   }
-  
+
   .goods-description-table thead th {
     display: table-cell !important;
     background-color: #f5f5f5 !important;
     font-weight: bold !important;
     border: 1px solid #000 !important;
   }
-  
+
   /* GKD Template - Repeating Header and Footer on every page */
   .gkd-quotation-container {
     max-width: 100% !important;
     width: 100% !important;
     padding: 5mm 10mm !important;
   }
-  
+
   .gkd-print-table {
     border: none !important;
   }
-  
+
   /* Show header and footer on every printed page including first */
   .gkd-print-table thead.gkd-print-header-row {
     display: table-header-group !important;
   }
-  
+
   .gkd-print-table tfoot.gkd-print-footer-row {
     display: table-footer-group !important;
   }
-  
+
   .gkd-print-header-row td,
   .gkd-print-footer-row td {
     display: table-cell !important;
   }
-  
+
   /* Ensure header and footer appear on every page including first */
   .gkd-print-header {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  
+
   .gkd-print-footer {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  
+
   /* Force tfoot to display on first page */
   .gkd-print-table {
     border-collapse: collapse !important;
   }
-  
+
   .gkd-print-table tfoot {
     display: table-footer-group !important;
   }
-  
+
   /* Left-align signatory name in print */
   .gkd-signatory-name {
     text-align: left !important;
   }
-  
+
   /* BVK Template - Repeating Header and Footer on every page */
   .bvk-quotation-container {
     max-width: 100% !important;
     width: 100% !important;
     padding: 5mm 10mm !important;
   }
-  
+
   .bvk-print-table {
     border: none !important;
   }
-  
+
   /* Show header and footer on every printed page */
   .bvk-print-table thead.bvk-print-header-row {
     display: table-header-group !important;
   }
-  
+
   .bvk-print-table tfoot.bvk-print-footer-row {
     display: table-footer-group !important;
   }
-  
+
   .bvk-print-header-row td,
   .bvk-print-footer-row td {
     display: table-cell !important;
   }
-  
+
   /* Ensure header and footer appear on every page */
   .bvk-print-header {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  
+
   .bvk-print-footer {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
-  
+
   /* Force tfoot to display on first page */
   .bvk-print-table {
     border-collapse: collapse !important;
   }
-  
+
   .bvk-print-table tfoot {
     display: table-footer-group !important;
   }
@@ -375,81 +404,107 @@ body {
     padding: 0 !important;
     border: none !important;
   }
+
   .door-core-page-layout {
     height: 100% !important;
     border: none !important;
   }
+
   .door-core-page-layout thead {
     display: table-header-group !important;
   }
+
   .door-core-page-layout tfoot {
     display: table-footer-group !important;
   }
+
   .door-core-layout-footer-cell {
     height: 100px !important;
   }
+
   .door-core-signature-block {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
+
+  /* Keep closing copy + signature together (Quotation_Log_Door_Core print) */
+  .door-core-closing-print-group {
+    flex: 0 0 auto !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
   .door-core-product-table tr,
   .door-set-2-quotation .door-core-product-table tr,
   .door-set-2-quotation .door-core-subform-table tr {
     page-break-inside: avoid;
   }
+
   .door-set-2-quotation .door-core-product-table thead,
   .door-set-2-quotation .door-core-subform-table thead {
     display: table-header-group !important;
   }
+
   .door-core-details-block {
     page-break-inside: avoid !important;
   }
+
   /* Allow content to flow; avoid forcing a new page (no unnecessary blank pages) */
   .door-core-table-section {
     page-break-before: auto;
   }
+
   /* Remove all borders from Door Core header/footer/body cells in print */
   .door-core-layout-header-cell,
   .door-core-layout-footer-cell,
   .door-core-layout-ell {
     border: none !important;
   }
+
   /* Force header to repeat on every page (explicit for all engines) */
   .door-core-page-layout thead,
   .door-core-quotation-container .door-core-page-layout thead {
     display: table-header-group !important;
     visibility: visible !important;
   }
+
   .door-core-page-layout thead tr {
     display: table-row !important;
   }
+
   .door-core-page-layout thead td {
     display: table-cell !important;
   }
+
   /* Body cell: fill A4 content area so last page can push footer to bottom (A4 297mm, content ~267mm) */
   .door-core-layout-ell {
     display: flex !important;
     flex-direction: column !important;
     min-height: 267mm !important;
   }
+
   .door-core-details-block {
     flex: 0 0 auto !important;
   }
+
   .door-core-table-section {
     flex: 1 1 auto !important;
     display: flex !important;
     flex-direction: column !important;
     min-height: 0 !important;
   }
-  /* Last-page block fills A4 content area (267mm) so footer sits at same position as on first/previous pages */
+
+  /* Last-page block: min-height fills the A4 content area so the spacer inside pushes the footer to the bottom.
+     page-break-inside is intentionally NOT set here (removed) so content flows onto this block from the previous
+     page when blank space is available, avoiding unnecessary blank pages. */
   .door-core-last-page-wrap {
     display: flex !important;
     flex-direction: column !important;
     page-break-before: auto !important;
     min-height: 267mm !important;
     flex: 1 1 auto !important;
-    page-break-inside: avoid !important;
   }
+
   /* Spacer fills remaining space so footer is at bottom of last page, same as other pages */
   .door-core-last-page-spacer {
     flex: 1 1 auto !important;
@@ -463,49 +518,60 @@ body {
     padding: 0 !important;
     border: none !important;
   }
+
   .quotation-fitout-page-layout {
     width: 100% !important;
     height: 100% !important;
     margin: 0 !important;
     border: none !important;
   }
+
   .quotation-fitout-page-layout thead,
   .quotation-fitout-container .quotation-fitout-page-layout thead {
     display: table-header-group !important;
     visibility: visible !important;
   }
+
   .quotation-fitout-page-layout thead tr {
     display: table-row !important;
   }
+
   .quotation-fitout-page-layout thead td {
     display: table-cell !important;
   }
+
   .quotation-fitout-page-layout tfoot,
   .quotation-fitout-container .quotation-fitout-page-layout tfoot {
     display: table-footer-group !important;
     visibility: visible !important;
   }
+
   .quotation-fitout-page-layout tfoot tr {
     display: table-row !important;
   }
+
   .quotation-fitout-page-layout tfoot td {
     display: table-cell !important;
   }
+
   .quotation-fitout-header-cell,
   .quotation-fitout-footer-cell,
   .quotation-fitout-body-cell {
     border: none !important;
   }
+
   /* Same pattern as Door Core: body cell min-height 267mm, inner flex column, last-page block + spacer push footer to bottom */
   .quotation-fitout-page-layout tbody tr {
     min-height: 267mm !important;
   }
+
   .quotation-fitout-body-cell {
     display: flex !important;
     flex-direction: column !important;
     min-height: 267mm !important;
     height: 100% !important;
   }
+
   /* Like door-core-table-section: flex 1 1 auto, min-height 0 so it grows; flex column for last-page-wrap */
   .quotation-fitout-container-inner {
     display: flex !important;
@@ -513,11 +579,13 @@ body {
     flex: 1 1 auto !important;
     min-height: 0 !important;
   }
+
   /* Like door-core-details-block: flex 0 0 auto so it does not grow */
   .quotation-fitout-details-block {
     flex: 0 0 auto !important;
     page-break-after: avoid !important;
   }
+
   /* Like door-core-last-page-wrap: min-height 267mm so last page content area filled, footer at bottom of A4 */
   .quotation-fitout-last-page-wrap {
     display: flex !important;
@@ -527,23 +595,28 @@ body {
     page-break-before: auto !important;
     page-break-inside: avoid !important;
   }
+
   /* When no line items: one page only, footer at bottom of A4 – table = full page height so body cell fills and footer sits at bottom */
   .quotation-fitout-has-no-rows .quotation-fitout-page-layout {
     height: 297mm !important;
     min-height: 297mm !important;
   }
+
   .quotation-fitout-has-no-rows .quotation-fitout-body-cell,
   .quotation-fitout-has-no-rows .quotation-fitout-container-inner {
     min-height: 240mm !important;
     height: 100% !important;
   }
+
   .quotation-fitout-has-no-rows .quotation-fitout-body-cell {
     vertical-align: top !important;
   }
+
   .quotation-fitout-has-no-rows .quotation-fitout-last-page-wrap {
     min-height: 0 !important;
     flex: 1 1 auto !important;
   }
+
   /* Like door-core-last-page-spacer: fills remaining space so footer at bottom of last page */
   .quotation-fitout-last-page-spacer {
     flex: 1 1 auto !important;
@@ -555,6 +628,7 @@ body {
     width: 100% !important;
     max-width: 100% !important;
   }
+
   .door-set-2-quotation .door-core-product-table.door-set-2-product-table,
   .door-set-2-quotation .door-core-subform-table,
   .door-set-2-quotation .door-core-totals-table {
@@ -562,6 +636,7 @@ body {
     max-width: 100% !important;
     table-layout: fixed !important;
   }
+
   .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(15),
   .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15),
   .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(16),
@@ -569,6 +644,7 @@ body {
     min-width: 5em !important;
     overflow: visible !important;
   }
+
   .door-set-2-quotation .door-core-subform-table th:nth-child(4),
   .door-set-2-quotation .door-core-subform-table td:nth-child(4),
   .door-set-2-quotation .door-core-subform-table th:nth-child(5),
@@ -618,9 +694,12 @@ body {
 /* ══ Door Core Quotation (Ideal Firestop / Core_Cover_page) ══ */
 .door-core-quotation-container {
   font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
   background: #fff;
   max-width: 100%;
 }
+
 .door-core-static-pattern {
   position: fixed;
   top: 0;
@@ -634,6 +713,7 @@ body {
   clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
   z-index: 0;
 }
+
 .door-core-page-layout {
   width: 100%;
   border-collapse: collapse;
@@ -641,80 +721,98 @@ body {
   position: relative;
   z-index: 1;
 }
-.door-core-page-layout > thead {
+
+.door-core-page-layout>thead {
   display: table-header-group;
 }
-.door-core-page-layout > tfoot {
+
+.door-core-page-layout>tfoot {
   display: table-footer-group;
 }
+
 .door-core-layout-header-cell {
   padding: 10px 10% 6px 10%;
   border: none;
   background: #fff;
 }
+
 .door-core-header-no-logo .door-core-header-logo-crop {
   display: none;
 }
+
 .door-core-header-no-logo {
   padding: 6px 10% 6px 10%;
 }
+
 .door-core-layout-footer-cell {
   padding: 6px 10% 8px 10%;
   border: none;
   background: #fff;
 }
+
 .door-core-layout-ell {
   padding: 10px 10%;
   vertical-align: top;
   display: flex;
   flex-direction: column;
 }
+
 .door-core-header-logo-crop {
   width: 360px;
   overflow: hidden;
 }
+
 .door-core-header-logo-img {
   height: 80px;
   width: auto;
   display: block;
 }
+
 .door-core-footer-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .door-core-footer-top {
   align-items: flex-start;
 }
+
 .door-core-footer-left {
   width: 70%;
   font-size: 12px;
   color: #4b5563;
 }
+
 .door-core-footer-trade-label {
   color: #4b5563;
   font-weight: 400;
 }
+
 .door-core-footer-trade-name {
   color: #2563eb;
   font-weight: 600;
 }
+
 .door-core-footer-right {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .door-core-footer-right img,
 .door-core-footer-certs {
   height: 45px;
   display: block;
 }
+
 .door-core-footer-hr {
   border: none;
   border-top: 1px solid #93c5fd;
   margin: 8px 0 10px 0;
 }
+
 .door-core-footer-contact {
   display: flex;
   flex-wrap: wrap;
@@ -724,28 +822,34 @@ body {
   font-size: 12px;
   color: #374151;
 }
+
 .door-core-footer-contact .door-core-icon,
 .door-core-footer-contact .door-core-globe-icon {
   color: #f97316;
   flex-shrink: 0;
 }
+
 .door-core-footer-contact-item {
   display: inline-flex;
   align-items: flex-start;
   gap: 4px;
 }
+
 .door-core-footer-email-block {
   align-items: flex-start;
 }
+
 .door-core-footer-email-lines {
   display: inline-block;
   line-height: 1.35;
 }
+
 .door-core-footer-bottom {
   text-align: center;
   margin-top: 10px;
-  font-size: 11px;
+  font-size: 12px;
 }
+
 .door-core-icon,
 .door-core-globe-icon {
   width: 14px;
@@ -754,15 +858,18 @@ body {
   margin-right: 4px;
   color: #f97316;
 }
+
 .door-core-distributor-text {
-  font-size: 11px;
+  font-size: 12px;
   color: #4b5563;
   font-weight: 400;
 }
+
 .door-core-brand-name {
   color: #2563eb;
   font-weight: 600;
 }
+
 .door-core-details-row,
 .door-core-seal-row {
   display: flex;
@@ -770,12 +877,14 @@ body {
   font-size: 12px;
   margin-bottom: 4px;
 }
+
 .door-core-details-label,
 .door-core-seal-label {
   flex: 0 0 30%;
   font-weight: bold;
   font-size: 12px;
 }
+
 .door-core-details-value,
 .door-core-seal-value {
   flex: 1 1 70%;
@@ -784,59 +893,113 @@ body {
   font-size: 12px;
   min-width: 0;
 }
+
 .door-core-cover-title {
   text-align: center;
   margin-top: -1%;
   margin-bottom: 25px;
   font-size: 32px;
 }
+
+.door-core-salutation {
+  margin: 0 0 0.35em 0;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+.door-core-salutation .door-core-salutation-dear,
+.door-core-salutation .door-core-salutation-name {
+  font-size: 1em;
+  line-height: inherit;
+}
+
+.door-core-salutation .door-core-salutation-dear {
+  font-weight: 700;
+}
+
+.door-core-salutation .door-core-salutation-name {
+  font-weight: 400;
+}
+
 .door-core-intro-p {
   margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.45;
 }
+
 .door-core-product-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 12px;
   margin-top: 8px;
 }
+
 .door-core-product-table th,
 .door-core-product-table td {
   border: 1px solid #ddd;
   padding: 5px;
 }
+
 .door-core-product-table th {
   background-color: #f2f3f5;
   font-size: 12px;
 }
+
 .door-core-product-table thead {
   display: table-row-group;
 }
+
 .door-core-product-table tbody {
   display: table-row-group;
 }
+
 .door-core-total-label {
   text-align: right;
   font-weight: bold;
   border: 1px solid #ddd;
   padding: 5px;
 }
+
+.door-core-grand-total-label-cell .door-core-grand-total-line {
+  font-weight: bold;
+}
+
+.door-core-amount-in-words {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.door-core-amount-in-words-label {
+  font-weight: 600;
+}
+
 .door-core-total-value {
   border: 1px solid #ddd;
   padding: 5px;
 }
+
 .door-core-text-right {
   text-align: right;
 }
+
 .door-core-section-title {
   font-weight: bold;
   font-size: 12px;
   margin: 15px 0 8px 0;
   color: #333;
 }
+
 .door-core-subtotal {
   font-weight: bold;
   background-color: #f9f9f9;
 }
+
 .door-core-subform-table {
   margin-bottom: 10px;
 }
@@ -846,6 +1009,7 @@ body {
   max-width: 100%;
   overflow-x: auto;
 }
+
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table,
 .door-set-2-quotation .door-core-subform-table {
   width: 100% !important;
@@ -856,19 +1020,40 @@ body {
 
 /* Door Set 2: min-widths only – columns size by content (less data = narrower, more data = wider); Unit column a bit wider */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(1),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(1) { min-width: 2.5em; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(1) {
+  min-width: 2.5em;
+}
+
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(2),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(2) { min-width: 3em; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(2) {
+  min-width: 3em;
+}
+
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(3),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(3) { min-width: 4em; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(3) {
+  min-width: 4em;
+}
+
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(13),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(13) { min-width: 3.5em; }  /* Unit – slightly wider */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(13) {
+  min-width: 3.5em;
+}
+
+/* Unit – slightly wider */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(14),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(14) { min-width: 2.5em; }  /* Qty */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(14) {
+  min-width: 2.5em;
+}
+
+/* Qty */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(15),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(16),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(16) { min-width: 4.5em; }  /* Unit Price, Total */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(16) {
+  min-width: 4.5em;
+}
+
+/* Unit Price, Total */
 
 /* Door Set 2: keep all content inside cells – wrap text, no overflow */
 .door-set-2-quotation .door-core-product-table th {
@@ -884,6 +1069,7 @@ body {
   line-height: 1.2;
   overflow: hidden;
 }
+
 .door-set-2-quotation .door-core-product-table td {
   box-sizing: border-box;
   white-space: normal;
@@ -904,103 +1090,174 @@ body {
   min-width: 4em;
   box-sizing: border-box;
 }
+
 .door-set-2-quotation .door-core-subform-table th:nth-child(2),
 .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
   width: 70%;
   min-width: 8em;
 }
+
 .door-set-2-quotation .door-core-subform-table th:nth-child(3),
 .door-set-2-quotation .door-core-subform-table td:nth-child(3) {
   width: 6%;
 }
+
 .door-set-2-quotation .door-core-subform-table th:nth-child(4),
 .door-set-2-quotation .door-core-subform-table td:nth-child(4) {
   width: 10%;
 }
+
 .door-set-2-quotation .door-core-subform-table th:nth-child(5),
 .door-set-2-quotation .door-core-subform-table td:nth-child(5) {
   width: 10%;
   min-width: 5em;
 }
+
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table .door-core-subtotal td:last-of-type,
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table .door-core-subtotal td:nth-child(16) {
   min-width: 5em;
   overflow: visible;
 }
+
 .door-core-totals-table tbody tr.door-core-totals-row td {
   border: 1px solid #ddd;
   padding: 5px;
   font-weight: bold;
   background-color: #f9f9f9;
 }
+
 .door-core-payment-section .door-core-terms-p {
   margin-left: 1%;
   font-size: 12px;
 }
+
 .door-core-notes-p.door-core-notes-html {
   margin-left: 0;
   font-size: 12px;
 }
+
 .door-core-notes-html ol,
 .door-core-notes-html ul {
   margin: 0.5em 0 0.5em 1.2em;
   padding-left: 1em;
 }
+
 /* Count formatting: main list 1.–8., sub-list under 1 uses bullets */
 .door-core-notes-html ol.door-core-notes-count-list {
   list-style-type: decimal;
   padding-left: 1.5em;
 }
-.door-core-notes-html ol.door-core-notes-count-list > li {
+
+.door-core-notes-html ol.door-core-notes-count-list>li {
   margin-bottom: 0.5em;
 }
+
 .door-core-notes-html ol.door-core-notes-count-list ul {
   list-style-type: disc;
   margin-top: 0.25em;
 }
+
 .door-core-notes-html li {
   margin-bottom: 0.25em;
 }
+
 .door-core-notes-html div {
   margin: 0;
 }
+
 .door-core-terms {
   margin-top: 10px;
   font-size: 12px;
 }
+
 .door-core-terms p {
   margin-bottom: 5px;
 }
+
 .door-core-signature-label,
 .door-core-signature-line {
   font-size: 12px;
 }
+
 .door-core-signature-placeholder {
   font-size: 12px;
   color: #666;
 }
+
 .door-core-grand-total-cell {
   font-size: 12px;
   font-weight: bold;
   background-color: #e8f4fd;
 }
+
 .door-core-last-page-wrap {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
 }
+
+.door-core-closing-print-group {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.door-core-closing-print-group .door-core-signature-block {
+  margin-top: 8px;
+}
+
 .door-core-signature-block {
   page-break-inside: avoid;
   break-inside: avoid;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #333;
 }
+
+.door-core-signature-block .door-core-signature-greeting {
+  margin: 0 0 0.65em 0;
+}
+
+.door-core-signature-block .door-core-signature-for-line {
+  margin: 0 0 0.35em 0;
+}
+
+.door-core-signature-block .door-core-signature-detail {
+  margin: 0 0 0.25em 0;
+}
+
+.door-core-signature-image-wrap {
+  margin-top: 1em;
+  margin-bottom: 60px;
+  margin-right: 32px;
+  text-align: right;
+  margin-left: auto;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.door-core-signature-img {
+  max-width: 200px;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-bottom: 4px;
+}
+
+.door-core-signature-block-spacer {
+  margin-bottom: 60px;
+}
+
 .door-core-last-page-spacer {
   flex: 1 1 auto;
   min-height: 20px;
 }
+
 .door-core-page-layout thead {
   display: table-header-group;
 }
+
 .door-core-page-layout tfoot {
   display: table-footer-group;
 }
@@ -1052,6 +1309,7 @@ body {
   box-shadow: 0 4px 24px rgba(26, 83, 92, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(162, 210, 255, 0.5);
 }
+
 .quotation-error-icon {
   width: 56px;
   height: 56px;
@@ -1064,6 +1322,7 @@ body {
   color: #FF6B6B;
   box-shadow: 0 2px 12px rgba(255, 107, 107, 0.25);
 }
+
 .quotation-error-title {
   font-size: 18px;
   font-weight: 700;
@@ -1071,6 +1330,7 @@ body {
   margin-bottom: 10px;
   letter-spacing: -0.02em;
 }
+
 .quotation-error-message {
   font-size: 14px;
   line-height: 1.5;
@@ -1078,6 +1338,7 @@ body {
   opacity: 0.9;
   margin-bottom: 24px;
 }
+
 .quotation-error-action {
   display: inline-block;
   padding: 10px 20px;
@@ -1090,6 +1351,7 @@ body {
   box-shadow: 0 2px 10px rgba(26, 83, 92, 0.35), 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
+
 .quotation-error-action:hover {
   background: linear-gradient(180deg, #2a6b73 0%, #4ECDC4 50%, #5ee0d6 100%);
   box-shadow: 0 4px 16px rgba(78, 205, 196, 0.45), 0 0 0 2px rgba(255, 230, 109, 0.35), 0 0 20px rgba(162, 210, 255, 0.25);
@@ -1117,7 +1379,7 @@ body {
 }
 
 /* Remove border from table inside quotation-content-section (div has its own border) */
-.quotation-content-section > table {
+.quotation-content-section>table {
   border: none !important;
 }
 
@@ -1194,12 +1456,15 @@ body {
 /* ══ Quotation Fitout (Quotation_Log_Fitout_2 – Ideal Fitouts template) ══ */
 .quotation-fitout-container {
   font-family: Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
   margin: 0;
   padding: 0;
   background-color: #f4f4f4;
   overflow: auto;
   position: relative;
 }
+
 .quotation-fitout-static-pattern {
   position: fixed;
   top: 0;
@@ -1213,6 +1478,7 @@ body {
   clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
   z-index: 0;
 }
+
 .quotation-fitout-page-layout {
   width: 80%;
   margin: auto;
@@ -1223,12 +1489,15 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   background: #fff;
 }
-.quotation-fitout-page-layout > thead {
+
+.quotation-fitout-page-layout>thead {
   display: table-header-group;
 }
-.quotation-fitout-page-layout > tfoot {
+
+.quotation-fitout-page-layout>tfoot {
   display: table-footer-group;
 }
+
 .quotation-fitout-header-cell {
   padding: 12px 10%;
   border: none;
@@ -1236,9 +1505,11 @@ body {
   vertical-align: top;
   min-height: 90px;
 }
+
 .quotation-fitout-header-logo {
   display: block;
 }
+
 .quotation-fitout-header-logo-img {
   height: 80px;
   width: auto;
@@ -1246,6 +1517,7 @@ body {
   object-fit: contain;
   display: block;
 }
+
 .quotation-fitout-body-cell {
   padding: 10px;
   vertical-align: top;
@@ -1254,6 +1526,7 @@ body {
   flex-direction: column;
   min-height: 80vh;
 }
+
 .quotation-fitout-container-inner {
   width: 100%;
   display: flex;
@@ -1261,9 +1534,11 @@ body {
   flex: 1 1 auto;
   min-height: 0;
 }
+
 .quotation-fitout-details-block {
   flex: 0 0 auto;
 }
+
 /* Signature block: no forced page break before; flows onto previous page when space allows */
 .quotation-fitout-last-page-wrap {
   display: flex;
@@ -1274,48 +1549,70 @@ body {
   page-break-inside: avoid;
   break-inside: avoid;
 }
+
 .quotation-fitout-signature-block {
   flex: 0 0 auto;
   page-break-inside: avoid;
   break-inside: avoid;
+  font-size: 12px;
+  line-height: 1.45;
 }
+
 .quotation-fitout-last-page-spacer {
   flex: 1 1 auto;
   min-height: 20px;
 }
+
 .quotation-fitout-title {
   text-align: center;
   margin-top: -1%;
   margin-bottom: 10px;
-  font-size: 29px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
 }
+
 .quotation-fitout-details {
   width: 100%;
   margin-top: 10px;
 }
+
 .quotation-fitout-details-row {
   display: flex;
   align-items: flex-start;
-  font-size: 16px;
+  font-size: 12px;
   margin-bottom: 6px;
 }
+
 .quotation-fitout-details-label {
   width: 180px;
   font-weight: bold;
   flex-shrink: 0;
 }
+
 .quotation-fitout-details-value {
   flex: 1;
 }
-.quotation-fitout-intro {
-  margin-top: 8px;
-  margin-bottom: 8px;
+
+.quotation-fitout-salutation {
+  margin: 0 0 0.35em 0;
+  font-size: 12px;
+  line-height: 1.45;
 }
+
+.quotation-fitout-intro {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .quotation-fitout-section-title {
   font-weight: bold;
   margin: 10px 0 6px 0;
-  font-size: 14px;
+  font-size: 12px;
 }
+
 .quotation-fitout-product-table {
   width: 100%;
   border-collapse: collapse;
@@ -1323,16 +1620,19 @@ body {
   font-size: 12px;
   margin-bottom: 10px;
 }
+
 .quotation-fitout-product-table th,
 .quotation-fitout-product-table td {
   border: 1px solid #ddd;
   padding: 6px;
   vertical-align: top;
 }
+
 .quotation-fitout-product-table th {
   background-color: #f2f3f5;
   font-weight: bold;
 }
+
 .quotation-fitout-product-table td:nth-child(1),
 .quotation-fitout-product-table td:nth-child(3),
 .quotation-fitout-product-table td:nth-child(4),
@@ -1343,33 +1643,40 @@ body {
 .quotation-fitout-product-table th:nth-child(5) {
   text-align: right;
 }
+
 .quotation-fitout-product-table td:nth-child(2),
 .quotation-fitout-product-table th:nth-child(2) {
   text-align: left;
   word-wrap: break-word;
   word-break: break-word;
 }
+
 .quotation-fitout-text-right {
   text-align: right;
 }
+
 .quotation-fitout-subtotal {
   font-weight: bold;
   background-color: #f9f9f9;
 }
+
 .quotation-fitout-totals-table {
   width: 100%;
   table-layout: auto;
 }
+
 .quotation-fitout-totals-table tbody tr.quotation-fitout-total-row td {
   border: 1px solid #ddd;
   padding: 6px;
   font-weight: bold;
   background-color: #f9f9f9;
 }
+
 .quotation-fitout-totals-table tbody tr.quotation-fitout-total-row td:first-child {
   width: 50%;
   max-width: 50%;
 }
+
 .quotation-fitout-totals-table .quotation-fitout-totals-label {
   white-space: normal;
   word-wrap: break-word;
@@ -1380,44 +1687,101 @@ body {
   width: 38%;
   min-width: 14em;
 }
+
 .quotation-fitout-totals-table .quotation-fitout-totals-value {
   white-space: nowrap;
   overflow: visible;
   min-width: 10em;
   width: 12%;
 }
+
 .quotation-fitout-terms-p {
   margin-left: 1%;
-  font-size: 13px;
+  font-size: 12px;
   margin-bottom: 5px;
 }
+
 .quotation-fitout-terms {
   margin-top: 10px;
-  font-size: 13px;
+  font-size: 12px;
 }
+
 .quotation-fitout-terms p {
   margin-bottom: 5px;
 }
+
 .quotation-fitout-signature-label {
-  margin-left: 44%;
+  display: block;
   text-align: right;
-  font-size: 19px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quotation-fitout-signature-block .quotation-fitout-signature-greeting {
+  margin: 0 0 0.65em 0;
+}
+
+.quotation-fitout-signature-block .quotation-fitout-signature-team {
+  margin: 0 0 0.75em 0;
+}
+
+.quotation-fitout-signature-block .quotation-fitout-signature-detail {
+  margin: 0 0 0.25em 0;
+}
+
+.quotation-fitout-signature-image-wrap {
+  margin-top: 0.5em;
+  margin-bottom: 60px;
+  margin-right: 32px;
+  text-align: right;
+  margin-left: auto;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.quotation-fitout-signature-img {
+  max-width: 200px;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-bottom: 4px;
+}
+
+.quotation-fitout-signature-placeholder {
+  font-size: 12px;
+  color: #666;
+}
+
+.quotation-fitout-signature-line-wrap {
+  margin-bottom: 60px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quotation-fitout-signature-line-wrap span {
+  border-bottom: 2px solid #000;
+  width: 150px;
+  display: inline-block;
 }
 
 /* Notes: render HTML (ol/li) without showing raw tags */
 .quotation-fitout-notes-html {
   margin-left: 1%;
-  font-size: 13px;
+  font-size: 12px;
   margin-bottom: 8px;
 }
+
 .quotation-fitout-notes-html ol,
 .quotation-fitout-notes-html ul {
   margin: 0.5em 0 0.5em 1.2em;
   padding-left: 1em;
 }
+
 .quotation-fitout-notes-html li {
   margin-bottom: 0.35em;
 }
+
 .quotation-fitout-notes-html div {
   margin: 0;
 }
@@ -1428,39 +1792,47 @@ body {
   border: none;
   background: #fff;
 }
+
 .quotation-fitout-footer-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 }
+
 .quotation-fitout-footer-top {
   align-items: flex-start;
 }
+
 .quotation-fitout-footer-left {
   flex: 1;
   font-size: 12px;
   color: #4b5563;
 }
+
 .quotation-fitout-footer-trade-label,
 .quotation-fitout-footer-part-label {
   color: #4b5563;
   font-weight: 400;
 }
+
 .quotation-fitout-footer-trade-name,
 .quotation-fitout-footer-part-name {
   color: #2563eb;
   font-weight: 700;
 }
+
 .quotation-fitout-footer-right {
   flex-shrink: 0;
   font-size: 12px;
   color: #4b5563;
 }
+
 .quotation-fitout-footer-hr {
   border: none;
   border-top: 1px solid #3b82f6;
   margin: 10px 0 12px 0;
 }
+
 .quotation-fitout-footer-contact {
   display: flex;
   flex-wrap: wrap;
@@ -1470,11 +1842,13 @@ body {
   font-size: 12px;
   color: #374151;
 }
+
 .quotation-fitout-footer-contact-item {
   display: inline-flex;
   align-items: flex-start;
   gap: 6px;
 }
+
 .quotation-fitout-footer-icon {
   width: 14px;
   height: 14px;
@@ -1482,12 +1856,15 @@ body {
   color: #f97316;
   margin-top: 2px;
 }
+
 .quotation-fitout-footer-globe {
   color: #f97316;
 }
+
 .quotation-fitout-footer-email-block {
   align-items: flex-start;
 }
+
 .quotation-fitout-footer-email-lines,
 .quotation-fitout-footer-address-lines {
   display: inline-block;
@@ -1498,17 +1875,21 @@ body {
   .quotation-fitout-container {
     background: #fff;
   }
+
   .quotation-fitout-page-layout {
     width: 100%;
     margin: 0;
     box-shadow: none;
   }
-  .quotation-fitout-page-layout > thead {
+
+  .quotation-fitout-page-layout>thead {
     display: table-header-group !important;
   }
-  .quotation-fitout-page-layout > tfoot {
+
+  .quotation-fitout-page-layout>tfoot {
     display: table-footer-group !important;
   }
+
   /* Footer at bottom of A4 last page: handled by flex + spacer in main @media print block */
   body {
     zoom: 0.85;
@@ -1519,6 +1900,7 @@ body {
 .quotation-doc .quotation-fitout-page-layout {
   border: none !important;
 }
+
 .quotation-doc .quotation-fitout-header-cell,
 .quotation-doc .quotation-fitout-body-cell,
 .quotation-doc .quotation-fitout-footer-cell {

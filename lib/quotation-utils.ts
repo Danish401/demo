@@ -52,55 +52,127 @@ export function formatCurrency(value: string | number | undefined, currency: str
   return num.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
+const ONES = [
+  '',
+  'One',
+  'Two',
+  'Three',
+  'Four',
+  'Five',
+  'Six',
+  'Seven',
+  'Eight',
+  'Nine',
+  'Ten',
+  'Eleven',
+  'Twelve',
+  'Thirteen',
+  'Fourteen',
+  'Fifteen',
+  'Sixteen',
+  'Seventeen',
+  'Eighteen',
+  'Nineteen',
+]
+const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
+const SCALE_WORDS = ['', 'Thousand', 'Million', 'Billion', 'Trillion']
+
+function convertHundreds(n: number): string {
+  let x = n
+  let result = ''
+  if (x >= 100) {
+    result += ONES[Math.floor(x / 100)] + ' Hundred '
+    x %= 100
+  }
+  if (x >= 20) {
+    result += TENS[Math.floor(x / 10)] + ' '
+    x %= 10
+  }
+  if (x > 0) {
+    result += ONES[x] + ' '
+  }
+  return result.trim()
+}
+
 /**
- * Converts number to words
+ * Non-negative integer to words (e.g. 17514 → "Seventeen Thousand Five Hundred Fourteen").
+ */
+export function integerToWords(n: number): string {
+  if (!Number.isFinite(n) || n < 0) return ''
+  const int = Math.floor(n)
+  if (int === 0) return 'Zero'
+
+  const chunks: number[] = []
+  let x = int
+  while (x > 0) {
+    chunks.push(x % 1000)
+    x = Math.floor(x / 1000)
+  }
+
+  let result = ''
+  for (let i = chunks.length - 1; i >= 0; i--) {
+    const chunk = chunks[i]
+    if (chunk === 0) continue
+    const scale = SCALE_WORDS[i]
+    result += convertHundreds(chunk) + (scale ? ' ' + scale + ' ' : '')
+  }
+  return result.trim()
+}
+
+/**
+ * Converts number to words (integer + optional hundredths as "xx/100")
  */
 export function numberToWords(num: number): string {
-  const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
-    'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen']
-  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
-  
-  function convertHundreds(n: number): string {
-    let result = ''
-    if (n >= 100) {
-      result += ones[Math.floor(n / 100)] + ' Hundred '
-      n %= 100
-    }
-    if (n >= 20) {
-      result += tens[Math.floor(n / 10)] + ' '
-      n %= 10
-    }
-    if (n > 0) {
-      result += ones[n] + ' '
-    }
-    return result.trim()
-  }
-  
-  if (num === 0) return 'Zero'
-  
-  const integerPart = Math.floor(num)
-  const decimalPart = Math.round((num - integerPart) * 100)
-  
-  let words = ''
-  
-  // Handle thousands
-  if (integerPart >= 1000) {
-    const thousands = Math.floor(integerPart / 1000)
-    words += convertHundreds(thousands) + ' Thousand '
-  }
-  
-  // Handle hundreds
-  const remainder = integerPart % 1000
-  if (remainder > 0) {
-    words += convertHundreds(remainder)
-  }
-  
-  // Handle decimal part (cents/paisa)
+  if (!Number.isFinite(num)) return ''
+  const abs = Math.abs(num)
+  const integerPart = Math.floor(abs)
+  const decimalPart = Math.round((abs - integerPart) * 100)
+
+  let words = integerToWords(integerPart)
+  if (num < 0) words = 'Minus ' + words
+
   if (decimalPart > 0) {
     words += ` and ${decimalPart}/100`
   }
-  
+
   return words.trim()
+}
+
+/**
+ * Grand total style line for AED quotations (Dirhams + optional Fils).
+ */
+export function formatAedAmountInWords(value: string | number | undefined): string {
+  if (value === undefined || value === null) return integerToWords(0) + ' UAE Dirhams Only'
+  const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : Number(value)
+  if (!Number.isFinite(num)) return integerToWords(0) + ' UAE Dirhams Only'
+
+  const abs = Math.abs(num)
+  const intPart = Math.floor(abs)
+  const decPart = Math.round((abs - intPart) * 100) % 100
+
+  let s = integerToWords(intPart) + ' UAE Dirhams'
+  if (decPart > 0) {
+    const filWord = decPart === 1 ? 'Fil' : 'Fils'
+    s += ' and ' + integerToWords(decPart) + ' ' + filWord
+  }
+  return s + ' Only'
+}
+
+/** Strip HTML / entities from Zoho text fields so display size is not driven by inline styles. */
+export function plainZohoDisplayText(raw: unknown, emptyFallback = '—'): string {
+  if (raw == null) return emptyFallback
+  let s = String(raw).trim()
+  if (!s) return emptyFallback
+  if (/<[^>]+>/.test(s)) {
+    s = s.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  }
+  s = s
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .trim()
+  return s || emptyFallback
 }
 
 /**

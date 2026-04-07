@@ -1,6 +1,7 @@
 'use client'
 
 import { CoreCoverPageData } from '@/lib/types'
+import { formatAedAmountInWords, plainZohoDisplayText } from '@/lib/quotation-utils'
 
 /** True if field has displayable value (hide row/section when false) */
 function hasValue(v: unknown): boolean {
@@ -337,7 +338,10 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                 )}
 
                 <br />
-                <strong>Dear&nbsp;&nbsp;&nbsp;</strong>{data.Customer_Name1 ?? '—'}<br />
+                <p className="door-core-salutation">
+                  <strong className="door-core-salutation-dear">Dear&nbsp;&nbsp;&nbsp;</strong>
+                  <span className="door-core-salutation-name">{plainZohoDisplayText(data.Customer_Name1)}</span>
+                </p>
                 <p className="door-core-intro-p">
                   We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ:
                 </p>
@@ -458,8 +462,12 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                       </tr>
                     )}
                     <tr>
-                      <td colSpan={12} className="door-core-total-label">
-                        Grand Total AED :-
+                      <td colSpan={12} className="door-core-total-label door-core-grand-total-label-cell">
+                        <div className="door-core-grand-total-line">Grand Total AED :-</div>
+                        <div className="door-core-amount-in-words">
+                          <span className="door-core-amount-in-words-label">In words:</span>{' '}
+                          {formatAedAmountInWords(data.Grand_Total_AED)}
+                        </div>
                       </td>
                       <td className="door-core-total-value">{formatAED(data.Grand_Total_AED)}</td>
                     </tr>
@@ -490,61 +498,42 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                   dangerouslySetInnerHTML={{ __html: hasValue(data.Notes1) ? (data.Notes1 ?? '') : DEFAULT_NOTES_HTML }}
                 />
 
-                <div className="door-core-terms">
-                  <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>
-                  <p>Assuring you of our best services at all times.</p>
-                </div>
-                <br />
-
-                {/* Wrapper: signature block can flow to previous page when space allows; spacer keeps footer at bottom of last page */}
+                {/* Closing lines + signature stay on one page when printing (avoid orphan “Assuring you…” before signature) */}
                 <div className="door-core-last-page-wrap">
-                  <div className="door-core-signature-block">
-                    <p>Thanks and Regards</p>
-                    <br />
-                    <strong>For Firestop Trading Establishment</strong>
-                    <br />
-                    {salesDetails.name}
-                    <br />
-                    {salesDetails.designation}
-                    <br />
-                    {salesDetails.contact}
-                    <br />
-                    <br />
-                    {showSignature ? (
-                      <div
-                        style={{
-                          marginBottom: '60px',
-                          marginRight: '32px',
-                          textAlign: 'right',
-                          marginLeft: 'auto',
-                          width: 'fit-content',
-                          maxWidth: '100%',
-                        }}
-                      >
-                        {salesDetails.signature ? (
-                          <>
-                            <img
-                              src={salesDetails.signature}
-                              alt={`Signature of ${salesDetails.name}`}
-                              style={{
-                                maxWidth: '200px',
-                                height: 'auto',
-                                display: 'block',
-                                marginLeft: 'auto',
-                                marginBottom: '4px',
-                              }}
-                            />
-                            <strong style={{ fontSize: '17px' }}>Signature</strong>
-                          </>
-                        ) : (
-                          <span style={{ fontSize: '14px', color: '#666' }}>
-                            Signature not on file for this salesperson.
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <div style={{ marginBottom: '60px' }} />
-                    )}
+                  <div className="door-core-closing-print-group">
+                    <div className="door-core-terms">
+                      <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>
+                      <p>Assuring you of our best services at all times.</p>
+                    </div>
+                    <div className="door-core-signature-block">
+                      <p className="door-core-signature-greeting">Thanks and Regards</p>
+                      <p className="door-core-signature-for-line">
+                        <strong>For Ideal Special Products F.Z.C</strong>
+                      </p>
+                      <p className="door-core-signature-detail">{salesDetails.name}</p>
+                      <p className="door-core-signature-detail">{salesDetails.designation}</p>
+                      <p className="door-core-signature-detail">{salesDetails.contact}</p>
+                      {showSignature ? (
+                        <div className="door-core-signature-image-wrap">
+                          {salesDetails.signature ? (
+                            <>
+                              <img
+                                src={salesDetails.signature}
+                                alt={`Signature of ${salesDetails.name}`}
+                                className="door-core-signature-img"
+                              />
+                              <strong className="door-core-signature-label">Signature</strong>
+                            </>
+                          ) : (
+                            <span className="door-core-signature-placeholder">
+                              Signature not on file for this salesperson.
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="door-core-signature-block-spacer" />
+                      )}
+                    </div>
                   </div>
                   <div className="door-core-last-page-spacer" />
                 </div>

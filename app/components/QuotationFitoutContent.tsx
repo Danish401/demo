@@ -203,368 +203,366 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
             <td className="quotation-fitout-body-cell">
               <div className="quotation-fitout-container-inner">
                 <div className="quotation-fitout-details-block">
-                <h1 className="quotation-fitout-title">
-                  <u>Quotation</u>
-                </h1>
+                  <h1 className="quotation-fitout-title">
+                    <u>Quotation</u>
+                  </h1>
 
-                <div className="quotation-fitout-details">
-                  {hasValue(data.Quotation_No) && (
-                    <div className="quotation-fitout-details-row">
-                      <div className="quotation-fitout-details-label">Ref:</div>
-                      <div className="quotation-fitout-details-value">{data.Quotation_No}</div>
-                    </div>
+                  <div className="quotation-fitout-details">
+                    {hasValue(data.Quotation_No) && (
+                      <div className="quotation-fitout-details-row">
+                        <div className="quotation-fitout-details-label">Ref:</div>
+                        <div className="quotation-fitout-details-value">{data.Quotation_No}</div>
+                      </div>
+                    )}
+                    {hasValue(data.Quotation_Submission_Date) && (
+                      <div className="quotation-fitout-details-row">
+                        <div className="quotation-fitout-details-label">Date:</div>
+                        <div className="quotation-fitout-details-value">{data.Quotation_Submission_Date}</div>
+                      </div>
+                    )}
+                    {hasValue(data.Organization_Name1) && (
+                      <div className="quotation-fitout-details-row">
+                        <div className="quotation-fitout-details-label">To:</div>
+                        <div className="quotation-fitout-details-value">{data.Organization_Name1}</div>
+                      </div>
+                    )}
+                    {hasValue(data.Emirates) && (
+                      <div className="quotation-fitout-details-row">
+                        <div className="quotation-fitout-details-label" />
+                        <div className="quotation-fitout-details-value">{data.Emirates}, U.A.E</div>
+                      </div>
+                    )}
+                    {projectName ? (
+                      <div className="quotation-fitout-details-row">
+                        <div className="quotation-fitout-details-label">Project Name:</div>
+                        <div className="quotation-fitout-details-value">{projectName}</div>
+                      </div>
+                    ) : null}
+                    {hasValue(data.Project_Location) && (
+                      <div className="quotation-fitout-details-row">
+                        <div className="quotation-fitout-details-label">Project Location:</div>
+                        <div className="quotation-fitout-details-value">{data.Project_Location}</div>
+                      </div>
+                    )}
+                    {hasValue(data.Subject_field) && (
+                      <div className="quotation-fitout-details-row">
+                        <div className="quotation-fitout-details-label">Subject:</div>
+                        <div className="quotation-fitout-details-value">{data.Subject_field}</div>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="quotation-fitout-salutation">
+                    <strong>Dear&nbsp;&nbsp;&nbsp;</strong>
+                    {data.Customer_Name1 ?? '—'}
+                  </p>
+                  <p className="quotation-fitout-intro">
+                    We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ:
+                  </p>
+
+                  <br />
+
+                  {/* Section 1: Subform_Header + Items_Details – only when there are rows */}
+                  {items.length > 0 && (
+                    <>
+                      <div className="quotation-fitout-section-title">
+                        <strong>{data.Subform_Header ?? ''}</strong>
+                      </div>
+                      <table className="quotation-fitout-product-table">
+                        <colgroup>
+                          <col style={{ width: '5%' }} />
+                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '12%' }} />
+                          <col style={{ width: '13%' }} />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th>Unit</th>
+                            <th>Qty</th>
+                            <th>Unit Price (AED)</th>
+                            <th>Total Price (AED)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {items.map((record, idx) => (
+                            <tr key={idx}>
+                              <td>{record.S_No1 ?? ''}</td>
+                              <td>{record.Item_Description ?? ''}</td>
+                              <td>{record.Unit ?? ''}</td>
+                              <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Unit_Price != null ? formatAED(record.Unit_Price) : ''}
+                              </td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Amount_AED1 != null ? formatAED(record.Amount_AED1) : ''}
+                              </td>
+                            </tr>
+                          ))}
+                          <tr className="quotation-fitout-subtotal">
+                            <td colSpan={4} />
+                            <td>
+                              <strong>Sub Total:</strong>
+                            </td>
+                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </>
                   )}
-                  {hasValue(data.Quotation_Submission_Date) && (
-                    <div className="quotation-fitout-details-row">
-                      <div className="quotation-fitout-details-label">Date:</div>
-                      <div className="quotation-fitout-details-value">{data.Quotation_Submission_Date}</div>
-                    </div>
+
+                  {showItems1 && (
+                    <>
+                      <br />
+                      <div className="quotation-fitout-section-title">
+                        <strong>{data.Subform_Header1 ?? ''}</strong>
+                      </div>
+                      <table className="quotation-fitout-product-table">
+                        <colgroup>
+                          <col style={{ width: '5%' }} />
+                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '12%' }} />
+                          <col style={{ width: '13%' }} />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th>Unit</th>
+                            <th>Qty</th>
+                            <th>Unit Price (AED)</th>
+                            <th>Total Price (AED)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {items1.map((record, idx) => (
+                            <tr key={idx}>
+                              <td>{record.S_No1 ?? ''}</td>
+                              <td>{record.Item_Description ?? ''}</td>
+                              <td>{record.Unit1 ?? ''}</td>
+                              <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
+                              </td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
+                              </td>
+                            </tr>
+                          ))}
+                          <tr className="quotation-fitout-subtotal">
+                            <td colSpan={4} />
+                            <td>
+                              <strong>Sub Total:</strong>
+                            </td>
+                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total1)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </>
                   )}
-                  {hasValue(data.Organization_Name1) && (
-                    <div className="quotation-fitout-details-row">
-                      <div className="quotation-fitout-details-label">To:</div>
-                      <div className="quotation-fitout-details-value">{data.Organization_Name1}</div>
-                    </div>
+
+                  {showSubForm1 && (
+                    <>
+                      <br />
+                      <div className="quotation-fitout-section-title">
+                        <strong>{data.Subform_Header2 ?? ''}</strong>
+                      </div>
+                      <table className="quotation-fitout-product-table">
+                        <colgroup>
+                          <col style={{ width: '5%' }} />
+                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '12%' }} />
+                          <col style={{ width: '13%' }} />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th>Unit</th>
+                            <th>Qty</th>
+                            <th>Unit Price (AED)</th>
+                            <th>Total Price (AED)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subForm1.map((record, idx) => (
+                            <tr key={idx}>
+                              <td>{record.S_No1 ?? ''}</td>
+                              <td>{record.Item_Description ?? ''}</td>
+                              <td>{record.Unit1 ?? ''}</td>
+                              <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
+                              </td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
+                              </td>
+                            </tr>
+                          ))}
+                          <tr className="quotation-fitout-subtotal">
+                            <td colSpan={4} />
+                            <td>
+                              <strong>Sub Total:</strong>
+                            </td>
+                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total2)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </>
                   )}
-                  {hasValue(data.Emirates) && (
-                    <div className="quotation-fitout-details-row">
-                      <div className="quotation-fitout-details-label" />
-                      <div className="quotation-fitout-details-value">{data.Emirates}, U.A.E</div>
-                    </div>
+
+                  {showSubForm2 && (
+                    <>
+                      <br />
+                      <div className="quotation-fitout-section-title">
+                        <strong>{data.Subform_Header3 ?? ''}</strong>
+                      </div>
+                      <table className="quotation-fitout-product-table">
+                        <colgroup>
+                          <col style={{ width: '5%' }} />
+                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '10%' }} />
+                          <col style={{ width: '12%' }} />
+                          <col style={{ width: '13%' }} />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th>S.No</th>
+                            <th>Description</th>
+                            <th>Unit</th>
+                            <th>Qty</th>
+                            <th>Unit Price (AED)</th>
+                            <th>Total Price (AED)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {subForm2.map((record, idx) => (
+                            <tr key={idx}>
+                              <td>{record.S_No1 ?? ''}</td>
+                              <td>{record.Item_Description ?? ''}</td>
+                              <td>{record.Unit1 ?? ''}</td>
+                              <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
+                              </td>
+                              <td className="quotation-fitout-text-right">
+                                {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
+                              </td>
+                            </tr>
+                          ))}
+                          <tr className="quotation-fitout-subtotal">
+                            <td colSpan={4} />
+                            <td>
+                              <strong>Sub Total:</strong>
+                            </td>
+                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total3)}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </>
                   )}
-                  {projectName ? (
-                    <div className="quotation-fitout-details-row">
-                      <div className="quotation-fitout-details-label">Project Name:</div>
-                      <div className="quotation-fitout-details-value">{projectName}</div>
-                    </div>
+
+                  {/* Totals: only when there is at least one row in any section */}
+                  {hasAnyRows && (
+                    <>
+                      <br />
+                      <table className="quotation-fitout-product-table quotation-fitout-totals-table">
+                        <tbody>
+                          <tr className="quotation-fitout-total-row">
+                            <td colSpan={10} />
+                            <td className="quotation-fitout-totals-label">
+                              <strong>Total Amount (AED):</strong>
+                            </td>
+                            <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                              {formatAED(data.Total_Amount_AED1 ?? 0)}
+                            </td>
+                          </tr>
+                          {hasDiscount && (
+                            <>
+                              <tr className="quotation-fitout-total-row">
+                                <td colSpan={10} />
+                                <td className="quotation-fitout-totals-label">
+                                  <strong>Less Special Discount (AED):</strong>
+                                </td>
+                                <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                                  {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                                </td>
+                              </tr>
+                              <tr className="quotation-fitout-total-row">
+                                <td colSpan={10} />
+                                <td className="quotation-fitout-totals-label">
+                                  <strong>Total Amount After Discount AED:</strong>
+                                </td>
+                                <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                                  {formatAED(data.Total_amount_after_discount_AED)}
+                                </td>
+                              </tr>
+                            </>
+                          )}
+                          <tr className="quotation-fitout-total-row">
+                            <td colSpan={10} />
+                            <td className="quotation-fitout-totals-label">
+                              <strong>VAT 5% (AED):</strong>
+                            </td>
+                            <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                              {formatAED(data.VAT_5 ?? 0)}
+                            </td>
+                          </tr>
+                          <tr className="quotation-fitout-total-row">
+                            <td colSpan={10} />
+                            <td className="quotation-fitout-totals-label">
+                              <strong>Grand Total (AED):</strong>
+                            </td>
+                            <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                              {formatAED(data.Grand_Total_AED1 ?? 0)}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </>
+                  )}
+
+                  {hasValue(data.Payment_Terms) && (
+                    <>
+                      <strong>1. Payment Terms</strong>
+                      <p className="quotation-fitout-terms-p">{data.Payment_Terms}</p>
+                    </>
+                  )}
+
+                  {hasValue(data.Validity) && (
+                    <>
+                      <strong>2. Validity</strong>
+                      <p className="quotation-fitout-terms-p">{data.Validity}</p>
+                    </>
+                  )}
+
+                  {notesHtml ? (
+                    <>
+                      <strong>4. Notes</strong>
+                      <p className="quotation-fitout-terms-p">1. The following are excluded from our scope:</p>
+                      <div className="quotation-fitout-notes-html" dangerouslySetInnerHTML={{ __html: notesHtml }} />
+                    </>
                   ) : null}
-                  {hasValue(data.Project_Location) && (
-                    <div className="quotation-fitout-details-row">
-                      <div className="quotation-fitout-details-label">Project Location:</div>
-                      <div className="quotation-fitout-details-value">{data.Project_Location}</div>
-                    </div>
-                  )}
-                  {hasValue(data.Subject_field) && (
-                    <div className="quotation-fitout-details-row">
-                      <div className="quotation-fitout-details-label">Subject:</div>
-                      <div className="quotation-fitout-details-value">{data.Subject_field}</div>
-                    </div>
-                  )}
-                </div>
 
-                <br />
-                <strong style={{ flexBasis: '30%' }}>Dear&nbsp;&nbsp;&nbsp;</strong>
-                {data.Customer_Name1 ?? '—'}
-                <br />
-                <p className="quotation-fitout-intro">
-                  We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ:
-                </p>
-
-                <br />
-
-                {/* Section 1: Subform_Header + Items_Details – only when there are rows */}
-                {items.length > 0 && (
-                  <>
-                    <div className="quotation-fitout-section-title">
-                      <strong>{data.Subform_Header ?? ''}</strong>
-                    </div>
-                    <table className="quotation-fitout-product-table">
-                      <colgroup>
-                        <col style={{ width: '5%' }} />
-                        <col style={{ width: '50%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '12%' }} />
-                        <col style={{ width: '13%' }} />
-                      </colgroup>
-                      <thead>
-                        <tr>
-                          <th>S.No</th>
-                          <th>Description</th>
-                          <th>Unit</th>
-                          <th>Qty</th>
-                          <th>Unit Price (AED)</th>
-                          <th>Total Price (AED)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((record, idx) => (
-                          <tr key={idx}>
-                            <td>{record.S_No1 ?? ''}</td>
-                            <td>{record.Item_Description ?? ''}</td>
-                            <td>{record.Unit ?? ''}</td>
-                            <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Unit_Price != null ? formatAED(record.Unit_Price) : ''}
-                            </td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Amount_AED1 != null ? formatAED(record.Amount_AED1) : ''}
-                            </td>
-                          </tr>
-                        ))}
-                        <tr className="quotation-fitout-subtotal">
-                          <td colSpan={4} />
-                          <td>
-                            <strong>Sub Total:</strong>
-                          </td>
-                          <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total)}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </>
-                )}
-
-                {showItems1 && (
-                  <>
-                    <br />
-                    <div className="quotation-fitout-section-title">
-                      <strong>{data.Subform_Header1 ?? ''}</strong>
-                    </div>
-                    <table className="quotation-fitout-product-table">
-                      <colgroup>
-                        <col style={{ width: '5%' }} />
-                        <col style={{ width: '50%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '12%' }} />
-                        <col style={{ width: '13%' }} />
-                      </colgroup>
-                      <thead>
-                        <tr>
-                          <th>S.No</th>
-                          <th>Description</th>
-                          <th>Unit</th>
-                          <th>Qty</th>
-                          <th>Unit Price (AED)</th>
-                          <th>Total Price (AED)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items1.map((record, idx) => (
-                          <tr key={idx}>
-                            <td>{record.S_No1 ?? ''}</td>
-                            <td>{record.Item_Description ?? ''}</td>
-                            <td>{record.Unit1 ?? ''}</td>
-                            <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
-                            </td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
-                            </td>
-                          </tr>
-                        ))}
-                        <tr className="quotation-fitout-subtotal">
-                          <td colSpan={4} />
-                          <td>
-                            <strong>Sub Total:</strong>
-                          </td>
-                          <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total1)}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </>
-                )}
-
-                {showSubForm1 && (
-                  <>
-                    <br />
-                    <div className="quotation-fitout-section-title">
-                      <strong>{data.Subform_Header2 ?? ''}</strong>
-                    </div>
-                    <table className="quotation-fitout-product-table">
-                      <colgroup>
-                        <col style={{ width: '5%' }} />
-                        <col style={{ width: '50%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '12%' }} />
-                        <col style={{ width: '13%' }} />
-                      </colgroup>
-                      <thead>
-                        <tr>
-                          <th>S.No</th>
-                          <th>Description</th>
-                          <th>Unit</th>
-                          <th>Qty</th>
-                          <th>Unit Price (AED)</th>
-                          <th>Total Price (AED)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {subForm1.map((record, idx) => (
-                          <tr key={idx}>
-                            <td>{record.S_No1 ?? ''}</td>
-                            <td>{record.Item_Description ?? ''}</td>
-                            <td>{record.Unit1 ?? ''}</td>
-                            <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
-                            </td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
-                            </td>
-                          </tr>
-                        ))}
-                        <tr className="quotation-fitout-subtotal">
-                          <td colSpan={4} />
-                          <td>
-                            <strong>Sub Total:</strong>
-                          </td>
-                          <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total2)}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </>
-                )}
-
-                {showSubForm2 && (
-                  <>
-                    <br />
-                    <div className="quotation-fitout-section-title">
-                      <strong>{data.Subform_Header3 ?? ''}</strong>
-                    </div>
-                    <table className="quotation-fitout-product-table">
-                      <colgroup>
-                        <col style={{ width: '5%' }} />
-                        <col style={{ width: '50%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '10%' }} />
-                        <col style={{ width: '12%' }} />
-                        <col style={{ width: '13%' }} />
-                      </colgroup>
-                      <thead>
-                        <tr>
-                          <th>S.No</th>
-                          <th>Description</th>
-                          <th>Unit</th>
-                          <th>Qty</th>
-                          <th>Unit Price (AED)</th>
-                          <th>Total Price (AED)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {subForm2.map((record, idx) => (
-                          <tr key={idx}>
-                            <td>{record.S_No1 ?? ''}</td>
-                            <td>{record.Item_Description ?? ''}</td>
-                            <td>{record.Unit1 ?? ''}</td>
-                            <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
-                            </td>
-                            <td className="quotation-fitout-text-right">
-                              {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
-                            </td>
-                          </tr>
-                        ))}
-                        <tr className="quotation-fitout-subtotal">
-                          <td colSpan={4} />
-                          <td>
-                            <strong>Sub Total:</strong>
-                          </td>
-                          <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total3)}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </>
-                )}
-
-                {/* Totals: only when there is at least one row in any section */}
-                {hasAnyRows && (
-                  <>
-                    <br />
-                    <table className="quotation-fitout-product-table quotation-fitout-totals-table">
-                      <tbody>
-                        <tr className="quotation-fitout-total-row">
-                          <td colSpan={10} />
-                          <td className="quotation-fitout-totals-label">
-                            <strong>Total Amount (AED):</strong>
-                          </td>
-                          <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                            {formatAED(data.Total_Amount_AED1 ?? 0)}
-                          </td>
-                        </tr>
-                        {hasDiscount && (
-                          <>
-                            <tr className="quotation-fitout-total-row">
-                              <td colSpan={10} />
-                              <td className="quotation-fitout-totals-label">
-                                <strong>Less Special Discount (AED):</strong>
-                              </td>
-                              <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                                {formatAED(data.Provision_for_Less_Special_Discount_AED)}
-                              </td>
-                            </tr>
-                            <tr className="quotation-fitout-total-row">
-                              <td colSpan={10} />
-                              <td className="quotation-fitout-totals-label">
-                                <strong>Total Amount After Discount AED:</strong>
-                              </td>
-                              <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                                {formatAED(data.Total_amount_after_discount_AED)}
-                              </td>
-                            </tr>
-                          </>
-                        )}
-                        <tr className="quotation-fitout-total-row">
-                          <td colSpan={10} />
-                          <td className="quotation-fitout-totals-label">
-                            <strong>VAT 5% (AED):</strong>
-                          </td>
-                          <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                            {formatAED(data.VAT_5 ?? 0)}
-                          </td>
-                        </tr>
-                        <tr className="quotation-fitout-total-row">
-                          <td colSpan={10} />
-                          <td className="quotation-fitout-totals-label">
-                            <strong>Grand Total (AED):</strong>
-                          </td>
-                          <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                            {formatAED(data.Grand_Total_AED1 ?? 0)}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </>
-                )}
-
-                {hasValue(data.Payment_Terms) && (
-                  <>
-                    <strong>1. Payment Terms</strong>
-                    <p className="quotation-fitout-terms-p">{data.Payment_Terms}</p>
-                  </>
-                )}
-
-                {hasValue(data.Validity) && (
-                  <>
-                    <strong>2. Validity</strong>
-                    <p className="quotation-fitout-terms-p">{data.Validity}</p>
-                  </>
-                )}
-
-                {notesHtml ? (
-                  <>
-                    <strong>4. Notes</strong>
-                    <p className="quotation-fitout-terms-p">1. The following are excluded from our scope:</p>
-                    <div className="quotation-fitout-notes-html" dangerouslySetInnerHTML={{ __html: notesHtml }} />
-                  </>
-                ) : null}
-
-                <div className="quotation-fitout-terms">
-                  <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>
-                  <p>Assuring you of our best services at all times.</p>
-                </div>
+                  <div className="quotation-fitout-terms">
+                    <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>
+                    <p>Assuring you of our best services at all times.</p>
+                  </div>
                 </div>
 
                 {/* Same as Door Core / Door Set 2: last-page-wrap + spacer keep footer at bottom of last page (and every page) */}
                 <div className="quotation-fitout-last-page-wrap">
                   <div className="quotation-fitout-signature-block">
-                    <br />
-                    <p>Thanks and Regards</p>
-                    <br />
-                    <p>
+                    <p className="quotation-fitout-signature-greeting">Thanks and Regards</p>
+                    <p className="quotation-fitout-signature-team">
                       <strong>
                         Business Development Representative
                         <br />
@@ -577,55 +575,31 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         {footerData.location}
                       </strong>
                     </p>
-                    {salesDetails.name}
-                    <br />
-                    {salesDetails.designation}
-                    <br />
-                    {salesDetails.contact}
-                    <br />
-                    <br />
+                    <p className="quotation-fitout-signature-detail">{salesDetails.name}</p>
+                    <p className="quotation-fitout-signature-detail">{salesDetails.designation}</p>
+                    <p className="quotation-fitout-signature-detail">{salesDetails.contact}</p>
                     {showSignature ? (
-                      <div
-                        style={{
-                          marginBottom: '60px',
-                          marginRight: '32px',
-                          textAlign: 'right',
-                          marginLeft: 'auto',
-                          width: 'fit-content',
-                          maxWidth: '100%',
-                        }}
-                      >
+                      <div className="quotation-fitout-signature-image-wrap">
                         {salesDetails.signature ? (
                           <>
                             <img
                               src={salesDetails.signature}
                               alt={`Signature of ${salesDetails.name}`}
-                              style={{
-                                maxWidth: '200px',
-                                height: 'auto',
-                                display: 'block',
-                                marginLeft: 'auto',
-                                marginBottom: '4px',
-                              }}
+                              className="quotation-fitout-signature-img"
                             />
-                            <strong style={{ fontSize: '17px' }}>Signature</strong>
+                            <strong className="quotation-fitout-signature-label">Signature</strong>
                           </>
                         ) : (
-                          <span style={{ fontSize: '14px', color: '#666' }}>
+                          <span className="quotation-fitout-signature-placeholder">
                             Signature not on file for this salesperson.
                           </span>
                         )}
                       </div>
                     ) : (
-                      <div style={{ textAlign: 'right', fontSize: '17px', fontWeight: 'bold' }}>
-                        Signature:<br />
-                        <span
-                          style={{
-                            borderBottom: '2px solid #000',
-                            width: '150px',
-                            display: 'inline-block',
-                          }}
-                        />
+                      <div className="quotation-fitout-signature-line-wrap">
+                        Signature:
+                        <br />
+                        <span />
                       </div>
                     )}
                   </div>
