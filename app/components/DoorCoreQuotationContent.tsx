@@ -508,7 +508,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     <div className="door-core-signature-block">
                       <p className="door-core-signature-greeting">Thanks and Regards</p>
                       <p className="door-core-signature-for-line">
-                        <strong>For Ideal Special Products F.Z.C</strong>
+                        <strong>For {footerData.trade_name}</strong>
                       </p>
                       <p className="door-core-signature-detail">{salesDetails.name}</p>
                       <p className="door-core-signature-detail">{salesDetails.designation}</p>

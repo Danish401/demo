@@ -623,13 +623,22 @@ body {
     min-height: 0 !important;
   }
 
-  /* Door Set 2: equal width from sheet borders, prevent totals cut-off */
+  /* Door Set 2: table fits printable width; headers use word-safe lines + col mm floors */
   .door-set-2-quotation .door-core-table-section {
     width: 100% !important;
     max-width: 100% !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
   }
 
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table,
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+    table-layout: fixed !important;
+    font-size: 8px !important;
+  }
+
   .door-set-2-quotation .door-core-subform-table,
   .door-set-2-quotation .door-core-totals-table {
     width: 100% !important;
@@ -637,12 +646,94 @@ body {
     table-layout: fixed !important;
   }
 
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(15),
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15),
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(16),
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(16) {
-    min-width: 5em !important;
-    overflow: visible !important;
+  /* Print: Door Set 2 totals — labels left, amounts right; nowrap on amounts */
+  .door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-label-cell,
+  .door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-amount-cell {
+    border: 1px solid #ddd !important;
+    padding: 5px !important;
+    font-weight: bold !important;
+    background-color: #f9f9f9 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  .door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-label-cell {
+    text-align: left !important;
+    white-space: normal !important;
+  }
+
+  .door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-amount-cell {
+    text-align: right !important;
+    white-space: nowrap !important;
+  }
+
+  /* Print: 16-col main table — compact padding, content stays inside borders */
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table th,
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table td {
+    font-size: 8px !important;
+    padding: 3px 2px !important;
+    overflow: hidden !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table th {
+    line-height: 1.2 !important;
+  }
+
+  /* A4 portrait content ~170mm — column minimums sum to 170mm */
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-1 {
+    min-width: 7mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-2 {
+    min-width: 11mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-3 {
+    min-width: 11mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-4 {
+    min-width: 12mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-5 {
+    min-width: 11mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-6 {
+    min-width: 9mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-7 {
+    min-width: 9mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-8 {
+    min-width: 8mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-9 {
+    min-width: 10mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-10 {
+    min-width: 10mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-11 {
+    min-width: 10mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-12 {
+    min-width: 10mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-13 {
+    min-width: 7mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-14 {
+    min-width: 7mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-15 {
+    min-width: 14mm !important;
+  }
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-16 {
+    min-width: 14mm !important;
+  }
+
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(2),
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(10) {
+    white-space: nowrap !important;
   }
 
   .door-set-2-quotation .door-core-subform-table th:nth-child(4),
@@ -1009,9 +1100,70 @@ body {
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table,
+/* ── Door Set 2 main 16-column table: fixed layout + col min-widths (no mid-word header breaks) ── */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 100%;
+  table-layout: fixed !important;
+  box-sizing: border-box;
+  border-collapse: collapse;
+  font-size: 11px !important;
+}
+
+/* Screen: minimum column widths (sum forces horizontal scroll on narrow viewports — full table stays readable) */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-1 {
+  min-width: 2.85rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-2 {
+  min-width: 4.25rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-3 {
+  min-width: 4.25rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-4 {
+  min-width: 4rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-5 {
+  min-width: 4.85rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-6 {
+  min-width: 4.5rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-7 {
+  min-width: 4.5rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-8 {
+  min-width: 3.35rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-9 {
+  min-width: 3.75rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-10 {
+  min-width: 4.1rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-11 {
+  min-width: 4rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-12 {
+  min-width: 4.85rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-13 {
+  min-width: 2.85rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-14 {
+  min-width: 2.6rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-15 {
+  min-width: 5.35rem;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.door-set-2-col-16 {
+  min-width: 5.35rem;
+}
+
 .door-set-2-quotation .door-core-subform-table {
   width: 100% !important;
   max-width: 100% !important;
@@ -1019,105 +1171,271 @@ body {
   box-sizing: border-box;
 }
 
-/* Door Set 2: min-widths only – columns size by content (less data = narrower, more data = wider); Unit column a bit wider */
+/* ── Column widths: 16 cols = 100% (proportions; col min-width sets floor) ── */
+/* 5+6+6+7+8+5+5+5+6+6+6+7+4+3+10+11 = 100% */
+
+/* Col 1: S.No */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(1),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(1) {
-  min-width: 2.5em;
+  width: 5%;
+  text-align: center;
 }
-
+/* Col 2: Door Leaf */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(2),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(2) {
-  min-width: 3em;
+  width: 6%;
+  text-align: center;
 }
-
+/* Col 3: Product Ref */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(3),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(3) {
-  min-width: 4em;
+  width: 6%;
+  text-align: right;
 }
-
+/* Col 4: Fire rating */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(4),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(4) {
+  width: 7%;
+  text-align: right;
+}
+/* Col 5: Acoustic rating */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(5),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(5) {
+  width: 8%;
+  text-align: right;
+}
+/* Col 6–7: Door leaf width / height */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(6),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(6) {
+  width: 5%;
+  text-align: right;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(7),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(7) {
+  width: 5%;
+  text-align: right;
+}
+/* Col 8–9: Jamb, Leaf thick */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(8),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(8) {
+  width: 5%;
+  text-align: right;
+}
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(9),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(9) {
+  width: 6%;
+  text-align: right;
+}
+/* Col 10: Door type */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(10),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(10) {
+  width: 6%;
+  text-align: center;
+}
+/* Col 11: Vision panel */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(11),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(11) {
+  width: 6%;
+  text-align: right;
+}
+/* Col 12: Hardware set */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(12),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(12) {
+  width: 7%;
+  text-align: right;
+}
+/* Col 13–14: Unit, Qty */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(13),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(13) {
-  min-width: 3.5em;
+  width: 4%;
+  text-align: center;
 }
-
-/* Unit – slightly wider */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(14),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(14) {
-  min-width: 2.5em;
+  width: 3%;
+  text-align: right;
 }
-
-/* Qty */
+/* Col 15–16: prices */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(15),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15) {
+  width: 10%;
+  text-align: right;
+}
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(16),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(16) {
-  min-width: 4.5em;
+  width: 11%;
+  text-align: right;
 }
 
-/* Unit Price, Total */
+/* Header lines: one display line each, no mid-word breaks inside a line */
+.door-set-2-quotation .door-set-2-th-line {
+  display: block;
+  white-space: nowrap;
+}
 
-/* Door Set 2: keep all content inside cells – wrap text, no overflow */
-.door-set-2-quotation .door-core-product-table th {
-  font-size: 12px;
-  font-weight: 600;
+/* ── Door Set 2 main table TH ── */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th {
+  font-size: 10px !important;
+  font-weight: 700;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  vertical-align: middle !important;
+  padding: 8px 6px !important;
+  line-height: 1.28;
+  text-align: center !important;
+  background-color: #e8eaed;
+}
+
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th.door-core-text-right {
+  text-align: right !important;
+  padding-right: 6px !important;
+  padding-left: 4px !important;
+}
+
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table th.door-core-text-right .door-set-2-th-line {
+  text-align: right;
+}
+
+/* Body: keep text inside cell borders (fixed-layout + overflow) */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td {
+  box-sizing: border-box;
+  white-space: normal;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: normal;
+  font-size: 11px !important;
+  vertical-align: middle;
+  padding: 6px 5px;
+  line-height: 1.3;
+  text-align: right;
+}
+
+/* Door Leaf + Door Type: keep cell values on one line (avoid hyphen / mid-word wrap) */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(2),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(10) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  text-align: center;
+}
+
+/* Non-main-table th/td (subform etc) keep 12px */
+.door-set-2-quotation .door-core-product-table:not(.door-set-2-product-table) th {
+  font-size: 10px !important;
+  font-weight: 700;
+  white-space: normal;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  hyphens: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  vertical-align: middle !important;
+  text-align: center !important;
+  padding: 6px 4px;
+  line-height: 1.4;
+  background-color: #e8eaed;
+}
+
+.door-set-2-quotation .door-core-product-table:not(.door-set-2-product-table) td {
+  box-sizing: border-box;
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  word-break: break-word;
-  box-sizing: border-box;
-  vertical-align: top;
-  padding: 5px 4px;
-  line-height: 1.2;
-  overflow: hidden;
-}
-
-.door-set-2-quotation .door-core-product-table td {
-  box-sizing: border-box;
-  white-space: normal;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  overflow: hidden;
   font-size: 12px;
   vertical-align: top;
   padding: 5px 4px;
   line-height: 1.2;
 }
 
-/* Door Set 2: subform tables – S.No wide enough for header; Qty, Unit Price, Total Price same as main; Description wider */
+/* Door Set 2: subform column widths */
 .door-set-2-quotation .door-core-subform-table th:nth-child(1),
 .door-set-2-quotation .door-core-subform-table td:nth-child(1) {
   width: 5%;
   min-width: 4em;
   box-sizing: border-box;
+  text-align: center !important;
 }
 
 .door-set-2-quotation .door-core-subform-table th:nth-child(2),
 .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
   width: 70%;
   min-width: 8em;
+  text-align: left !important;
 }
 
-.door-set-2-quotation .door-core-subform-table th:nth-child(3),
+/* Qty — right-aligned header + data */
+.door-set-2-quotation .door-core-subform-table th:nth-child(3) {
+  width: 6%;
+  text-align: right !important;
+}
 .door-set-2-quotation .door-core-subform-table td:nth-child(3) {
   width: 6%;
+  text-align: right;
 }
 
-.door-set-2-quotation .door-core-subform-table th:nth-child(4),
+/* Unit Price (AED) — right-aligned header + data */
+.door-set-2-quotation .door-core-subform-table th:nth-child(4) {
+  width: 10%;
+  text-align: right !important;
+}
 .door-set-2-quotation .door-core-subform-table td:nth-child(4) {
   width: 10%;
+  text-align: right;
 }
 
-.door-set-2-quotation .door-core-subform-table th:nth-child(5),
+/* Total Price (AED) — right-aligned header + data */
+.door-set-2-quotation .door-core-subform-table th:nth-child(5) {
+  width: 10%;
+  min-width: 5em;
+  text-align: right !important;
+}
 .door-set-2-quotation .door-core-subform-table td:nth-child(5) {
   width: 10%;
   min-width: 5em;
+  text-align: right;
 }
 
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table .door-core-subtotal td:last-of-type,
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table .door-core-subtotal td:nth-child(16) {
-  min-width: 5em;
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table .door-core-subtotal td {
   overflow: visible;
+}
+
+/* Door Set 2 financial summary: full-width 2 columns — labels left, amounts right */
+.door-set-2-quotation .door-set-2-totals-summary {
+  table-layout: fixed !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-collapse: collapse;
+}
+
+.door-set-2-quotation .door-set-2-totals-summary col.door-set-2-totals-col-label {
+  width: 72%;
+}
+
+.door-set-2-quotation .door-set-2-totals-summary col.door-set-2-totals-col-value {
+  width: 28%;
+}
+
+.door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-label-cell,
+.door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-amount-cell {
+  overflow-wrap: normal;
+  word-break: normal;
+  vertical-align: middle;
+}
+
+.door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-label-cell {
+  text-align: left;
+  white-space: normal;
+  padding-right: 12px;
+  box-sizing: border-box;
+}
+
+.door-set-2-quotation .door-set-2-totals-summary tbody tr.door-core-totals-row td.door-set-2-totals-amount-cell {
+  text-align: right;
+  white-space: nowrap;
 }
 
 .door-core-totals-table tbody tr.door-core-totals-row td {
@@ -1125,6 +1443,14 @@ body {
   padding: 5px;
   font-weight: bold;
   background-color: #f9f9f9;
+}
+
+.door-core-totals-table tbody tr.door-core-totals-row td:nth-child(1) {
+  text-align: left;
+}
+
+.door-core-totals-table tbody tr.door-core-totals-row td:nth-child(2) {
+  text-align: right;
 }
 
 .door-core-payment-section .door-core-terms-p {

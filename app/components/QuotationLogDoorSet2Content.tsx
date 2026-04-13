@@ -17,38 +17,6 @@ function hasValue(v: unknown): boolean {
   return s !== ''
 }
 
-interface FooterData {
-  trade_name: string
-  location: string
-}
-
-function getSignatureFooterData(subDivisions?: string): FooterData {
-  const sub = (subDivisions || '').trim()
-  switch (sub) {
-    case 'AJMAN':
-      return { trade_name: 'IDEAL SPECIAL PRODUCTS FZC', location: '94956 , Abu Dhabi' }
-    case 'FUJAIRAH':
-      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '48143, Dubai, UAE' }
-    case 'ABU DHABI':
-      return { trade_name: 'IDEAL FIRESTOP TRADING - L.L.C - S.P.C', location: '94956, Abu Dhabi' }
-    case 'DUBAI':
-      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '48143, Dubai, UAE' }
-    case 'RAS AL KHAIMAH':
-      return { trade_name: 'IDEAL FIRESTOP TRADING LLC ', location: '48143, Dubai, UAE' }
-    case 'SHARJAH':
-      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '66976, Sharjah, UAE' }
-    case 'Export':
-      return { trade_name: 'IDEAL SPECIAL PRODUCTS FZC', location: '94956 , Abu Dhabi' }
-    case 'IDEAL FITOUTS':
-      return {
-        trade_name: 'Ideal Fitout Decoration Design & Fit-Out Co. L.L.C',
-        location: 'Unit 1108, 51 Tower ,Business Bay, Dubai, UAE PO.Box: 94956',
-      }
-    default:
-      return { trade_name: 'IDEAL FIRESTOP TRADING LLC', location: '48143, Dubai, UAE' }
-  }
-}
-
 /** Footer data for print footer (trade name, contact, certs) - matches DoorCore */
 interface DoorCoreStyleFooterData {
   trade_name: string
@@ -188,7 +156,6 @@ interface QuotationLogDoorSet2ContentProps {
 
 export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' }: QuotationLogDoorSet2ContentProps) {
   const footerData = getFooterData(data.Sub_Divisions)
-  const signatureFooter = getSignatureFooterData(data.Sub_Divisions)
   const salesDetails = getSalesPersonDetails(data.Sales_Person)
   const approvalStatus = (data.SalesPerson_Approval_Status ?? data.Approval ?? '').toString().trim()
   const showSignature = approvalStatus === 'Approved' && viewMode === 'approved'
@@ -376,7 +343,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 <br />
                 <strong>Dear&nbsp;&nbsp;</strong>{data.Customer_Name1 ?? '—'}<br />
                 <p className="door-core-intro-p">
-                  We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ:
+                  We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ
                 </p>
 
                 {data.Scope_field?.trim() && (
@@ -445,22 +412,62 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 <table className="door-core-product-table door-set-2-product-table">
                   <thead>
                     <tr>
-                      <th>S.No</th>
-                      <th>Door Leaf</th>
-                      <th>Product Ref</th>
-                      <th>Fire Rating (mins)</th>
-                      <th>Acoustic Rating (db)</th>
-                      <th>Door Leaf Size Width (mm)</th>
-                      <th>Door Leaf Size Height (mm)</th>
-                      <th>Jamb (mm)</th>
-                      <th>Leaf Thick (mm)</th>
-                      <th>Door Type</th>
-                      <th>Vision Panel (mm)</th>
-                      <th>Hardware Set</th>
-                      <th>Unit</th>
-                      <th className="door-core-text-right">Qty</th>
-                      <th className="door-core-text-right">Unit Price (AED)</th>
-                      <th className="door-core-text-right">Total Price (AED)</th>
+                      <th scope="col">S.{'\u00A0'}No</th>
+                      <th scope="col">Door Leaf</th>
+                      <th scope="col">Product Ref</th>
+                      <th scope="col" title="Fire rating (minutes)">
+                        Fire rating
+                        <br />
+                        (mins)
+                      </th>
+                      <th scope="col" title="Acoustic rating (decibels)">
+                        Acoustic rating
+                        <br />
+                        (db)
+                      </th>
+                      <th scope="col" title="Door leaf size width (mm)">
+                        Door leaf width
+                        <br />
+                        (mm)
+                      </th>
+                      <th scope="col" title="Door leaf size height (mm)">
+                        Door leaf height
+                        <br />
+                        (mm)
+                      </th>
+                      <th scope="col">
+                        Jamb
+                        <br />
+                        (mm)
+                      </th>
+                      <th scope="col">
+                        Leaf thick
+                        <br />
+                        (mm)
+                      </th>
+                      <th scope="col">Door type</th>
+                      <th scope="col" title="Vision panel (mm)">
+                        Vision panel
+                        <br />
+                        (mm)
+                      </th>
+                      <th scope="col">
+                        Hardware
+                        <br />
+                        set
+                      </th>
+                      <th scope="col">Unit</th>
+                      <th scope="col" className="door-core-text-right">Qty</th>
+                      <th scope="col" className="door-core-text-right">
+                        Unit price
+                        <br />
+                        (AED)
+                      </th>
+                      <th scope="col" className="door-core-text-right">
+                        Total price
+                        <br />
+                        (AED)
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -492,7 +499,9 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       <td colSpan={13} className="door-core-text-right">
                         <strong>Total Quantity:</strong>
                       </td>
-                      <td className="door-core-text-right">{data.Total_Quantity ?? ''}</td>
+                      <td className="door-core-text-right">
+                        {data.Total_Quantity != null ? Math.round(Number(data.Total_Quantity)) : ''}
+                      </td>
                       <td />
                       <td />
                     </tr>
@@ -513,9 +522,9 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                         <tr>
                           <th>S.No</th>
                           <th>Description</th>
-                          <th className="door-core-text-right">Qty</th>
-                          <th className="door-core-text-right">Unit Price (AED)</th>
-                          <th className="door-core-text-right">Total Price (AED)</th>
+                          <th>Qty</th>
+                          <th>Unit<br />Price<br />(AED)</th>
+                          <th>Total<br />Price<br />(AED)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -551,9 +560,9 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                         <tr>
                           <th>S.No</th>
                           <th>Description</th>
-                          <th className="door-core-text-right">Qty</th>
-                          <th className="door-core-text-right">Unit Price (AED)</th>
-                          <th className="door-core-text-right">Total Price (AED)</th>
+                          <th>Qty</th>
+                          <th>Unit<br />Price<br />(AED)</th>
+                          <th>Total<br />Price<br />(AED)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -589,9 +598,9 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                         <tr>
                           <th>S.No</th>
                           <th>Description</th>
-                          <th className="door-core-text-right">Qty</th>
-                          <th className="door-core-text-right">Unit Price (AED)</th>
-                          <th className="door-core-text-right">Total Price (AED)</th>
+                          <th>Qty</th>
+                          <th>Unit<br />Price<br />(AED)</th>
+                          <th>Total<br />Price<br />(AED)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -618,49 +627,45 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                   </>
                 )}
 
-                <table className="door-core-product-table door-core-totals-table">
+                <table className="door-core-product-table door-core-totals-table door-set-2-totals-summary">
+                  <colgroup>
+                    <col className="door-set-2-totals-col-label" />
+                    <col className="door-set-2-totals-col-value" />
+                  </colgroup>
                   <tbody>
                     <tr className="door-core-totals-row">
-                      <td colSpan={10} />
-                      <td className="door-core-text-right">
+                      <td className="door-set-2-totals-label-cell">
                         <strong>Total Amount (AED):</strong>
                       </td>
-                      <td className="door-core-text-right door-core-total-value">
+                      <td className="door-core-text-right door-core-total-value door-set-2-totals-amount-cell">
                         {formatAED(data.Total_Amount_AED)}
                       </td>
-                      <td />
                     </tr>
                     {hasDiscount && (
                       <tr className="door-core-totals-row">
-                        <td colSpan={10} />
-                        <td className="door-core-text-right">
+                        <td className="door-set-2-totals-label-cell">
                           <strong>Less Special Discount (AED):</strong>
                         </td>
-                        <td className="door-core-text-right">
+                        <td className="door-core-text-right door-set-2-totals-amount-cell">
                           {formatAED(data.Provision_for_Less_Special_Discount_AED)}
                         </td>
-                        <td />
                       </tr>
                     )}
                     <tr className="door-core-totals-row">
-                      <td colSpan={10} />
-                      <td className="door-core-text-right">
+                      <td className="door-set-2-totals-label-cell">
                         <strong>VAT 5% (AED):</strong>
                       </td>
-                      <td className="door-core-text-right">
+                      <td className="door-core-text-right door-set-2-totals-amount-cell">
                         {formatAED(data.VAT_5_AED)}
                       </td>
-                      <td />
                     </tr>
                     <tr className="door-core-totals-row">
-                      <td colSpan={10} />
-                      <td className="door-core-text-right">
+                      <td className="door-set-2-totals-label-cell">
                         <strong>Grand Total (AED):</strong>
                       </td>
-                      <td className="door-core-text-right door-core-total-value door-core-grand-total-cell">
+                      <td className="door-core-text-right door-core-total-value door-core-grand-total-cell door-set-2-totals-amount-cell">
                         {formatAED(data.Grand_Total_AED)}
                       </td>
-                      <td />
                     </tr>
                   </tbody>
                 </table>
@@ -690,71 +695,41 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                   </>
                 )}
 
-                <div className="door-core-terms">
-                  <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>
-                  <p>Assuring you of our best services at all times.</p>
-                </div>
-
                 <div className="door-core-last-page-wrap">
-                  <div className="door-core-signature-block">
-                    <p>Thanks and Regards</p>
-                    <br />
-                    <strong>For {signatureFooter.trade_name}</strong>
-                    <br />
-                    <br />
-                    <p>Address : {signatureFooter.location}</p>
-                    <br />
-                    {salesDetails.name}
-                    <br />
-                    {salesDetails.designation}
-                    <br />
-                    {salesDetails.contact}
-                    <br />
-                    <br />
-                    {showSignature ? (
-                      <div
-                        style={{
-                          marginBottom: '60px',
-                          marginRight: '32px',
-                          textAlign: 'right',
-                          marginLeft: 'auto',
-                          width: 'fit-content',
-                          maxWidth: '100%',
-                        }}
-                      >
-                        {salesDetails.signature ? (
-                          <>
-                            <img
-                              src={salesDetails.signature}
-                              alt={`Signature of ${salesDetails.name}`}
-                              style={{
-                                maxWidth: '200px',
-                                height: 'auto',
-                                display: 'block',
-                                marginLeft: 'auto',
-                                marginBottom: '4px',
-                              }}
-                            />
-                            <strong className="door-core-signature-label">Signature</strong>
-                          </>
-                        ) : (
-                          <span className="door-core-signature-placeholder">
-                            Signature not on file for this salesperson.
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="door-core-signature-line">
-                        Signature:<br />
-                        <span
-                          style={{
-                            borderBottom: '2px solid #000',
-                            width: '150px',
-                            display: 'inline-block',
-                          }}
-                        />
-                      </div>
-                    )}
+                  <div className="door-core-closing-print-group">
+                    <div className="door-core-terms">
+                      <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>
+                      <p>Assuring you of our best services at all times.</p>
+                    </div>
+                    <div className="door-core-signature-block">
+                      <p className="door-core-signature-greeting">Thanks and Regards</p>
+                      <p className="door-core-signature-for-line">
+                        <strong>For {footerData.trade_name}</strong>
+                      </p>
+                      <p className="door-core-signature-detail">{salesDetails.name}</p>
+                      <p className="door-core-signature-detail">{salesDetails.designation}</p>
+                      <p className="door-core-signature-detail">{salesDetails.contact}</p>
+                      {showSignature ? (
+                        <div className="door-core-signature-image-wrap">
+                          {salesDetails.signature ? (
+                            <>
+                              <img
+                                src={salesDetails.signature}
+                                alt={`Signature of ${salesDetails.name}`}
+                                className="door-core-signature-img"
+                              />
+                              <strong className="door-core-signature-label">Signature</strong>
+                            </>
+                          ) : (
+                            <span className="door-core-signature-placeholder">
+                              Signature not on file for this salesperson.
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="door-core-signature-block-spacer" />
+                      )}
+                    </div>
                   </div>
                   <div className="door-core-last-page-spacer" />
                 </div>
