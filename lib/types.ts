@@ -234,6 +234,9 @@ export interface CoreCoverPageData {
   /** Approval status: "Approved" | "Pending" — controls signature display with view param */
   Approval?: string
   Salesperson_Email?: string
+  /** Principal / manufacturer name for footer “Exclusive distributors…” (Quotation_Log_Door_Core) */
+  Trader_Name?: string
+  Trader_Name1?: string
   [key: string]: any
 }
 
@@ -274,7 +277,7 @@ export interface QuotationLogDoorSet2SubItem {
   [key: string]: any
 }
 
-/** Quotation_Log_Door_Set_2 report record (same app as Door Core, different report) */
+/** Quotation_Log_Door_Set_2 and Quotation_Door_Set1_Report record (shared form layout / API shape) */
 export interface QuotationLogDoorSet2Data {
   ID: string
   Quotation_No?: string
@@ -323,6 +326,9 @@ export interface QuotationLogDoorSet2Data {
   Salesperson_Email?: string
   /** Legacy field name (same as SalesPerson_Approval_Status) */
   Approval?: string
+  /** Principal / manufacturer name for footer “Exclusive distributors…” and signature “For …” (Door Set 1 & 2 reports) */
+  Trader_Name?: string
+  Trader_Name1?: string
   [key: string]: any
 }
 

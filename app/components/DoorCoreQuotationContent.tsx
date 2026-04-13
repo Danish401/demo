@@ -173,6 +173,8 @@ const DEFAULT_NOTES_HTML = `
 
 export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: DoorCoreQuotationContentProps) {
   const footerData = getFooterData(data.Sub_Divisions)
+  const signatureForEntity =
+    plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, '') || footerData.trade_name
   const salesDetails = getSalesPersonDetails(data.Sales_Person)
   const approvalStatus = (data.Approval ?? '').trim()
   const showSignature = approvalStatus === 'Approved' && viewMode === 'approved'
@@ -279,7 +281,10 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
               )}
               <div className="door-core-footer-bottom">
                 <p className="door-core-distributor-text">
-                  Exclusive distributors in UAE for <span className="door-core-brand-name">Ideal Special Products F.Z.C</span>
+                  Exclusive distributors in UAE for{' '}
+                  <span className="door-core-brand-name">
+                    {plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, 'Ideal Special Products F.Z.C')}
+                  </span>
                 </p>
               </div>
             </td>
@@ -404,64 +409,116 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
               </div>
 
               {/* BOQ table section */}
-              <div className="door-core-table-section">
-                <table className="door-core-product-table">
+              <div className="door-core-table-section door-core-boq-table-section">
+                <table className="door-core-product-table door-core-boq-product-table">
                   <thead>
                     <tr>
-                      <th style={{ width: '30px' }}>SR. No</th>
-                      <th>Door Ref</th>
-                      <th>Door Leaf width (mm)</th>
-                      <th>Door Leaf Height (mm)</th>
-                      <th>Leaf Thick (mm)</th>
-                      <th>Door Type</th>
-                      <th>Product Ref</th>
-                      <th>Acoustic Rating (db)</th>
-                      <th>Fire Rating (mins)</th>
-                      <th>Vision Panel (mm)</th>
+                      <th>SR.{'\u00A0'}No</th>
+                      <th>
+                        Door
+                        <br />
+                        Ref
+                      </th>
+                      <th>
+                        Door Leaf
+                        <br />
+                        width (mm)
+                      </th>
+                      <th>
+                        Door Leaf
+                        <br />
+                        Height (mm)
+                      </th>
+                      <th>
+                        Leaf
+                        <br />
+                        Thick (mm)
+                      </th>
+                      <th>
+                        Door
+                        <br />
+                        Type
+                      </th>
+                      <th>
+                        Product
+                        <br />
+                        Ref
+                      </th>
+                      <th>
+                        Acoustic
+                        <br />
+                        Rating (db)
+                      </th>
+                      <th>
+                        Fire
+                        <br />
+                        Rating (mins)
+                      </th>
+                      <th>
+                        Vision
+                        <br />
+                        Panel (mm)
+                      </th>
                       <th>Qty.</th>
-                      <th>Unit Price (AED)</th>
-                      <th>Total Unit Price (AED)</th>
+                      <th>
+                        Unit
+                        <br />
+                        Price
+                        <br />
+                        (AED)
+                      </th>
+                      <th>
+                        Total Unit
+                        <br />
+                        Price (AED)
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
                     {(data.BOQ || []).map((record, idx) => (
                       <tr key={idx}>
                         <td>{record.S_No1 ?? ''}</td>
-                        <td style={{ textAlign: 'right' }}>{record.Door_Ref ?? ''}</td>
+                        <td>{record.Door_Ref ?? ''}</td>
                         <td>{record.Door_Leaf_Width_mm ?? ''}</td>
                         <td>{record.Door_Leaf_Height_mm ?? ''}</td>
                         <td>{record.Leaf_Thick_mm ?? ''}</td>
-                        <td style={{ textAlign: 'right' }}>{record.Door_Type ?? ''}</td>
-                        <td style={{ textAlign: 'right' }}>{record.Product_Ref ?? ''}</td>
+                        <td>{record.Door_Type ?? ''}</td>
+                        <td>{record.Product_Ref ?? ''}</td>
                         <td>{record.Acoustic_Rating_db ?? ''}</td>
                         <td>{record.Fire_Rating_mins ?? ''}</td>
-                        <td style={{ textAlign: 'right' }}>{record.Vision_Panel_mm ?? ''}</td>
+                        <td>{record.Vision_Panel_mm ?? ''}</td>
                         <td>{record.Qty1 ?? ''}</td>
-                        <td style={{ textAlign: 'right' }}>{record.Unit_Price_AED1 != null ? formatAED(record.Unit_Price_AED1) : ''}</td>
-                        <td style={{ textAlign: 'right' }}>{record.Total_Unit_Price_AED1 != null ? formatAED(record.Total_Unit_Price_AED1) : ''}</td>
+                        <td className="door-core-text-right">
+                          {record.Unit_Price_AED1 != null ? formatAED(record.Unit_Price_AED1) : ''}
+                        </td>
+                        <td className="door-core-text-right">
+                          {record.Total_Unit_Price_AED1 != null ? formatAED(record.Total_Unit_Price_AED1) : ''}
+                        </td>
                       </tr>
                     ))}
-                    <tr>
+                    <tr className="door-core-boq-totals-row">
                       <td colSpan={12} className="door-core-total-label">
                         Total Amount AED :-
                       </td>
-                      <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.Total_Amount_AED)}</td>
+                      <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
                     </tr>
-                    <tr>
+                    <tr className="door-core-boq-totals-row">
                       <td colSpan={12} className="door-core-total-label">
                         VAT 5% AED :-
                       </td>
-                      <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.VAT_5)}</td>
+                      <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
                     </tr>
                     {hasDiscount && (
-                      <tr>
+                      <tr className="door-core-boq-totals-row">
                         <td colSpan={12} className="door-core-total-label">
                           Less Special Discount AED :-
                         </td>
-                        <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.Provision_for_Less_Special_Discount_AED)}</td>
+                        <td className="door-core-total-value door-core-text-right">
+                          {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                        </td>
                       </tr>
                     )}
-                    <tr>
+                    <tr className="door-core-boq-totals-row">
                       <td colSpan={12} className="door-core-total-label door-core-grand-total-label-cell">
                         <div className="door-core-grand-total-line">Grand Total AED :-</div>
                         <div className="door-core-amount-in-words">
@@ -469,7 +526,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                           {formatAedAmountInWords(data.Grand_Total_AED)}
                         </div>
                       </td>
-                      <td className="door-core-total-value" style={{ textAlign: 'right' }}>{formatAED(data.Grand_Total_AED)}</td>
+                      <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -508,7 +565,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     <div className="door-core-signature-block">
                       <p className="door-core-signature-greeting">Thanks and Regards</p>
                       <p className="door-core-signature-for-line">
-                        <strong>For {footerData.trade_name}</strong>
+                        <strong>For {signatureForEntity}</strong>
                       </p>
                       <p className="door-core-signature-detail">{salesDetails.name}</p>
                       <p className="door-core-signature-detail">{salesDetails.designation}</p>

@@ -16,7 +16,7 @@ import QuotationFitoutContent from './components/QuotationFitoutContent'
 import { ZohoQuotationResponse, ShippingMasterResponse, BillingMasterResponse, TemplateType, ZohoQuotation, QuotationData, DoorCoreQuotationResponse, CoreCoverPageData, QuotationLogDoorSet2Data, QuotationLogDoorSet2Response, QuotationLogFitout2Data, QuotationLogFitout2Response } from '@/lib/types'
 import { transformQuotationData, determineTemplateType } from '@/lib/quotation-utils'
 
-/** Normalize Door Set 2 record so all 4 subforms are read from API (handles different key names/nesting) */
+/** Normalize Door Set 1 / Door Set 2 records (Quotation_Door_Set1_Report & Quotation_Log_Door_Set_2): subforms + alternate API keys */
 function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): QuotationLogDoorSet2Data {
   const pick = (keys: string[]): unknown => {
     for (const k of keys) {
@@ -25,6 +25,11 @@ function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): Quot
     }
     return undefined
   }
+  const traderName =
+    (pick(['Trader_Name', 'trader_name', 'Trader Name']) as string | undefined) ??
+    (raw.Trader_Name as string | undefined)
+  const traderName1 =
+    (pick(['Trader_Name1', 'trader_name1']) as string | undefined) ?? (raw.Trader_Name1 as string | undefined)
   return {
     ...raw,
     ID: String(raw.ID ?? ''),
@@ -34,7 +39,31 @@ function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): Quot
     Section_3: pick(['Section_3', 'section_3', 'Section 3']) as QuotationLogDoorSet2Data['Section_3'],
     SalesPerson_Approval_Status: pick(['SalesPerson_Approval_Status', 'Approval']) as string | undefined,
     Salesperson_Email: pick(['Salesperson_Email', 'Salesperson_Email']) as string | undefined,
+    Trader_Name: traderName,
+    Trader_Name1: traderName1,
   } as QuotationLogDoorSet2Data
+}
+
+/** Normalize Door Core records (Quotation_Log_Door_Core / Core_Cover_page_Report): alternate API keys for trader name */
+function normalizeCoreCoverPageRecord(raw: Record<string, unknown>): CoreCoverPageData {
+  const pick = (keys: string[]): unknown => {
+    for (const k of keys) {
+      const v = raw[k]
+      if (v !== undefined && v !== null) return v
+    }
+    return undefined
+  }
+  const traderName =
+    (pick(['Trader_Name', 'trader_name', 'Trader Name']) as string | undefined) ??
+    (raw.Trader_Name as string | undefined)
+  const traderName1 =
+    (pick(['Trader_Name1', 'trader_name1']) as string | undefined) ?? (raw.Trader_Name1 as string | undefined)
+  return {
+    ...raw,
+    ID: String(raw.ID ?? ''),
+    Trader_Name: traderName,
+    Trader_Name1: traderName1,
+  } as CoreCoverPageData
 }
 
 /** Normalize Quotation_Log_Fitout_2 record (handles different key names from API) */
@@ -268,7 +297,7 @@ function QuotationPageInner() {
           if (!response.ok || data.code !== 3000 || !data.data || data.data.length === 0) {
             throw new Error(data.error || 'No Door Core quotation data found')
           }
-          setDoorCoreData(data.data[0])
+          setDoorCoreData(normalizeCoreCoverPageRecord(data.data[0] as Record<string, unknown>))
           return
         }
 

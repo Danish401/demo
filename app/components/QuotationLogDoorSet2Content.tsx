@@ -1,6 +1,7 @@
 'use client'
 
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
+import { plainZohoDisplayText } from '@/lib/quotation-utils'
 
 /** Format AED values for display */
 function formatAED(value: string | number | undefined): string {
@@ -156,6 +157,8 @@ interface QuotationLogDoorSet2ContentProps {
 
 export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' }: QuotationLogDoorSet2ContentProps) {
   const footerData = getFooterData(data.Sub_Divisions)
+  const signatureForEntity =
+    plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, '') || footerData.trade_name
   const salesDetails = getSalesPersonDetails(data.Sales_Person)
   const approvalStatus = (data.SalesPerson_Approval_Status ?? data.Approval ?? '').toString().trim()
   const showSignature = approvalStatus === 'Approved' && viewMode === 'approved'
@@ -285,7 +288,10 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
               )}
               <div className="door-core-footer-bottom">
                 <p className="door-core-distributor-text">
-                  Exclusive distributors in UAE for <span className="door-core-brand-name">Ideal Special Products F.Z.C</span>
+                  Exclusive distributors in UAE for{' '}
+                  <span className="door-core-brand-name">
+                    {plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, 'Ideal Special Products F.Z.C')}
+                  </span>
                 </p>
               </div>
             </td>
@@ -412,62 +418,22 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 <table className="door-core-product-table door-set-2-product-table">
                   <thead>
                     <tr>
-                      <th scope="col">S.{'\u00A0'}No</th>
-                      <th scope="col">Door Leaf</th>
-                      <th scope="col">Product Ref</th>
-                      <th scope="col" title="Fire rating (minutes)">
-                        Fire rating
-                        <br />
-                        (mins)
-                      </th>
-                      <th scope="col" title="Acoustic rating (decibels)">
-                        Acoustic rating
-                        <br />
-                        (db)
-                      </th>
-                      <th scope="col" title="Door leaf size width (mm)">
-                        Door leaf width
-                        <br />
-                        (mm)
-                      </th>
-                      <th scope="col" title="Door leaf size height (mm)">
-                        Door leaf height
-                        <br />
-                        (mm)
-                      </th>
-                      <th scope="col">
-                        Jamb
-                        <br />
-                        (mm)
-                      </th>
-                      <th scope="col">
-                        Leaf thick
-                        <br />
-                        (mm)
-                      </th>
-                      <th scope="col">Door type</th>
-                      <th scope="col" title="Vision panel (mm)">
-                        Vision panel
-                        <br />
-                        (mm)
-                      </th>
-                      <th scope="col">
-                        Hardware
-                        <br />
-                        set
-                      </th>
-                      <th scope="col">Unit</th>
-                      <th scope="col" className="door-core-text-right">Qty</th>
-                      <th scope="col" className="door-core-text-right">
-                        Unit price
-                        <br />
-                        (AED)
-                      </th>
-                      <th scope="col" className="door-core-text-right">
-                        Total price
-                        <br />
-                        (AED)
-                      </th>
+                      <th>S.{'\u00A0'}No</th>
+                      <th>Door<br />Leaf</th>
+                      <th>Product<br />Ref</th>
+                      <th>Fire<br />Rating<br />(mins)</th>
+                      <th>Acoustic<br />Rating<br />(db)</th>
+                      <th>Door Leaf<br />Size Width<br />(mm)</th>
+                      <th>Door Leaf<br />Size Height<br />(mm)</th>
+                      <th>Jamb<br />(mm)</th>
+                      <th>Leaf<br />Thick<br />(mm)</th>
+                      <th>Door<br />Type</th>
+                      <th>Vision<br />Panel<br />(mm)</th>
+                      <th>Hardware<br />Set</th>
+                      <th>Unit</th>
+                      <th className="door-core-text-right">Qty</th>
+                      <th className="door-core-text-right">Unit<br />Price<br />(AED)</th>
+                      <th className="door-core-text-right">Total<br />Price<br />(AED)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -704,7 +670,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                     <div className="door-core-signature-block">
                       <p className="door-core-signature-greeting">Thanks and Regards</p>
                       <p className="door-core-signature-for-line">
-                        <strong>For {footerData.trade_name}</strong>
+                        <strong>For {signatureForEntity}</strong>
                       </p>
                       <p className="door-core-signature-detail">{salesDetails.name}</p>
                       <p className="door-core-signature-detail">{salesDetails.designation}</p>
