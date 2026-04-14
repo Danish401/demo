@@ -418,22 +418,58 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 <table className="door-core-product-table door-set-2-product-table">
                   <thead>
                     <tr>
-                      <th>S.{'\u00A0'}No</th>
+                      <th className="door-set-2-th-slno">SL.NO.</th>
                       <th>Door<br />Leaf</th>
                       <th>Product<br />Ref</th>
-                      <th>Fire<br />Rating<br />(mins)</th>
-                      <th>Acoustic<br />Rating<br />(db)</th>
-                      <th>Door Leaf<br />Size Width<br />(mm)</th>
-                      <th>Door Leaf<br />Size Height<br />(mm)</th>
-                      <th>Jamb<br />(mm)</th>
-                      <th>Leaf<br />Thick<br />(mm)</th>
-                      <th>Door<br />Type</th>
-                      <th>Vision<br />Panel<br />(mm)</th>
-                      <th>Hardware<br />Set</th>
+                      <th>
+                        Fire
+                        <br />
+                        Rating (mins)
+                      </th>
+                      <th>
+                        Acoustic
+                        <br />
+                        Rating (db)
+                      </th>
+                      <th>
+                        Door Leaf
+                        <br />
+                        width (mm)
+                      </th>
+                      <th>
+                        Door Leaf
+                        <br />
+                        height (mm)
+                      </th>
+                      <th>
+                        Jamb
+                        <br />
+                        (mm)
+                      </th>
+                      <th>
+                        Leaf thick
+                        <br />
+                        (mm)
+                      </th>
+                      <th>Door Type</th>
+                      <th>
+                        Vision
+                        <br />
+                        panel (mm)
+                      </th>
+                      <th>Hardware Set</th>
                       <th>Unit</th>
-                      <th className="door-core-text-right">Qty</th>
-                      <th className="door-core-text-right">Unit<br />Price<br />(AED)</th>
-                      <th className="door-core-text-right">Total<br />Price<br />(AED)</th>
+                      <th>Qty</th>
+                      <th>
+                        Unit price
+                        <br />
+                        (AED)
+                      </th>
+                      <th>
+                        Total price
+                        <br />
+                        (AED)
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -452,7 +488,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                         <td>{record.Vision_Panel_MM ?? ''}</td>
                         <td>{record.Hardware_Set ?? ''}</td>
                         <td>{record.Unit1 ?? ''}</td>
-                        <td className="door-core-text-right">{record.Quantity1 ?? ''}</td>
+                        <td>{record.Quantity1 ?? ''}</td>
                         <td className="door-core-text-right">
                           {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
                         </td>
@@ -486,7 +522,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                     <table className="door-core-product-table door-core-subform-table">
                       <thead>
                         <tr>
-                          <th>S.No</th>
+                          <th>SL.{'\u00A0'}NO.</th>
                           <th>Description</th>
                           <th>Qty</th>
                           <th>Unit<br />Price<br />(AED)</th>
@@ -524,7 +560,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                     <table className="door-core-product-table door-core-subform-table">
                       <thead>
                         <tr>
-                          <th>S.No</th>
+                          <th>SL.{'\u00A0'}NO.</th>
                           <th>Description</th>
                           <th>Qty</th>
                           <th>Unit<br />Price<br />(AED)</th>
@@ -562,7 +598,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                     <table className="door-core-product-table door-core-subform-table">
                       <thead>
                         <tr>
-                          <th>S.No</th>
+                          <th>SL.{'\u00A0'}NO.</th>
                           <th>Description</th>
                           <th>Qty</th>
                           <th>Unit<br />Price<br />(AED)</th>

@@ -413,7 +413,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                 <table className="door-core-product-table door-core-boq-product-table">
                   <thead>
                     <tr>
-                      <th>SR.{'\u00A0'}No</th>
+                      <th>SL.{'\u00A0'}NO.</th>
                       <th>
                         Door
                         <br />

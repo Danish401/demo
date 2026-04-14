@@ -270,8 +270,8 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                       </div>
                       <table className="quotation-fitout-product-table">
                         <colgroup>
-                          <col style={{ width: '5%' }} />
-                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '7.5%' }} />
+                          <col style={{ width: '47.5%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '12%' }} />
@@ -279,7 +279,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         </colgroup>
                         <thead>
                           <tr>
-                            <th>S.No</th>
+                            <th>SL.{'\u00A0'}NO.</th>
                             <th>Description</th>
                             <th>Unit</th>
                             <th>Qty</th>
@@ -322,8 +322,8 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                       </div>
                       <table className="quotation-fitout-product-table">
                         <colgroup>
-                          <col style={{ width: '5%' }} />
-                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '7.5%' }} />
+                          <col style={{ width: '47.5%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '12%' }} />
@@ -331,7 +331,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         </colgroup>
                         <thead>
                           <tr>
-                            <th>S.No</th>
+                            <th>SL.{'\u00A0'}NO.</th>
                             <th>Description</th>
                             <th>Unit</th>
                             <th>Qty</th>
@@ -374,8 +374,8 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                       </div>
                       <table className="quotation-fitout-product-table">
                         <colgroup>
-                          <col style={{ width: '5%' }} />
-                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '7.5%' }} />
+                          <col style={{ width: '47.5%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '12%' }} />
@@ -383,7 +383,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         </colgroup>
                         <thead>
                           <tr>
-                            <th>S.No</th>
+                            <th>SL.{'\u00A0'}NO.</th>
                             <th>Description</th>
                             <th>Unit</th>
                             <th>Qty</th>
@@ -426,8 +426,8 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                       </div>
                       <table className="quotation-fitout-product-table">
                         <colgroup>
-                          <col style={{ width: '5%' }} />
-                          <col style={{ width: '50%' }} />
+                          <col style={{ width: '7.5%' }} />
+                          <col style={{ width: '47.5%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '10%' }} />
                           <col style={{ width: '12%' }} />
@@ -435,7 +435,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         </colgroup>
                         <thead>
                           <tr>
-                            <th>S.No</th>
+                            <th>SL.{'\u00A0'}NO.</th>
                             <th>Description</th>
                             <th>Unit</th>
                             <th>Qty</th>
