@@ -1275,14 +1275,14 @@ body {
 }
 
 /* ── Column widths: all 16 cols sum to exactly 100% ──
-   SL.NO. wider for header; Product Ref trimmed to compensate.
-   7.5+7.5+6+4.5+7.5+6+7+5+5+6+8+7+4.5+3.5+7.5+7.5 = 100% */
+   Total price (AED) wider for large amounts; SL.NO. compact; Fire rating slightly wider.
+   6+7.5+7+4.5+7.5+6+7+5+5+5+8+7+4+4.5+6.5+9.5 = 100% */
 
 /* Col 1: SL.NO. */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(1),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(1) {
-  width: 7.5%;
-  min-width: 3.5em;
+  width: 6%;
+  min-width: 3em;
 }
 
 /* Col 2: Door Leaf */
@@ -1294,7 +1294,7 @@ body {
 /* Col 3: Product Ref */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(3),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(3) {
-  width: 6%;
+  width: 7%;
 }
 
 /* Col 4: Fire Rating (mins) */
@@ -1338,7 +1338,7 @@ body {
 /* Col 10: Door Type */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(10),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(10) {
-  width: 6%;
+  width: 5%;
 }
 
 /* Col 11: Vision panel (mm) — wider so typical sizes stay one line, centered */
@@ -1354,29 +1354,31 @@ body {
   width: 7%;
 }
 
-/* Col 13: Unit — slightly wider + nowrap so values like “Nos” stay one line */
+/* Col 13: Unit — nowrap so values like “Nos” stay one line */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(13),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(13) {
-  width: 4.5%;
-  min-width: 2.75em;
+  width: 4%;
+  min-width: 2.5em;
 }
 
-/* Col 14: Qty — extra room for 2–4+ digit quantities; min-width helps narrow viewports */
+/* Col 14: Qty — extra room for dynamic quantities */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(14),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(14) {
-  width: 3.5%;
-  min-width: 2.25em;
+  width: 4.5%;
+  min-width: 2.5em;
 }
 
-/* Col 15–16: prices */
+/* Col 15: Unit price (AED) */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(15),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(15) {
-  width: 7.5%;
+  width: 6.5%;
 }
 
+/* Col 16: Total price (AED) — wider for long formatted values */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table th:nth-child(16),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td:nth-child(16) {
-  width: 7.5%;
+  width: 9.5%;
+  min-width: 6.5em;
 }
 
 /* Body (excl. subtotal): center text cols — Hardware is left + wrapped (see below) */
@@ -1402,8 +1404,7 @@ body {
   text-align: right;
 }
 
-/* Numeric / rating cells: one line so values like 115 do not split */
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(4),
+/* Numeric mm cells + Acoustic: one line so values like 115 do not split (Fire + Vision wrap — see below) */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(5),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(6),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
@@ -1418,14 +1419,36 @@ body {
   white-space: nowrap;
 }
 
-/* Vision panel (mm): centered, single line when it fits (wider column + nowrap) */
+/* Fire Rating (mins): wrap at words / soft breaks; right-aligned */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(4) {
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-align: right;
+  vertical-align: middle;
+  min-width: 0;
+  line-height: 1.35;
+}
+
+/* Vision panel (mm): centered, wrap so long panel text stays readable */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(11) {
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
   text-align: center;
+  vertical-align: middle;
+  min-width: 0;
+  line-height: 1.35;
 }
 
 /* Unit: centered, single line */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(13) {
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Qty: centered, single line */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(14) {
   white-space: nowrap;
   text-align: center;
 }
@@ -1474,7 +1497,7 @@ body {
   text-align: right;
 }
 
-/* Door Leaf, Product Ref, Door Type: wrap long text (Vision + Hardware have their own rules above) */
+/* Door Leaf, Product Ref, Door Type: wrap long text (Fire, Vision, Hardware have dedicated rules above) */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(2),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(3),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10) {

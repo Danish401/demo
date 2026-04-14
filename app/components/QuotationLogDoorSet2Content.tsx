@@ -3,12 +3,12 @@
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
 import { plainZohoDisplayText } from '@/lib/quotation-utils'
 
-/** Format AED values for display */
+/** Format AED values for display (no trailing .00 when amount is whole) */
 function formatAED(value: string | number | undefined): string {
-  if (value === undefined || value === null) return '0.00'
+  if (value === undefined || value === null) return '0'
   const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
-  if (isNaN(num)) return '0.00'
-  return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  if (isNaN(num)) return '0'
+  return num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
 }
 
 /** True if field has displayable value (hide row/section when false) */
