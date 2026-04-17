@@ -564,15 +564,10 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     <p className="quotation-fitout-signature-greeting">Thanks and Regards</p>
                     <p className="quotation-fitout-signature-team">
                       <strong>
-                        Business Development Representative
-                        <br />
-                        The Team from {footerData.trade_name}
-                        <br />
-                        {footerData.phone}
-                        <br />
-                        {footerData.email1}
-                        <br />
-                        {footerData.location}
+
+
+                        {footerData.trade_name}
+
                       </strong>
                     </p>
                     <p className="quotation-fitout-signature-detail">{salesDetails.name}</p>
