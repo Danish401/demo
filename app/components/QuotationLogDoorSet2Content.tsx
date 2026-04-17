@@ -51,7 +51,7 @@ function getFooterData(subDivisions?: string): DoorCoreStyleFooterData {
       }
     case 'FUJAIRAH':
       return {
-        trade_name: 'IDEAL FIRESTOP TRADING LLC FUJAIRAH BRANCH',
+        trade_name: 'IDEAL FIRESTOP TRADING LLC FUJAIRAH BRANCH 1',
         phone: '+971 42986983',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
