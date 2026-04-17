@@ -566,7 +566,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                       <strong>
 
 
-                        {footerData.trade_name}
+                        For {footerData.trade_name}
 
                       </strong>
                     </p>
