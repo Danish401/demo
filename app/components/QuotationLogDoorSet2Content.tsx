@@ -69,7 +69,7 @@ function getFooterData(subDivisions?: string): DoorCoreStyleFooterData {
       }
     case 'SHARJAH':
       return {
-        trade_name: 'IDEAL FIRESTOP TRADING LLC - SHJ.BR',
+        trade_name: 'IDEAL FIRESTOP TRADING LLC - SHJ.BR 1',
         phone: '+971 42986983',
         location: '66976, Sharjah, UAE',
         email1: 'sales@ideal.ae',
