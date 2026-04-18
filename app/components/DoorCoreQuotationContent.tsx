@@ -42,8 +42,8 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'DUBAI':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC',
-        phone: '+971 25513828',
-        location: '94956, Abu Dhabi',
+        phone: '+971 42986983',
+        location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
         website: 'www.idealfirestop.ae',
