@@ -85,14 +85,22 @@ function getFooterData(subDivisions?: string): FooterData {
         website: 'www.idealfitouts.ae',
       }
     case 'AJMAN':
+      return {
+        trade_name: '',
+        phone: '+971 67404840',
+        location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
+        email1: 'sales@ideal.ae',
+        email2: '',
+        website: 'www.ideal.ae',
+      }
     case 'Export':
       return {
-        trade_name: 'IDEAL SPECIAL PRODUCTS FZC',
-        phone: '',
-        location: '94956, Abu Dhabi',
-        email1: '',
+        trade_name: '',
+        phone: '+971 67404840',
+        location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
+        email1: 'sales@ideal.ae',
         email2: '',
-        website: '',
+        website: 'www.ideal.ae',
       }
     default:
       return {
@@ -185,17 +193,31 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
     ? data.Seal_Description.replace(/\n/g, '<br />')
     : ''
 
+  const subDivision = (data.Sub_Divisions ?? '').trim().toUpperCase()
+  const isAjmanOrExportSubdivision = subDivision === 'AJMAN' || subDivision === 'EXPORT'
+
+  const logoUrl =
+    subDivision === 'AJMAN' || subDivision === 'EXPORT'
+      ? 'https://i.ibb.co/Wvs029TQ/ideal-special.png'
+      : 'https://i.ibb.co/bjs2kFm4/Screenshot-2026-01-13-171206.png'
+
   return (
     <div className="door-core-quotation-container">
-      <div className="door-core-static-pattern" aria-hidden />
+      <div
+        className={
+          isAjmanOrExportSubdivision
+            ? 'door-core-static-pattern door-core-static-pattern--halftone'
+            : 'door-core-static-pattern'
+        }
+        aria-hidden
+      />
       <table className="door-core-page-layout">
-        {/* Header: repeats on every printed page */}
         <thead>
           <tr>
             <td className="door-core-layout-header-cell">
               <div className="door-core-header-logo-crop">
                 <img
-                  src="https://i.ibb.co/bjs2kFm4/Screenshot-2026-01-13-171206.png"
+                  src={logoUrl}
                   alt="Ideal"
                   className="door-core-header-logo-img"
                 />
@@ -209,8 +231,12 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
               {/* Top row: Trade Name (left) + Certification logos (right) */}
               <div className="door-core-footer-row door-core-footer-top">
                 <div className="door-core-footer-left">
-                  <span className="door-core-footer-trade-label">Trade Name: </span>
-                  <span className="door-core-footer-trade-name">{footerData.trade_name}</span>
+                  {!isAjmanOrExportSubdivision && (
+                    <>
+                      <span className="door-core-footer-trade-label">Trade Name: </span>
+                      <span className="door-core-footer-trade-name">{footerData.trade_name}</span>
+                    </>
+                  )}
                 </div>
                 <div className="door-core-footer-right">
                   <img
@@ -268,7 +294,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                       </span>
                     )}
                     {footerData.location && (
-                      <span className="door-core-footer-contact-item">
+                      <span className="door-core-footer-contact-item door-core-footer-location-text">
                         <svg className="door-core-icon" viewBox="0 0 200 200" aria-hidden>
                           <path d="M100 20 C65 20 40 45 40 80 C40 120 100 180 100 180 C100 180 160 120 160 80 C160 45 135 20 100 20 Z" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
                           <circle cx="100" cy="80" r="18" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
@@ -564,9 +590,11 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     </div>
                     <div className="door-core-signature-block">
                       <p className="door-core-signature-greeting">Thanks and Regards</p>
-                      <p className="door-core-signature-for-line">
-                        <strong>For {signatureForEntity}</strong>
-                      </p>
+                      {!isAjmanOrExportSubdivision && (
+                        <p className="door-core-signature-for-line">
+                          <strong>For {signatureForEntity}</strong>
+                        </p>
+                      )}
                       <p className="door-core-signature-detail">{salesDetails.name}</p>
                       <p className="door-core-signature-detail">{salesDetails.designation}</p>
                       <p className="door-core-signature-detail">{salesDetails.contact}</p>

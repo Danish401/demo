@@ -908,6 +908,10 @@ body {
   gap: 4px;
 }
 
+.door-core-footer-location-text {
+  white-space: pre-line;
+}
+
 .door-core-footer-email-block {
   align-items: flex-start;
 }

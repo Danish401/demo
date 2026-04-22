@@ -86,14 +86,22 @@ function getFooterData(subDivisions?: string): DoorCoreStyleFooterData {
         website: 'www.idealfitouts.ae',
       }
     case 'AJMAN':
+      return {
+        trade_name: '',
+        phone: '+971 67404840',
+        location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
+        email1: 'sales@ideal.ae',
+        email2: '',
+        website: 'www.ideal.ae',
+      }
     case 'Export':
       return {
-        trade_name: 'IDEAL SPECIAL PRODUCTS FZC',
-        phone: '',
-        location: '94956, Abu Dhabi',
-        email1: '',
+        trade_name: '',
+        phone: '+971 67404840',
+        location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
+        email1: 'sales@ideal.ae',
         email2: '',
-        website: '',
+        website: 'www.ideal.ae',
       }
     default:
       return {
@@ -146,6 +154,8 @@ function getSalesPersonDetails(
 
 const LOGO_IDEAL_FITOUTS = 'https://i.ibb.co/nsrVgzqF/Screenshot-2025-04-08-131618.png'
 const LOGO_IDEAL_FIRESTOP = 'https://i.ibb.co/3KVzWsK/Screenshot-2025-04-08-131639.png'
+/** Same header asset as Door Core when Sub_Divisions is AJMAN or Export */
+const LOGO_IDEAL_SPECIAL = 'https://i.ibb.co/Wvs029TQ/ideal-special.png'
 
 export type DoorSet2ViewMode = 'simple' | 'approved'
 
@@ -173,8 +183,12 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
     (data.Intumescent_seals ?? '').toString().trim() !== ''
 
   const division = (data.Division ?? '').trim()
-  const logoSrc =
-    division === 'Ideal Fitouts'
+  const subDivision = (data.Sub_Divisions ?? '').trim().toUpperCase()
+  const isAjmanOrExportSubdivision = subDivision === 'AJMAN' || subDivision === 'EXPORT'
+
+  const logoSrc = isAjmanOrExportSubdivision
+    ? LOGO_IDEAL_SPECIAL
+    : division === 'Ideal Fitouts'
       ? LOGO_IDEAL_FITOUTS
       : division === 'Ideal Firestop'
         ? LOGO_IDEAL_FIRESTOP
@@ -197,7 +211,14 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
 
   return (
     <div className="door-core-quotation-container door-set-2-quotation">
-      <div className="door-core-static-pattern" aria-hidden />
+      <div
+        className={
+          isAjmanOrExportSubdivision
+            ? 'door-core-static-pattern door-core-static-pattern--halftone'
+            : 'door-core-static-pattern'
+        }
+        aria-hidden
+      />
       <table className="door-core-page-layout">
         <thead>
           <tr>
@@ -217,8 +238,12 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
             <td className="door-core-layout-footer-cell">
               <div className="door-core-footer-row door-core-footer-top">
                 <div className="door-core-footer-left">
-                  <span className="door-core-footer-trade-label">Trade Name: </span>
-                  <span className="door-core-footer-trade-name">{footerData.trade_name}</span>
+                  {!isAjmanOrExportSubdivision && (
+                    <>
+                      <span className="door-core-footer-trade-label">Trade Name: </span>
+                      <span className="door-core-footer-trade-name">{footerData.trade_name}</span>
+                    </>
+                  )}
                 </div>
                 <div className="door-core-footer-right">
                   <img
@@ -275,7 +300,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       </span>
                     )}
                     {footerData.location && (
-                      <span className="door-core-footer-contact-item">
+                      <span className="door-core-footer-contact-item door-core-footer-location-text">
                         <svg className="door-core-icon" viewBox="0 0 200 200" aria-hidden>
                           <path d="M100 20 C65 20 40 45 40 80 C40 120 100 180 100 180 C100 180 160 120 160 80 C160 45 135 20 100 20 Z" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
                           <circle cx="100" cy="80" r="18" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
@@ -705,9 +730,11 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                     </div>
                     <div className="door-core-signature-block">
                       <p className="door-core-signature-greeting">Thanks and Regards</p>
-                      <p className="door-core-signature-for-line">
-                        <strong>For {signatureForEntity}</strong>
-                      </p>
+                      {!isAjmanOrExportSubdivision && (
+                        <p className="door-core-signature-for-line">
+                          <strong>For {signatureForEntity}</strong>
+                        </p>
+                      )}
                       <p className="door-core-signature-detail">{salesDetails.name}</p>
                       <p className="door-core-signature-detail">{salesDetails.designation}</p>
                       <p className="door-core-signature-detail">{salesDetails.contact}</p>
