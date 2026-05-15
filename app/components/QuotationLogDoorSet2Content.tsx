@@ -1,7 +1,7 @@
 'use client'
 
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
-import { plainZohoDisplayText } from '@/lib/quotation-utils'
+import { formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 
 /** Format AED values for display (no trailing .00 when amount is whole) */
 function formatAED(value: string | number | undefined): string {
@@ -175,9 +175,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
-  const sealDescHTML = data.Seal_Description?.trim()
-    ? data.Seal_Description.replace(/\n/g, '<br />')
-    : ''
+  const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
   const showIntumescentSeal =
     (data.Seals_Require1 ?? '').toString().trim() === 'Yes' &&
     (data.Intumescent_seals ?? '').toString().trim() !== ''

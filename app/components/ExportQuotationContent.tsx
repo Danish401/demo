@@ -51,7 +51,7 @@ export default function ExportQuotationContent({ data, shippingData, billingData
   const bankBranch = rawQuotationData?.Bank_Branch || 'Jaipur Branch'
   const swiftCode = rawQuotationData?.Swift_Code || 'IOBA0000102'
   const accountNumber = rawQuotationData?.Account_Number || '010200003059'
-  const accountName = rawQuotationData?.Account_Name || 'WMW METAL FABRICS LTD'
+  const accountName = rawQuotationData?.Account_Name || ''
   const hsCode = rawQuotationData?.HS_Code || '7314.1410'
   const offerValidity = rawQuotationData?.Offer_Validity || '7 Days'
   
@@ -132,23 +132,6 @@ export default function ExportQuotationContent({ data, shippingData, billingData
                         {/* Left Column - Exporter */}
                         <td style={{ width: '50%', verticalAlign: 'top', borderRight: '1px solid #000', borderTop: '1px solid #000', borderBottom: '1px solid #000', borderLeft: '1px solid #000', padding: '12px', margin: 0 }}>
                           <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Exporter</div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                            <div style={{ width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                              <img
-                                src="/wmw-logo.png"
-                                alt="WMW Logo"
-                                style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-                                onError={(e) => { e.currentTarget.style.display = 'none' }}
-                              />
-                            </div>
-                            <div style={{ fontWeight: 'bold', fontSize: '12px', textTransform: 'uppercase' }}>METAL FABRICS</div>
-                          </div>
-                          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>WMW METAL FABRICS LIMITED</div>
-                          <div style={{ marginBottom: '2px' }}>53, Industrial Area: Jhotwara,</div>
-                          <div style={{ marginBottom: '2px' }}>Jaipur 302012 India</div>
-                          <div style={{ marginBottom: '2px' }}>Tel: +911417105151</div>
-                          <div style={{ marginBottom: '2px' }}>info@wmwindia.com</div>
-                          <div>www.wmwindia.com</div>
                         </td>
 
                         {/* Right Column - Quotation Details */}
@@ -459,7 +442,7 @@ export default function ExportQuotationContent({ data, shippingData, billingData
                           <strong>Offer Validity:</strong> {offerValidity}
                         </div>
                         <div style={{ marginBottom: '20px', fontSize: '10px', fontWeight: 'bold' }}>
-                          For WMW Metal Fabrics Ltd.
+                          Authorized Signatory
                         </div>
                         <div style={{ marginBottom: '8px', fontSize: '9px', fontStyle: 'italic' }}>
                           This is an electronically generated document, doesn&apos;t require a signature.

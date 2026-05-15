@@ -13,30 +13,7 @@ interface PerformaInvoiceContentProps {
 
 const headerSupplierCell = (
   <td style={{ width: '55%', verticalAlign: 'top', border: '1px solid #000', padding: '12px' }}>
-    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>Supplier</div>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-      <div style={{ width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <img 
-          src="/wmw-logo.png" 
-          alt="WMW Logo" 
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-          onError={(e) => {
-            console.error('Logo failed to load:', e);
-            e.currentTarget.style.display = 'none';
-          }}
-        />
-      </div>
-      <div style={{ fontWeight: 'bold', fontSize: '12px', textTransform: 'uppercase' }}>METAL FABRICS</div>
-    </div>
-    <div style={{ fontWeight: 'bold' }}>WMW Metal Fabrics Ltd</div>
-    <div>53, Industrial Area, Jhotwara,</div>
-    <div>Jaipur-302012</div>
-    <div>Rajasthan, India</div>
-    <div>Tel: +91.141.7105151</div>
-    <div>wmw.wmwindia.com</div>
-    <div>info@wmwindia.com</div>
-    <div>GSTIN:08AAACW2620D1ZS</div>
-    <div>CIN: U27109WB1995PLC068681</div>
+    <div style={{ fontWeight: 'bold' }}>Supplier</div>
   </td>
 )
 
@@ -324,7 +301,7 @@ export default function PerformaInvoiceContent({ data, shippingData, billingData
                 </ol>
               </td>
               <td style={{ width: '40%', verticalAlign: 'top', border: '1px solid #000', padding: '12px', textAlign: 'right' }}>
-                <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>For WMW Metal Fabrics Ltd.</div>
+                <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Authorized Signatory</div>
                 <div>Computer Generated Document</div>
                 <div>No Signature Needed</div>
                 <div style={{ marginTop: '8px' }}>Dated: {data.date}</div>
@@ -347,7 +324,7 @@ export default function PerformaInvoiceContent({ data, shippingData, billingData
                   <tbody>
                     <tr>
                       <td style={{ border: 'none', padding: 0, fontWeight: 'bold', color: '#fff' }}>Bank Details :-</td>
-                      <td style={{ border: 'none', padding: 0, textAlign: 'right', fontWeight: 'bold', color: '#fff' }}>For WMW Metal Fabrics Ltd.</td>
+                      <td style={{ border: 'none', padding: 0, textAlign: 'right', fontWeight: 'bold', color: '#fff' }}>Authorized Signatory</td>
                     </tr>
                   </tbody>
                 </table>
@@ -370,7 +347,7 @@ export default function PerformaInvoiceContent({ data, shippingData, billingData
           </tbody>
         </table>
 
-        <div style={{ textAlign: 'right', marginTop: '12px', fontSize: '10px' }}>DOC NO. WMW/MKT/F.1 (Rev.00)</div>
+        <div style={{ textAlign: 'right', marginTop: '12px', fontSize: '10px' }}></div>
         </div>
       </div>
 
@@ -379,7 +356,7 @@ export default function PerformaInvoiceContent({ data, shippingData, billingData
         <h1 style={{ textAlign: 'center', fontSize: '16px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '16px' }}>STANDARD CONDITIONS OF SALE:</h1>
 
         <p style={{ marginBottom: '16px', lineHeight: 1.6 }}>
-          <strong>Pretext -</strong> In the below stated terms and conditions of the sale, WMW Metal Fabrics Ltd., hereby referred to as &apos;The Company&apos; is holding the entity mentioned in the invoice, here by referred to as &quot;The Buyer&quot; liable to all stated terms as on the date of this invoice.
+          <strong>Pretext -</strong> In the below stated terms and conditions of the sale, The Company, hereby referred to as &apos;The Company&apos; is holding the entity mentioned in the invoice, here by referred to as &quot;The Buyer&quot; liable to all stated terms as on the date of this invoice.
         </p>
 
         <div className="section" style={{ marginBottom: '16px' }}>

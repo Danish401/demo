@@ -4,7 +4,6 @@ import './globals.css'
 import ZohoTokenLoader from './components/ZohoTokenLoader'
 
 export const metadata: Metadata = {
-  title: 'Quotation - WMW Metal Fabrics Ltd',
   description: 'Quotation document',
 }
 

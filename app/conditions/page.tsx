@@ -10,7 +10,7 @@ export default function ConditionsPage() {
       <h1>STANDARD CONDITIONS OF SALE:</h1>
 
       <p>
-        The following conditions apply to all business conducted by WMW Metal Fabrics Ltd. (&quot;The Company&quot;) with the recipient (&quot;The Buyer&quot;). These conditions are effective on the date of the invoice.
+        The following conditions apply to all business conducted by The Company with the recipient (&quot;The Buyer&quot;). These conditions are effective on the date of the invoice.
       </p>
 
       <div className="section">

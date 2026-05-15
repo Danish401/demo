@@ -20,28 +20,7 @@ interface QuotationContentProps {
 
 const headerSupplierCell = (
   <td style={{ width: '55%', verticalAlign: 'top', border: '1px solid #000', padding: '12px' }}>
-    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>Supplier</div>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-      <div style={{ width: '48px', height: '48px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-        <img 
-          src="/wmw-logo.png" 
-          alt="WMW Logo" 
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
-          onError={(e) => {
-            console.error('Logo failed to load:', e);
-            e.currentTarget.style.display = 'none';
-          }}
-        />
-      </div>
-      <div style={{ fontWeight: 'bold', fontSize: '12px' }}>METAL FABRICS</div>
-    </div>
-    <div style={{ fontWeight: 'bold' }}>WMW Metal Fabrics Ltd</div>
-    <div>53, Industrial Area, Jhotwara, Jaipur-302012, Rajasthan, India</div>
-    <div>Tel: +91.141.7105151</div>
-    <div>www.wmwindia.com</div>
-    <div>info@wmwindia.com</div>
-    <div>GSTIN: 08AAACW2620D1Z8</div>
-    <div>CIN: U27109WB1995PLC068681</div>
+    <div style={{ fontWeight: 'bold' }}>Supplier</div>
   </td>
 )
 
@@ -316,7 +295,7 @@ export default function QuotationContent({ data, shippingData, billingData }: Qu
               </ol>
             </td>
             <td style={{ width: '40%', verticalAlign: 'top', border: '1px solid #000', padding: '12px', textAlign: 'right' }}>
-              <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>For WMW Metal Fabrics Ltd.</div>
+              <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Authorized Signatory</div>
               <div>Computer Generated Document</div>
               <div>No Signature Needed</div>
               <div style={{ marginTop: '8px' }}>Dated: {data.date}</div>
@@ -325,7 +304,6 @@ export default function QuotationContent({ data, shippingData, billingData }: Qu
         </tbody>
       </table>
 
-      <div style={{ textAlign: 'right', marginTop: '12px', fontSize: '10px' }}>DOC NO. WMW/MKT/F.1 (Rev.00)</div>
             </td>
           </tr>
         </tbody>
@@ -342,7 +320,7 @@ export default function QuotationContent({ data, shippingData, billingData }: Qu
       <div className="conditions-for-print conditions-doc" style={{ border: '1px solid #000', padding: '16px' }}>
         <h1>STANDARD CONDITIONS OF SALE:</h1>
         <p>
-          The following conditions apply to all business conducted by WMW Metal Fabrics Ltd. (&quot;The Company&quot;) with the recipient (&quot;The Buyer&quot;). These conditions are effective on the date of the invoice.
+          The following conditions apply to all business conducted by The Company with the recipient (&quot;The Buyer&quot;). These conditions are effective on the date of the invoice.
         </p>
         <div className="section">
           <div className="section-title">1. CONTRACT:</div>

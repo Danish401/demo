@@ -139,23 +139,73 @@ export function numberToWords(num: number): string {
 }
 
 /**
- * Grand total style line for AED quotations (Dirhams + optional Fils).
+ * Amount in words for "Total Amount : AED …" line (e.g. Ten Thousand … and Fifty Fils Only).
  */
 export function formatAedAmountInWords(value: string | number | undefined): string {
-  if (value === undefined || value === null) return integerToWords(0) + ' UAE Dirhams Only'
+  if (value === undefined || value === null) return integerToWords(0) + ' Only'
   const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : Number(value)
-  if (!Number.isFinite(num)) return integerToWords(0) + ' UAE Dirhams Only'
+  if (!Number.isFinite(num)) return integerToWords(0) + ' Only'
 
   const abs = Math.abs(num)
   const intPart = Math.floor(abs)
   const decPart = Math.round((abs - intPart) * 100) % 100
 
-  let s = integerToWords(intPart) + ' UAE Dirhams'
+  let s = integerToWords(intPart)
   if (decPart > 0) {
     const filWord = decPart === 1 ? 'Fil' : 'Fils'
     s += ' and ' + integerToWords(decPart) + ' ' + filWord
   }
   return s + ' Only'
+}
+
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+/**
+ * Formats Seal_Description from Zoho: each line with bold prefix up to ":" and dividers between rows.
+ */
+export function formatSealDescriptionHtml(raw: string | undefined): string {
+  if (!raw?.trim()) return ''
+
+  const normalized = raw
+    .trim()
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/div>/gi, '\n')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+
+  const lines = normalized
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+
+  if (lines.length === 0) return ''
+
+  const items = lines
+    .map((line) => {
+      const colonIndex = line.indexOf(':')
+      if (colonIndex > 0) {
+        const prefix = line.slice(0, colonIndex + 1).trim()
+        const detail = line.slice(colonIndex + 1).trim()
+        return `<div class="door-core-seal-description-item"><strong>${escapeHtml(prefix)}</strong>${detail ? ` ${escapeHtml(detail)}` : ''}</div>`
+      }
+      return `<div class="door-core-seal-description-item">${escapeHtml(line)}</div>`
+    })
+    .join('')
+
+  return `<div class="door-core-seal-description-list">${items}</div>`
 }
 
 /** Strip HTML / entities from Zoho text fields so display size is not driven by inline styles. */

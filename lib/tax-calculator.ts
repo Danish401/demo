@@ -2,7 +2,7 @@
  * Tax calculation utilities
  */
 
-// Supplier state (hardcoded - WMW Metal Fabrics Ltd is in Rajasthan)
+// Supplier state (hardcoded -  is in Rajasthan)
 const SUPPLIER_STATE = 'Rajasthan'
 
 // Tax rates

@@ -78,16 +78,16 @@ export default function SLSQuotationContent({ data, shippingData, billingData, r
   const payment = data.termsOfPayment || rawQuotationData?.Term_of_Payment || ''
   const quotationValidity = rawQuotationData?.Offer_Validity || '7 Days'
   const warrantyDisclaimer = rawQuotationData?.Warranty_Disclaimer || 'We declare that our products are wearing parts. Therefore, they are excluded from any warranty regulations.'
-  const generalTerms = rawQuotationData?.General_Terms || 'All WMW goods and services are subject to the WMW General Terms and Conditions, a copy of which is available on the WMW website (www.wmwindia.com) or you may request a hard copy which we can send to you. This is in line with the wording on the website.'
+  const generalTerms = rawQuotationData?.General_Terms || ''
   const closingStatement = rawQuotationData?.Closing_Statement || 'We hope that the above quotation is of interest and will gladly be of further help with any request you may have.'
   const contactPerson = rawQuotationData?.Payement || 'Mr. Milap Verma'
   const contactNumber = rawQuotationData?.Contact_Number || '(+91-9358584002)'
-  const companyName = rawQuotationData?.Company_Name || 'WMW Industries Limited.'
+  const companyName = rawQuotationData?.Company_Name || ''
   const companyFormerName = rawQuotationData?.Company_Former_Name || 'Formerly known as GKD India Limited'
   const registeredAddress = rawQuotationData?.Registered_Address || '52, Industrial Area, Jhotwara, Jaipur-302012, Rajasthan, India'
   const phone = rawQuotationData?.Phone || '+91 141 7105100'
-  const email = rawQuotationData?.Email || 'info@wmwindia.com'
-  const website = rawQuotationData?.Website || 'www.wmwindia.com'
+  const email = rawQuotationData?.Email || ''
+  const website = rawQuotationData?.Website || ''
   const registeredOffice = rawQuotationData?.Registered_Office || '# Imax Imperial, Room No. 1C, 1st floor, 101/5, S.N. Banerjee Road, Kolkata-700014, West Bengal, India'
   const tagline = rawQuotationData?.Tagline || 'Weaving Technical Mesh Solutions'
   const cin = rawQuotationData?.CIN || 'U51909WB2011PLC163277'
@@ -104,11 +104,11 @@ export default function SLSQuotationContent({ data, shippingData, billingData, r
           
           {/* Right side - Logo, Company Name, and Date */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px', marginTop: 0 }}>
-            {/* WMW Logo - 150px */}
+            
             <div style={{ width: '150px', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 0, paddingTop: 0 }}>
               <img 
-                src="/wmw-logo.png" 
-                alt="WMW Logo" 
+                src="" 
+                alt="Company logo" 
                 style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', marginTop: 0 }}
                 onError={(e) => {
                   console.error('Logo failed to load:', e);
@@ -118,7 +118,7 @@ export default function SLSQuotationContent({ data, shippingData, billingData, r
             </div>
             {/* Company Name */}
             <div style={{ fontWeight: 'bold', fontSize: '14px', textTransform: 'uppercase', textAlign: 'right' }}>
-              WMW INDUSTRIES LTD
+              {companyName}
             </div>
             {/* Date */}
             <div style={{ fontSize: '11px', textAlign: 'right' }}>
@@ -226,7 +226,7 @@ export default function SLSQuotationContent({ data, shippingData, billingData, r
         <div style={{ borderTop: '2px solid #000', paddingTop: '15px', marginTop: '40px', fontSize: '9px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
             <div style={{ width: '60%' }}>
-              <div style={{ fontWeight: 'bold', fontSize: '10px', marginBottom: '4px', textTransform: 'uppercase' }}>WMW INDUSTRIES LIMITED</div>
+              <div style={{ fontWeight: 'bold', fontSize: '10px', marginBottom: '4px', textTransform: 'uppercase' }}>{companyName}</div>
               <div style={{ marginBottom: '8px', fontSize: '8px' }}>{companyFormerName}</div>
               <div style={{ marginBottom: '4px' }}>{registeredAddress}</div>
               <div style={{ marginBottom: '4px' }}>{phone} | {email} | {website}</div>

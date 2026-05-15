@@ -1,7 +1,7 @@
 'use client'
 
 import { CoreCoverPageData } from '@/lib/types'
-import { formatAedAmountInWords, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 
 /** True if field has displayable value (hide row/section when false) */
 function hasValue(v: unknown): boolean {
@@ -189,9 +189,7 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
-  const sealDescHTML = data.Seal_Description?.trim()
-    ? data.Seal_Description.replace(/\n/g, '<br />')
-    : ''
+  const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
 
   const subDivision = (data.Sub_Divisions ?? '').trim().toUpperCase()
   const isAjmanOrExportSubdivision = subDivision === 'AJMAN' || subDivision === 'EXPORT'
@@ -524,13 +522,13 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     ))}
                     <tr className="door-core-boq-totals-row">
                       <td colSpan={12} className="door-core-total-label">
-                        Total Amount AED :-
+                        Total Amount
                       </td>
                       <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
                     </tr>
                     <tr className="door-core-boq-totals-row">
                       <td colSpan={12} className="door-core-total-label">
-                        VAT 5% AED :-
+                        VAT 5%
                       </td>
                       <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
                     </tr>
@@ -546,10 +544,8 @@ export default function DoorCoreQuotationContent({ data, viewMode = 'simple' }: 
                     )}
                     <tr className="door-core-boq-totals-row">
                       <td colSpan={12} className="door-core-total-label door-core-grand-total-label-cell">
-                        <div className="door-core-grand-total-line">Grand Total AED :-</div>
-                        <div className="door-core-amount-in-words">
-                          <span className="door-core-amount-in-words-label">In words:</span>{' '}
-                          {formatAedAmountInWords(data.Grand_Total_AED)}
+                        <div className="door-core-total-amount-in-words-line">
+                          <strong>Total Amount :</strong> AED {formatAedAmountInWords(data.Grand_Total_AED)}
                         </div>
                       </td>
                       <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>

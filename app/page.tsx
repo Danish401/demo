@@ -85,8 +85,8 @@ function normalizeQuotationLogFitout2Record(raw: Record<string, unknown>): Quota
   } as QuotationLogFitout2Data
 }
 
-// Mock data for WMW template design testing
-const getMockWMWData = (): QuotationData => ({
+// Mock data for quotation template design testing
+const getMockQuotationData = (): QuotationData => ({
   quotationNumber: 'ARQT/24-25/0097',
   date: '02/08/2024',
   buyerEnquiryNo: 'E Mail',
@@ -163,18 +163,7 @@ const getMockBillingData = () => ({
 
 const headerSupplierCell = (
   <td style={{ width: '55%', verticalAlign: 'top', border: '1px solid #000', padding: '12px' }}>
-    <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>Supplier</div>
-    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-      <div style={{ width: '48px', height: '48px', background: '#1e40af', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>wmw</div>
-      <div style={{ fontWeight: 'bold', fontSize: '12px' }}>METAL FABRICS</div>
-    </div>
-    <div style={{ fontWeight: 'bold' }}>WMW Metal Fabrics Ltd</div>
-    <div>53, Industrial Area, Jhotwara, Jaipur-302012, Rajasthan, India</div>
-    <div>Tel: +91.141.7105151</div>
-    <div>www.wmwindia.com</div>
-    <div>info@wmwindia.com</div>
-    <div>GSTIN: 08AAACW2620D1Z8</div>
-    <div>CIN: U27109WB1995PLC068681</div>
+    <div style={{ fontWeight: 'bold' }}>Supplier</div>
   </td>
 )
 

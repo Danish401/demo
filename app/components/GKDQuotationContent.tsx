@@ -93,11 +93,11 @@ export default function GKDQuotationContent({ data, shippingData, billingData, r
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '10px' }}>
                       <div style={{ width: '180px', height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>
                         <img 
-                          src="/wmw-logo.png" 
-                          alt="WMW Logo" 
+                          src="" 
+                          alt="Company logo" 
                           style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }}
                           onError={(e) => {
-                            console.error('WMW Logo failed to load:', e);
+                            console.error('Logo failed to load:', e);
                             e.currentTarget.style.display = 'none';
                           }}
                         />
