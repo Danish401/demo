@@ -104,6 +104,17 @@ body {
     margin-bottom: 1cm;
     margin-left: 0.5cm;
     margin-right: 0.5cm;
+
+    /* Standard "Page X of Y" numbering (Chrome 131+: CSS @page margin boxes + page/pages counters).
+       Renders in the page's own margin strip, below the in-flow footer content, so it doesn't overlap
+       anything already on the page. Unsupported browsers (older Chromium, Firefox, Safari) simply show
+       no page number — a safe no-op, nothing else about the page layout changes. */
+    @bottom-center {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 9px;
+      color: #555;
+    }
   }
 
   body {
