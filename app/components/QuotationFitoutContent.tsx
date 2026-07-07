@@ -122,8 +122,15 @@ function FooterBandContent({ footerData }: { footerData: FooterData }) {
           <span className="quotation-fitout-footer-trade-name">{footerData.trade_name}</span>
         </div>
         <div className="quotation-fitout-footer-right">
-          <span className="quotation-fitout-footer-part-label">Part of </span>
-          <span className="quotation-fitout-footer-part-name">{footerData.part_of}</span>
+          <img
+            src="/logo4.png"
+            className="quotation-fitout-footer-certs"
+            alt="AV CERT / UAF / FSC Certification"
+          />
+          <div>
+            <span className="quotation-fitout-footer-part-label">Part of </span>
+            <span className="quotation-fitout-footer-part-name">{footerData.part_of}</span>
+          </div>
         </div>
       </div>
       <hr className="quotation-fitout-footer-hr" />
@@ -192,6 +199,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
+  const hasVat = data.VAT_5 != null && Number(data.VAT_5) !== 0
 
   const toItemsArray = (val: unknown): QuotationLogFitout2Item[] =>
     val == null ? [] : Array.isArray(val) ? (val as QuotationLogFitout2Item[]) : [val as QuotationLogFitout2Item]
@@ -652,15 +660,17 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                               </tr>
                             </>
                           )}
-                          <tr className="quotation-fitout-total-row">
-                            <td colSpan={10} />
-                            <td className="quotation-fitout-totals-label">
-                              <strong>VAT 5% <DirhamSymbol />:</strong>
-                            </td>
-                            <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                              {formatAED(data.VAT_5 ?? 0)}
-                            </td>
-                          </tr>
+                          {hasVat && (
+                            <tr className="quotation-fitout-total-row">
+                              <td colSpan={10} />
+                              <td className="quotation-fitout-totals-label">
+                                <strong>VAT 5% <DirhamSymbol />:</strong>
+                              </td>
+                              <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                                {formatAED(data.VAT_5 ?? 0)}
+                              </td>
+                            </tr>
+                          )}
                           <tr className="quotation-fitout-total-row">
                             <td colSpan={10} />
                             <td className="quotation-fitout-totals-label">

@@ -207,11 +207,15 @@ function getSalesPersonDetails(
   }
 }
 
-function formatAED(value: string | number | undefined): string {
-  if (value === undefined || value === null) return '0.00'
+/** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
+function parseAED(value: string | number | undefined | null): number {
+  if (value === undefined || value === null) return 0
   const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
-  if (isNaN(num)) return '0.00'
-  return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return isNaN(num) ? 0 : num
+}
+
+function formatAED(value: string | number | undefined): string {
+  return parseAED(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 /** "Thanks and Regards" + signature block. Rendered once, positioned either on the cover letter (Normal
@@ -295,9 +299,9 @@ function FooterBandContent({
         </div>
         <div className="door-core-footer-right">
           <img
-            src="https://i.ibb.co/k6srwW6p/Screenshot-2026-01-13-171144.png"
+            src="/logo4.png"
             className="door-core-footer-certs"
-            alt="Certifications"
+            alt="AV CERT / UAF / FSC Certification"
           />
         </div>
       </div>
@@ -503,6 +507,8 @@ export default function DoorCoreQuotationContent({
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
+  const hasVat = data.VAT_5 != null && Number(data.VAT_5) !== 0
+  const amountAfterDiscount = parseAED(data.Total_Amount_AED) - parseAED(data.Provision_for_Less_Special_Discount_AED)
   const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
   const totalQty = (data.BOQ || []).reduce((sum, record) => {
     const qty = typeof record.Qty1 === 'string' ? parseFloat(record.Qty1) : record.Qty1
@@ -805,20 +811,32 @@ export default function DoorCoreQuotationContent({
                       </td>
                       <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
                     </tr>
-                    <tr className="door-core-boq-totals-row">
-                      <td colSpan={12} className="door-core-total-label">
-                        VAT 5%
-                      </td>
-                      <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
-                    </tr>
                     {hasDiscount && (
+                      <>
+                        <tr className="door-core-boq-totals-row">
+                          <td colSpan={12} className="door-core-total-label">
+                            Less Special Discount <DirhamSymbol /> :-
+                          </td>
+                          <td className="door-core-total-value door-core-text-right">
+                            {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                          </td>
+                        </tr>
+                        <tr className="door-core-boq-totals-row">
+                          <td colSpan={12} className="door-core-total-label">
+                            Amount After Discount <DirhamSymbol /> :-
+                          </td>
+                          <td className="door-core-total-value door-core-text-right">
+                            {formatAED(amountAfterDiscount)}
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                    {hasVat && (
                       <tr className="door-core-boq-totals-row">
                         <td colSpan={12} className="door-core-total-label">
-                          Less Special Discount <DirhamSymbol /> :-
+                          VAT 5%
                         </td>
-                        <td className="door-core-total-value door-core-text-right">
-                          {formatAED(data.Provision_for_Less_Special_Discount_AED)}
-                        </td>
+                        <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
                       </tr>
                     )}
                     <tr className="door-core-boq-totals-row">

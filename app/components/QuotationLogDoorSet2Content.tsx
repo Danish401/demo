@@ -3,12 +3,16 @@
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
 import { formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 
+/** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
+function parseAED(value: string | number | undefined | null): number {
+  if (value === undefined || value === null) return 0
+  const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
+  return isNaN(num) ? 0 : num
+}
+
 /** Format AED values for display (no trailing .00 when amount is whole) */
 function formatAED(value: string | number | undefined): string {
-  if (value === undefined || value === null) return '0'
-  const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
-  if (isNaN(num)) return '0'
-  return num.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+  return parseAED(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 /** True if field has displayable value (hide row/section when false) */
@@ -213,9 +217,9 @@ function FooterBandContent({
         </div>
         <div className="door-core-footer-right">
           <img
-            src="https://i.ibb.co/k6srwW6p/Screenshot-2026-01-13-171144.png"
+            src="/logo4.png"
             className="door-core-footer-certs"
-            alt="Certifications"
+            alt="AV CERT / UAF / FSC Certification"
           />
         </div>
       </div>
@@ -315,6 +319,8 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
+  const hasVat = data.VAT_5_AED != null && Number(data.VAT_5_AED) !== 0
+  const amountAfterDiscount = parseAED(data.Total_Amount_AED) - parseAED(data.Provision_for_Less_Special_Discount_AED)
   const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
   const showIntumescentSeal =
     (data.Seals_Require1 ?? '').toString().trim() === 'Yes' &&
@@ -654,8 +660,9 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       <td />
                     </tr>
                     <tr className="door-core-subtotal">
-                      <td colSpan={13} />
-                      <td className="door-core-text-right"><strong>Sub Total:</strong></td>
+                      <td colSpan={14} className="door-core-text-right">
+                        <strong>Sub Total:</strong>
+                      </td>
                       <td className="door-core-text-right">{formatAED(data.Sub_Total)}</td>
                     </tr>
                   </tbody>
@@ -790,23 +797,35 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       </td>
                     </tr>
                     {hasDiscount && (
+                      <>
+                        <tr className="door-core-totals-row">
+                          <td className="door-set-2-totals-label-cell">
+                            <strong>Less Special Discount (<DirhamSymbol />):</strong>
+                          </td>
+                          <td className="door-core-text-right door-set-2-totals-amount-cell">
+                            {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                          </td>
+                        </tr>
+                        <tr className="door-core-totals-row">
+                          <td className="door-set-2-totals-label-cell">
+                            <strong>Amount After Discount (<DirhamSymbol />):</strong>
+                          </td>
+                          <td className="door-core-text-right door-set-2-totals-amount-cell">
+                            {formatAED(amountAfterDiscount)}
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                    {hasVat && (
                       <tr className="door-core-totals-row">
                         <td className="door-set-2-totals-label-cell">
-                          <strong>Less Special Discount (<DirhamSymbol />):</strong>
+                          <strong>VAT 5% (<DirhamSymbol />):</strong>
                         </td>
                         <td className="door-core-text-right door-set-2-totals-amount-cell">
-                          {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                          {formatAED(data.VAT_5_AED)}
                         </td>
                       </tr>
                     )}
-                    <tr className="door-core-totals-row">
-                      <td className="door-set-2-totals-label-cell">
-                        <strong>VAT 5% (<DirhamSymbol />):</strong>
-                      </td>
-                      <td className="door-core-text-right door-set-2-totals-amount-cell">
-                        {formatAED(data.VAT_5_AED)}
-                      </td>
-                    </tr>
                     <tr className="door-core-totals-row">
                       <td className="door-set-2-totals-label-cell">
                         <strong>Grand Total (<DirhamSymbol />):</strong>
