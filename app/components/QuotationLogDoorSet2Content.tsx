@@ -354,7 +354,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
   const showSection3 = section3.length > 0
 
   return (
-    <div className="door-core-quotation-container door-set-2-quotation">
+    <div className="door-core-quotation-container door-set-2-quotation">{/* portrait: no @page override — uses the shared default A4 portrait page in globals.css */}
       <div
         className={
           isAjmanOrExportSubdivision
@@ -434,10 +434,13 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 )}
 
                 <br />
-                <strong>Dear&nbsp;&nbsp;</strong>{data.Customer_Name1 ?? '—'}<br />
+                <p className="door-core-salutation">
+                  <strong className="door-core-salutation-dear">Dear Sir/Madam,</strong>
+                </p>
                 <p className="door-core-intro-p">
                   We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ
                 </p>
+                <br />
 
                 {data.Scope_field?.trim() && (
                   <div className="door-core-details-row">
@@ -489,25 +492,25 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 )}
                 {showIntumescentSeal && (
                   <div className="door-core-seal-row">
-                    <div className="door-core-seal-label">Intumescent seal:</div>
+                    <div className="door-core-seal-label"><strong>Intumescent seal:</strong></div>
                     <div className="door-core-seal-value">{data.Intumescent_seals ?? ''}</div>
                   </div>
                 )}
                 {showIntumescentSeal && sealDescHTML && (
                   <div className="door-core-seal-row">
-                    <div className="door-core-seal-label">Seal description:</div>
+                    <div className="door-core-seal-label"><strong>Seal description:</strong></div>
                     <div className="door-core-seal-value" dangerouslySetInnerHTML={{ __html: sealDescHTML }} />
                   </div>
                 )}
                 {data.Acoustic_Seals?.trim() && (
                   <div className="door-core-seal-row">
-                    <div className="door-core-seal-label">Acoustic seals:</div>
+                    <div className="door-core-seal-label"><strong>Acoustic seals:</strong></div>
                     <div className="door-core-seal-value">{data.Acoustic_Seals}</div>
                   </div>
                 )}
                 {data.Hardware?.trim() && (
                   <div className="door-core-seal-row">
-                    <div className="door-core-seal-label">Hardware set:</div>
+                    <div className="door-core-seal-label"><strong>Hardware set:</strong></div>
                     <div className="door-core-seal-value">{data.Hardware}</div>
                   </div>
                 )}
@@ -533,7 +536,6 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 {hasValue(data.Notes1) && (
                   <>
                     <strong>3. Notes</strong>
-                    <p className="door-core-terms-p">1. The following are excluded from our scope:</p>
                     <div
                       className="door-core-notes-p door-core-notes-html"
                       dangerouslySetInnerHTML={{ __html: data.Notes1 ?? '' }}
@@ -602,12 +604,13 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                     <col className="ds2-col-qty" />
                     <col className="ds2-col-unitprice" />
                     <col className="ds2-col-totalprice" />
+                    <col className="ds2-col-remarks" />
                   </colgroup>
                   <thead>
                     <tr>
                       <th className="door-set-2-th-slno" rowSpan={2}>SL.<br />NO.</th>
                       <th rowSpan={2}>Door Ref</th>
-                      <th colSpan={2}>Door Leaf Size</th>
+                      <th colSpan={2}>{data.Width_Height?.trim() || 'Door Leaf Size'}</th>
                       <th rowSpan={2}>Jamb<br />(mm)</th>
                       <th rowSpan={2}>Leaf Thick<br />(mm)</th>
                       <th rowSpan={2}>Door Type</th>
@@ -615,10 +618,11 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       <th rowSpan={2}>Acoustic<br />Rating (dB)</th>
                       <th rowSpan={2}>Fire Rating<br />(Min)</th>
                       <th rowSpan={2}>Vision Panel<br />(mm)</th>
-                      <th rowSpan={2}>Hardware Set</th>
+                      <th rowSpan={2}>Hardware<br />Set</th>
                       <th rowSpan={2}>Qty<br />(Nos)</th>
                       <th rowSpan={2}>Unit Price<br />(<DirhamSymbol />)</th>
                       <th rowSpan={2}>Total Unit Price<br />(<DirhamSymbol />)</th>
+                      <th rowSpan={2}>Remarks</th>
                     </tr>
                     <tr>
                       <th>Width (mm)</th>
@@ -647,6 +651,7 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                         <td className="door-core-text-right">
                           {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
                         </td>
+                        <td>{record.Remarks ?? ''}</td>
                       </tr>
                     ))}
                     <tr className="door-core-subtotal">
@@ -658,12 +663,14 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                       </td>
                       <td />
                       <td />
+                      <td />
                     </tr>
                     <tr className="door-core-subtotal">
                       <td colSpan={14} className="door-core-text-right">
                         <strong>Sub Total:</strong>
                       </td>
                       <td className="door-core-text-right">{formatAED(data.Sub_Total)}</td>
+                      <td />
                     </tr>
                   </tbody>
                 </table>

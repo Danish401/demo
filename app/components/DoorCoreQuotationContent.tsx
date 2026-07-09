@@ -614,8 +614,7 @@ export default function DoorCoreQuotationContent({
 
                 <br />
                 <p className="door-core-salutation">
-                  <strong className="door-core-salutation-dear">Dear&nbsp;&nbsp;&nbsp;</strong>
-                  <span className="door-core-salutation-name">{plainZohoDisplayText(data.Customer_Name1)}</span>
+                  <strong className="door-core-salutation-dear">Dear Sir/Madam,</strong>
                 </p>
                 <p className="door-core-intro-p">
                   We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ
@@ -720,6 +719,7 @@ export default function DoorCoreQuotationContent({
                     <col className="door-core-boq-col-qty" />
                     <col className="door-core-boq-col-unitprice" />
                     <col className="door-core-boq-col-totalprice" />
+                    <col className="door-core-boq-col-remarks" />
                   </colgroup>
                   <thead>
                     <tr>
@@ -729,7 +729,7 @@ export default function DoorCoreQuotationContent({
                         <br />
                         Ref
                       </th>
-                      <th colSpan={2}>Door Leaf Size</th>
+                      <th colSpan={2}>{data.Width_Height?.trim() || 'Door Leaf Size'}</th>
                       <th rowSpan={2}>
                         Leaf
                         <br />
@@ -769,6 +769,7 @@ export default function DoorCoreQuotationContent({
                         <div>Total Unit Price</div>
                         <div className="door-core-boq-th-currency"><DirhamSymbol /></div>
                       </th>
+                      <th rowSpan={2}>Remarks</th>
                     </tr>
                     <tr>
                       <th>Width (mm)</th>
@@ -795,13 +796,15 @@ export default function DoorCoreQuotationContent({
                         <td className="door-core-text-right">
                           {record.Total_Unit_Price_AED1 != null ? formatAED(record.Total_Unit_Price_AED1) : ''}
                         </td>
+                        <td>{record.Remarks ?? ''}</td>
                       </tr>
                     ))}
                     <tr className="door-core-boq-totals-row">
                       <td colSpan={10} className="door-core-total-label">
                         <strong>Total Quantity:</strong>
                       </td>
-                      <td className="door-core-total-value door-core-text-right">{totalQty || ''}</td>
+                      <td className="door-core-total-value door-core-text-center">{totalQty || ''}</td>
+                      <td className="door-core-total-value" />
                       <td className="door-core-total-value" />
                       <td className="door-core-total-value" />
                     </tr>
@@ -810,6 +813,7 @@ export default function DoorCoreQuotationContent({
                         Total Amount
                       </td>
                       <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
+                      <td className="door-core-total-value" />
                     </tr>
                     {hasDiscount && (
                       <>
@@ -820,6 +824,7 @@ export default function DoorCoreQuotationContent({
                           <td className="door-core-total-value door-core-text-right">
                             {formatAED(data.Provision_for_Less_Special_Discount_AED)}
                           </td>
+                          <td className="door-core-total-value" />
                         </tr>
                         <tr className="door-core-boq-totals-row">
                           <td colSpan={12} className="door-core-total-label">
@@ -828,6 +833,7 @@ export default function DoorCoreQuotationContent({
                           <td className="door-core-total-value door-core-text-right">
                             {formatAED(amountAfterDiscount)}
                           </td>
+                          <td className="door-core-total-value" />
                         </tr>
                       </>
                     )}
@@ -837,6 +843,7 @@ export default function DoorCoreQuotationContent({
                           VAT 5%
                         </td>
                         <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
+                        <td className="door-core-total-value" />
                       </tr>
                     )}
                     <tr className="door-core-boq-totals-row">
@@ -846,6 +853,7 @@ export default function DoorCoreQuotationContent({
                         </div>
                       </td>
                       <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>
+                      <td className="door-core-total-value" />
                     </tr>
                   </tbody>
                 </table>

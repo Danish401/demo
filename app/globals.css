@@ -938,18 +938,18 @@ body {
     width: 100% !important;
     max-width: 100% !important;
     table-layout: fixed !important;
-    font-size: 11px !important;
+    font-size: 8.5px !important;
   }
 
   .door-core-product-table.door-core-boq-product-table th,
   .door-core-product-table.door-core-boq-product-table td {
-    font-size: 11px !important;
+    font-size: 8.5px !important;
     padding: 4px 3px !important;
     overflow: visible !important;
   }
 
   .door-core-product-table.door-core-boq-product-table th {
-    font-size: 10px !important;
+    font-size: 8.5px !important;
   }
 
   .door-core-product-table.door-core-boq-product-table thead th {
@@ -1260,7 +1260,7 @@ body {
 
 /* Door Set 2: "Total Quotation value ..." note — shown once on the cover letter, above Payment Terms */
 .door-set-2-quotation .door-set-2-quotation-value-note {
-  font-size: 12.5px;
+  font-size: 11pt;
   font-weight: 700;
   color: #111827;
   line-height: 1.5;
@@ -1269,7 +1269,7 @@ body {
 
 /* Quotation_Log_Door_Core: "Total Quotation value ..." note — shown once on the cover letter (Normal type only) */
 .door-core-standalone .door-core-quotation-value-note {
-  font-size: 12.5px;
+  font-size: 11pt;
   font-weight: 700;
   color: #111827;
   line-height: 1.5;
@@ -1409,6 +1409,10 @@ body {
   text-align: right;
 }
 
+.door-core-text-center {
+  text-align: center;
+}
+
 /* ── Quotation_Log_Door_Core BOQ: match Door Set 1 table look (grid, header, alignment) ── */
 .door-core-boq-table-section {
   width: 100%;
@@ -1422,7 +1426,8 @@ body {
   table-layout: fixed;
   border-collapse: collapse;
   box-sizing: border-box;
-  font-size: 11px;
+  font-size: 8.5px;
+  border: 1.5px solid #333;
   margin-top: 8px;
 }
 
@@ -1430,14 +1435,14 @@ body {
 .door-core-product-table.door-core-boq-product-table td {
   border: 1px solid #333;
   box-sizing: border-box;
-  padding: 5px 4px;
+  padding: 4px 3px;
   vertical-align: middle;
   line-height: 1.35;
 }
 
 /* BOQ header row: one consistent treatment — all titles centered, same padding/weight */
 .door-core-product-table.door-core-boq-product-table thead th {
-  font-size: 10px;
+  font-size: 8.5px;
   font-weight: 700;
   text-align: center !important;
   vertical-align: middle;
@@ -1461,30 +1466,31 @@ body {
 }
 
 .door-core-product-table.door-core-boq-product-table td {
-  font-size: 11px;
+  font-size: 8.5px;
   text-align: left;
 }
 
-/* 13 columns: widths set via <colgroup>, not th/td nth-child — the header row now groups Width/Height
+/* 14 columns: widths set via <colgroup>, not th/td nth-child — the header row now groups Width/Height
    under a shared "Door Leaf Size" cell (colSpan 2), so header <th> count no longer matches body <td>
    count per row, and nth-child position would misalign between thead and tbody. colgroup sizes the
    actual column tracks directly, independent of how header cells span them.
-   Door Type / Product Ref had visible slack in the header row — trimmed slightly and gave that room
-   to Door Ref / Width / Height / Acoustic / Fire, which were tighter against their data.
-   5.5+7+8+8+7+7.5+10+8+6+8+5.5+9+10.5 = 100% */
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-slno { width: 5.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doorref { width: 7%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-width { width: 8%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-height { width: 8%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-leafthick { width: 7%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doortype { width: 7.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-productref { width: 10%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-acoustic { width: 8%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-fire { width: 6%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-vision { width: 8%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-qty { width: 5.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-unitprice { width: 9%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-totalprice { width: 10.5%; }
+   Added Remarks — every other column trimmed slightly to make room (safe now that the font-size
+   dropped from 11px to 8.5px, which freed up slack that wasn't there before).
+   4.5+6.5+7.5+7.5+6.5+7+9.5+7.5+5.5+7.5+5+8.5+9.5+7.5 = 100% */
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-slno { width: 4.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doorref { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-width { width: 7.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-height { width: 7.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-leafthick { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doortype { width: 7%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-productref { width: 9.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-acoustic { width: 7.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-fire { width: 5.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-vision { width: 7.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-qty { width: 5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-unitprice { width: 8.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-totalprice { width: 9.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-remarks { width: 7.5%; }
 
 .door-core-product-table.door-core-boq-product-table td:nth-child(1) {
   min-width: 3.5em;
@@ -1502,7 +1508,8 @@ body {
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(8),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(11) {
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(11),
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(14) {
   text-align: center;
   vertical-align: middle;
 }
@@ -1525,11 +1532,12 @@ body {
   white-space: nowrap;
 }
 
-/* Door Type, Product Ref: the only columns that can hold genuinely longer text ("Single Leaf",
+/* Door Type, Product Ref, Remarks: the only columns that can hold genuinely longer text ("Single Leaf",
    "IDEAL ACOUFIRE 45") — wrap at word boundaries ONLY, never split mid-word (overflow-wrap: break-word
    previously turned "Single Leaf" into "Singl e Leaf" in a narrow column) */
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(6),
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(7) {
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(7),
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(14) {
   white-space: normal;
   overflow-wrap: normal;
   word-break: keep-all;
@@ -1553,6 +1561,12 @@ body {
 .door-core-product-table.door-core-boq-product-table .door-core-total-value {
   text-align: right !important;
   white-space: nowrap;
+}
+
+/* Total Quantity's value sits under the Qty column (a plain count, not a currency amount) —
+   centered like the rest of that column, not right-aligned like the AED totals below it */
+.door-core-product-table.door-core-boq-product-table .door-core-total-value.door-core-text-center {
+  text-align: center !important;
 }
 
 .door-core-product-table.door-core-boq-product-table .door-core-grand-total-label-cell {
@@ -1607,6 +1621,66 @@ body {
   margin-bottom: 10px;
 }
 
+/* Cover letter (Ref/Date/To/Scope/Dear/intro/Payment Terms/signature): bumped from the shared
+   Door Core/Set 2 default of 12px (~9pt) to a more standard business-letter size, 11pt, since this
+   goes out to real clients. Door Core shares every one of these class names, so each rule here is
+   deliberately re-scoped under .door-set-2-quotation (two-class specificity beats the shared
+   one-class rule) rather than editing the shared rules directly. Door Core gets the identical
+   treatment further below, scoped under .door-core-standalone instead — same fix, independent rules,
+   so either template's font-size can change later without touching the other. The item-pricing table
+   below has its own separate, smaller font-size (see the .door-set-2-product-table rules) for
+   column-fit reasons and is not affected by this. */
+.door-set-2-quotation.door-core-quotation-container {
+  font-size: 11pt;
+}
+
+.door-set-2-quotation .door-core-details-row,
+.door-set-2-quotation .door-core-seal-row,
+.door-set-2-quotation .door-core-details-label,
+.door-set-2-quotation .door-core-seal-label,
+.door-set-2-quotation .door-core-details-value,
+.door-set-2-quotation .door-core-seal-value,
+.door-set-2-quotation .door-core-seal-description-item,
+.door-set-2-quotation .door-core-salutation,
+.door-set-2-quotation .door-core-intro-p,
+.door-set-2-quotation .door-core-terms-p,
+.door-set-2-quotation .door-core-notes-p.door-core-notes-html,
+.door-set-2-quotation .door-core-terms,
+.door-set-2-quotation .door-core-signature-label,
+.door-set-2-quotation .door-core-signature-line,
+.door-set-2-quotation .door-core-signature-placeholder,
+.door-set-2-quotation .door-core-signature-block {
+  font-size: 11pt;
+}
+
+/* Quotation_Log_Door_Core: same cover-letter font-size standardization as Door Set 2 above, scoped
+   under .door-core-standalone instead so it can't leak into Door Set 2 or Fitout. Door Core's
+   Payment Terms paragraph is additionally wrapped in .door-core-payment-section (Validity isn't),
+   which carries its own font-size rule elsewhere — matched here too so both read the same size. */
+.door-core-standalone.door-core-quotation-container {
+  font-size: 11pt;
+}
+
+.door-core-standalone .door-core-details-row,
+.door-core-standalone .door-core-seal-row,
+.door-core-standalone .door-core-details-label,
+.door-core-standalone .door-core-seal-label,
+.door-core-standalone .door-core-details-value,
+.door-core-standalone .door-core-seal-value,
+.door-core-standalone .door-core-seal-description-item,
+.door-core-standalone .door-core-salutation,
+.door-core-standalone .door-core-intro-p,
+.door-core-standalone .door-core-terms-p,
+.door-core-standalone .door-core-payment-section .door-core-terms-p,
+.door-core-standalone .door-core-notes-p.door-core-notes-html,
+.door-core-standalone .door-core-terms,
+.door-core-standalone .door-core-signature-label,
+.door-core-standalone .door-core-signature-line,
+.door-core-standalone .door-core-signature-placeholder,
+.door-core-standalone .door-core-signature-block {
+  font-size: 11pt;
+}
+
 .door-set-2-quotation .door-core-table-section {
   width: 100%;
   max-width: 100%;
@@ -1620,7 +1694,7 @@ body {
   table-layout: fixed !important;
   box-sizing: border-box;
   border-collapse: collapse;
-  font-size: 11px !important;
+  font-size: 8.5px !important;
   border: 1.5px solid #333;
 }
 
@@ -1632,27 +1706,32 @@ body {
 }
 
 /* ── Column widths via <colgroup> (widths sit on <col>, independent of the 2-row/colSpan header) ──
-   Door Ref and Vision Panel are now forced to one line (see nowrap rules below) — given a little extra
-   room here so "IDF-001" / "200 x 600" don't overflow their cell now that wrapping can't absorb them.
-   4+7+6+6+4.5+4.5+8.5+11+6.5+6+8+7+5+7.5+8.5 = 100% */
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-slno { width: 4%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-doorref { width: 7%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-width { width: 6%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-height { width: 6%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-jamb { width: 4.5%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-leafthick { width: 4.5%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-doortype { width: 8.5%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-productref { width: 11%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-acoustic { width: 6.5%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-fire { width: 6%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-vision { width: 8%; }
+   Portrait A4 only has ~200mm of usable width for these 16 columns (vs. ~291mm when this was briefly
+   landscape), so every column here is sized against the smaller 8.5px font below — there isn't slack
+   to spare anywhere, which is also why font-size dropped from 11px/10.5px: at the old font size,
+   several single unbreakable words ("Hardware", "Acoustic", "200 x 600") physically could not fit in
+   a 200mm-wide table no matter how the percentages were juggled.
+   3+5.5+5.5+5.5+4+5+6+9.5+7+5.5+7+7+4.5+8+9.5+7.5 = 100% */
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-slno { width: 3%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-doorref { width: 5.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-width { width: 5.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-height { width: 5.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-jamb { width: 4%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-leafthick { width: 5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-doortype { width: 6%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-productref { width: 9.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-acoustic { width: 7%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-fire { width: 5.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-vision { width: 7%; }
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-hardware { width: 7%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-qty { width: 5%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-unitprice { width: 7.5%; }
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-totalprice { width: 8.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-qty { width: 4.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-unitprice { width: 8%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-totalprice { width: 9.5%; }
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-remarks { width: 7.5%; }
 
 /* Data column order: 1 SL.NO, 2 Door Ref, 3 Width, 4 Height, 5 Jamb, 6 Leaf Thick, 7 Door Type,
-   8 Product Ref, 9 Acoustic Rating, 10 Fire Rating, 11 Vision Panel, 12 Hardware Set, 13 Qty, 14 Unit Price, 15 Total Unit Price */
+   8 Product Ref, 9 Acoustic Rating, 10 Fire Rating, 11 Vision Panel, 12 Hardware Set, 13 Qty, 14 Unit Price,
+   15 Total Unit Price, 16 Remarks */
 
 /* Every column except Unit Price / Total Unit Price: centered horizontally and vertically, so the
    quotation reads cleanly for the client. SL.NO., Door Ref, Width, Height, Jamb, Leaf Thick, Door Type,
@@ -1669,7 +1748,8 @@ body {
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(11),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(13) {
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(13),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16) {
   text-align: center;
   vertical-align: middle;
 }
@@ -1702,7 +1782,8 @@ body {
    (previous overflow-wrap: break-word turned "Single Leaf" into "Singl e Leaf") */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12) {
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16) {
   white-space: normal;
   overflow-wrap: normal;
   word-break: keep-all;
@@ -1711,7 +1792,7 @@ body {
 
 /* ── Door Set 2 main table TH: bold, centered, crisp border grid (2-row grouped header) ── */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table thead th {
-  font-size: 10.5px !important;
+  font-size: 8.5px !important;
   font-weight: 700;
   white-space: normal;
   word-break: keep-all;
@@ -1720,8 +1801,8 @@ body {
   overflow: visible;
   box-sizing: border-box;
   vertical-align: middle !important;
-  padding: 5px 3px !important;
-  line-height: 1.3;
+  padding: 4px 3px !important;
+  line-height: 1.25;
   text-align: center !important;
   background-color: #ffffff;
 }
@@ -1740,16 +1821,17 @@ body {
   white-space: normal;
   overflow-wrap: break-word;
   word-break: normal;
-  font-size: 11px !important;
+  font-size: 8.5px !important;
   vertical-align: middle;
-  padding: 5px 4px;
-  line-height: 1.3;
+  padding: 4px 3px;
+  line-height: 1.25;
   text-align: right;
 }
 
-/* Non-main-table th/td (subform etc) keep 12px */
+/* Non-main-table th/td (Section_1/2/3 subform tables) — matched to the main item table's font-size
+   and padding so both tables read as one consistent document, not two different table styles. */
 .door-set-2-quotation .door-core-product-table:not(.door-set-2-product-table) th {
-  font-size: 10px !important;
+  font-size: 8.5px !important;
   font-weight: 700;
   white-space: normal;
   word-break: keep-all;
@@ -1759,9 +1841,9 @@ body {
   box-sizing: border-box;
   vertical-align: middle !important;
   text-align: center !important;
-  padding: 6px 4px;
-  line-height: 1.4;
-  background-color: #e8eaed;
+  padding: 4px 3px;
+  line-height: 1.25;
+  background-color: #ffffff;
 }
 
 .door-set-2-quotation .door-core-product-table:not(.door-set-2-product-table) td {
@@ -1769,10 +1851,10 @@ body {
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  font-size: 12px;
-  vertical-align: top;
-  padding: 5px 4px;
-  line-height: 1.2;
+  font-size: 8.5px !important;
+  vertical-align: middle;
+  padding: 4px 3px;
+  line-height: 1.25;
 }
 
 /* Door Set 2: subform column widths */
@@ -2231,7 +2313,7 @@ body {
 /* ══ Quotation Fitout (Quotation_Log_Fitout_2 – Ideal Fitouts template) ══ */
 .quotation-fitout-container {
   font-family: Arial, sans-serif;
-  font-size: 12px;
+  font-size: 11pt;
   line-height: 1.45;
   margin: 0;
   padding: 0;
@@ -2345,7 +2427,7 @@ body {
   flex: 0 0 auto;
   page-break-inside: avoid;
   break-inside: avoid;
-  font-size: 12px;
+  font-size: 11pt;
   line-height: 1.45;
 }
 
@@ -2371,7 +2453,7 @@ body {
 .quotation-fitout-details-row {
   display: flex;
   align-items: flex-start;
-  font-size: 12px;
+  font-size: 11pt;
   margin-bottom: 6px;
 }
 
@@ -2387,14 +2469,14 @@ body {
 
 .quotation-fitout-salutation {
   margin: 0 0 0.35em 0;
-  font-size: 12px;
+  font-size: 11pt;
   line-height: 1.45;
 }
 
 .quotation-fitout-intro {
   margin-top: 0;
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: 11pt;
   line-height: 1.45;
 }
 
@@ -2408,14 +2490,15 @@ body {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 12px;
+  font-size: 8.5px;
+  border: 1.5px solid #333;
   margin-bottom: 10px;
 }
 
 .quotation-fitout-product-table th,
 .quotation-fitout-product-table td {
   border: 1px solid #ddd;
-  padding: 6px;
+  padding: 4px 3px;
   vertical-align: middle;
 }
 
@@ -2437,6 +2520,7 @@ body {
 .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(3),
 .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(4) {
   text-align: center;
+  white-space: nowrap;
 }
 
 .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(5),
@@ -2473,6 +2557,10 @@ body {
 .quotation-fitout-totals-table {
   width: 100%;
   table-layout: auto;
+  /* Totals (Grand Total/Discount/VAT) shares .quotation-fitout-product-table's base class but should
+     read at the normal cover-letter size, not the item table's compact 8.5px — matching Door Set 2 /
+     Door Core, where the totals summary is a fully separate table that was never shrunk. */
+  font-size: 11pt;
 }
 
 .quotation-fitout-totals-table tbody tr.quotation-fitout-total-row td {
@@ -2508,13 +2596,13 @@ body {
 
 .quotation-fitout-terms-p {
   margin-left: 1%;
-  font-size: 12px;
+  font-size: 11pt;
   margin-bottom: 5px;
 }
 
 .quotation-fitout-terms {
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 11pt;
 }
 
 .quotation-fitout-terms p {
@@ -2524,7 +2612,7 @@ body {
 .quotation-fitout-signature-label {
   display: block;
   text-align: left;
-  font-size: 12px;
+  font-size: 11pt;
   font-weight: 700;
 }
 
@@ -2557,7 +2645,7 @@ body {
 }
 
 .quotation-fitout-signature-placeholder {
-  font-size: 12px;
+  font-size: 11pt;
   color: #666;
 }
 
@@ -2565,7 +2653,7 @@ body {
   margin-top: 1.5em;
   margin-bottom: 60px;
   text-align: left;
-  font-size: 12px;
+  font-size: 11pt;
   font-weight: 700;
 }
 
@@ -2578,7 +2666,7 @@ body {
 /* Notes: render HTML (ol/li) without showing raw tags */
 .quotation-fitout-notes-html {
   margin-left: 1%;
-  font-size: 12px;
+  font-size: 11pt;
   margin-bottom: 8px;
 }
 
@@ -2723,8 +2811,12 @@ body {
     display: table-footer-group !important;
   }
 
-  /* Footer at bottom of A4 last page: handled by flex + spacer in main @media print block */
-  body {
+  /* Footer at bottom of A4 last page: handled by flex + spacer in main @media print block.
+     Scoped to .quotation-fitout-container (not bare body) — this previously targeted body
+     unconditionally, which shrank every template's print output to 85%, not just Fitout's,
+     leaving a large blank strip on the right/bottom of every printed page (zoom shrinks from
+     the top-left corner, so the freed space isn't centered). */
+  .quotation-fitout-container {
     zoom: 0.85;
   }
 }

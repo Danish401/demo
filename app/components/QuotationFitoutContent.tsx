@@ -304,8 +304,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                   </div>
 
                   <p className="quotation-fitout-salutation">
-                    <strong>Dear&nbsp;&nbsp;&nbsp;</strong>
-                    {data.Customer_Name1 ?? '—'}
+                    <strong>Dear Sir/Madam,</strong>
                   </p>
                   <p className="quotation-fitout-intro">
                     We thank you for the enquiry and have pleasure in submitting our best offer as below details &amp; attached BOQ:
@@ -360,7 +359,6 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                   {notesHtml ? (
                     <>
                       <strong>4. Notes</strong>
-                      <p className="quotation-fitout-terms-p">1. The following are excluded from our scope:</p>
                       <div className="quotation-fitout-notes-html" dangerouslySetInnerHTML={{ __html: notesHtml }} />
                     </>
                   ) : null}

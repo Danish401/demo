@@ -42,6 +42,7 @@ function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): Quot
     Salesperson_Email: pick(['Salesperson_Email', 'Salesperson_Email']) as string | undefined,
     Trader_Name: traderName,
     Trader_Name1: traderName1,
+    Width_Height: pick(['Width_Height', 'Width_height', 'width_Height', 'width_height']) as string | undefined,
   } as QuotationLogDoorSet2Data
 }
 
@@ -62,6 +63,7 @@ function mapBoqDetailsRow(row: Record<string, unknown>): DoorCoreBOQItem {
     Qty1: v('Qty'),
     Unit_Price_AED1: v('Unit_Price_AED'),
     Total_Unit_Price_AED1: v('Total_Unit_Price_AED'),
+    Remarks: v('Remarks') as string | undefined,
   }
 }
 
@@ -102,6 +104,7 @@ function normalizeCoreCoverPageRecord(raw: Record<string, unknown>): CoreCoverPa
     Excel_Upload1_filepath: parseZohoFileFieldPath(excelUploadRaw),
     Trader_Name: traderName,
     Trader_Name1: traderName1,
+    Width_Height: pick(['Width_Height', 'Width_height', 'width_Height', 'width_height']) as string | undefined,
   } as CoreCoverPageData
 }
 

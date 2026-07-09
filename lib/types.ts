@@ -197,6 +197,7 @@ export interface DoorCoreBOQItem {
   Qty1?: string | number
   Unit_Price_AED1?: string | number
   Total_Unit_Price_AED1?: string | number
+  Remarks?: string
   [key: string]: any
 }
 
@@ -241,6 +242,8 @@ export interface CoreCoverPageData {
   /** Principal / manufacturer name for footer “Exclusive distributors…” (Quotation_Log_Door_Core) */
   Trader_Name?: string
   Trader_Name1?: string
+  /** Optional custom label for the "Door Leaf Size" grouped header (Width/Height columns) — shown as-is when present */
+  Width_Height?: string
   [key: string]: any
 }
 
@@ -268,6 +271,7 @@ export interface QuotationLogDoorSet2Item {
   Quantity1?: string | number
   Unit_Price1?: string | number
   Amount_AED?: string | number
+  Remarks?: string
   [key: string]: any
 }
 
@@ -305,6 +309,8 @@ export interface QuotationLogDoorSet2Data {
   Acoustic_Seals?: string
   Hardware?: string
   Seals_Require1?: string
+  /** Optional custom label for the "Door Leaf Size" grouped header (Width/Height columns) — shown as-is when present */
+  Width_Height?: string
   Division?: string
   Sub_Divisions?: string
   Items_Details?: QuotationLogDoorSet2Item[]
