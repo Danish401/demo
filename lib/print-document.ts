@@ -12,13 +12,30 @@ function escapeHtml(value: string): string {
  * when "Headers and footers" is enabled. For a completely clean PDF, turn off
  * "Headers and footers" in the print dialog.
  *
- * `fileName`, when provided, becomes the iframe document's <title> — Chrome/Edge use the
- * printed document's title as the suggested filename in the "Save as PDF" dialog, so this is
- * how the saved PDF gets a per-record name (e.g. "Qtn-FSAJM00003-Acme LLC-08-Jul-2026") instead
- * of a blank/URL-based default.
+ * `fileName`, when provided, is applied to the *outer* page's `document.title` for the
+ * duration of the print — Chrome/Edge's "Save as PDF" dialog takes its suggested filename
+ * from the top-level tab title, not from the hidden iframe that actually holds the printed
+ * content, so setting it only on the iframe (as before) left the Save dialog falling back to
+ * the page's default/blank title (e.g. showing the bare hostname). The original title is
+ * restored once the print dialog closes.
  */
 export function printQuotationDocument(fileName?: string): void {
   if (typeof window === 'undefined') return
+
+  const originalTitle = document.title
+  const trimmedFileName = fileName?.trim()
+  let titleRestored = false
+  const restoreTitle = () => {
+    if (titleRestored) return
+    titleRestored = true
+    document.title = originalTitle
+    window.removeEventListener('afterprint', restoreTitle)
+  }
+  if (trimmedFileName) {
+    document.title = trimmedFileName
+    window.addEventListener('afterprint', restoreTitle)
+    window.setTimeout(restoreTitle, 10000)
+  }
 
   const sourceRoot =
     document.querySelector<HTMLElement>('main.quotation-doc') ??
