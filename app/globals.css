@@ -469,8 +469,15 @@ body {
     display: table-header-group !important;
   }
 
-  .door-core-details-block {
+  /* Don't force the whole cover-letter block onto a single page: some records populate enough
+     optional rows (Scope, Outer Frame, seals, hardware, etc.) that the block is taller than the
+     space left on page 1, and page-break-inside:avoid on the whole block was pushing it (and a
+     blank page 1 with just the header) to page 2. Protect individual rows instead so the block
+     can flow across the page boundary without splitting a single row. */
+  .door-core-details-row,
+  .door-core-seal-row {
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   /* Allow content to flow; avoid forcing a new page (no unnecessary blank pages) */
