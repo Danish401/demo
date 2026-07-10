@@ -1306,7 +1306,7 @@ body {
 .door-core-details-value,
 .door-core-seal-value {
   flex: 1 1 70%;
-  white-space: normal;
+  white-space: pre-line;
   word-break: break-word;
   font-size: 12px;
   min-width: 0;

@@ -2,33 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { CoreCoverPageData } from '@/lib/types'
-import { formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { boldCivilDefenceHtml, formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 
 /** True if field has displayable value (hide row/section when false) */
 function hasValue(v: unknown): boolean {
   if (v == null) return false
   const s = String(v).trim()
   return s !== ''
-}
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
-
-/** Bolds "<Emirate> Civil Defence/Defense" within free text (e.g. Scope_field) — the emirate name is dynamic per record */
-function boldCivilDefenceHtml(text: string, emirate?: string): string {
-  const escaped = escapeHtml(text)
-  const emirateName = (emirate ?? '').trim()
-  if (!emirateName) return escaped
-  const pattern = new RegExp(
-    `${emirateName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+Civil\\s+Defen[cs]e`,
-    'gi'
-  )
-  return escaped.replace(pattern, (match) => `<strong>${match}</strong>`)
 }
 
 /**
@@ -626,7 +606,7 @@ export default function DoorCoreQuotationContent({
                     <div className="door-core-details-label"><strong>Scope:</strong></div>
                     <div
                       className="door-core-details-value"
-                      dangerouslySetInnerHTML={{ __html: boldCivilDefenceHtml(data.Scope_field, data.Emirates) }}
+                      dangerouslySetInnerHTML={{ __html: boldCivilDefenceHtml(data.Scope_field) }}
                     />
                   </div>
                 )}

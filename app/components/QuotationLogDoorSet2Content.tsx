@@ -1,7 +1,7 @@
 'use client'
 
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
-import { formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { boldCivilDefenceHtml, formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 
 /** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
 function parseAED(value: string | number | undefined | null): number {
@@ -445,7 +445,10 @@ export default function QuotationLogDoorSet2Content({ data, viewMode = 'simple' 
                 {data.Scope_field?.trim() && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>Scope:</strong></div>
-                    <div className="door-core-details-value">{data.Scope_field}</div>
+                    <div
+                      className="door-core-details-value"
+                      dangerouslySetInnerHTML={{ __html: boldCivilDefenceHtml(data.Scope_field) }}
+                    />
                   </div>
                 )}
                 {data.Outer_Frame?.trim() && (

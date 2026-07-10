@@ -167,6 +167,21 @@ function escapeHtml(text: string): string {
 }
 
 /**
+ * Bolds "<word(s)> Civil Defence/Defense" within free text (e.g. Scope_field). The certifying
+ * authority named in the text is typed per record and doesn't necessarily match the record's own
+ * Emirates field — a door can be Civil-Defense-approved by one emirate while the project itself
+ * is in another — so this matches the capitalized word(s) immediately preceding "Civil
+ * Defence/Defense" in the text directly, rather than relying on a separate field.
+ */
+export function boldCivilDefenceHtml(text: string): string {
+  const escaped = escapeHtml(text)
+  return escaped.replace(
+    /((?:[A-Z][a-zA-Z]*\s+){1,4}Civil\s+Defen[cs]e)/g,
+    (match) => `<strong>${match}</strong>`
+  )
+}
+
+/**
  * Formats Seal_Description from Zoho: each line with bold prefix up to ":" and dividers between rows.
  */
 export function formatSealDescriptionHtml(raw: string | undefined): string {
