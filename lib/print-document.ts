@@ -1,10 +1,23 @@
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
 /**
  * Print quotation content without the current page URL in the browser header/footer.
  * Uses a hidden iframe with a blank document title so Chrome/Edge show minimal chrome
  * when "Headers and footers" is enabled. For a completely clean PDF, turn off
  * "Headers and footers" in the print dialog.
+ *
+ * `fileName`, when provided, becomes the iframe document's <title> — Chrome/Edge use the
+ * printed document's title as the suggested filename in the "Save as PDF" dialog, so this is
+ * how the saved PDF gets a per-record name (e.g. "Qtn-FSAJM00003-Acme LLC-08-Jul-2026") instead
+ * of a blank/URL-based default.
  */
-export function printQuotationDocument(): void {
+export function printQuotationDocument(fileName?: string): void {
   if (typeof window === 'undefined') return
 
   const sourceRoot =
@@ -30,11 +43,13 @@ export function printQuotationDocument(): void {
     .map((style) => `<style>${style.textContent ?? ''}</style>`)
     .join('\n')
 
+  const title = fileName?.trim() ? escapeHtml(fileName.trim()) : ' '
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title> </title>
+  <title>${title}</title>
   ${stylesheetLinks}
   ${inlineStyles}
   <style>

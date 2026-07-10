@@ -2,12 +2,12 @@
 
 import { printQuotationDocument } from '@/lib/print-document'
 
-export default function PrintButton() {
+export default function PrintButton({ fileName }: { fileName?: string }) {
   return (
     <div className="print-button-wrap no-print">
       <button
         type="button"
-        onClick={() => printQuotationDocument()}
+        onClick={() => printQuotationDocument(fileName)}
         className="print-button"
       >
         Print

@@ -127,6 +127,21 @@ function normalizeQuotationLogFitout2Record(raw: Record<string, unknown>): Quota
   } as QuotationLogFitout2Data
 }
 
+/** Suggested "Save as PDF" filename for a quotation record: "Qtn_<No>_<Company>_<Date>" —
+ * OS filenames can't contain "/", so that's the visual separator the user described, not a
+ * literal character here; "_" is used instead and any other filesystem-unsafe characters
+ * (from free-text fields like the company name) are stripped too. */
+function buildQuotationFileName(
+  data: { Quotation_No?: string; Organization_Name1?: string; Quotation_Submission_Date?: string } | null | undefined
+): string | undefined {
+  if (!data) return undefined
+  const parts = [data.Quotation_No, data.Organization_Name1, data.Quotation_Submission_Date]
+    .map((value) => (value ?? '').toString().trim())
+    .filter(Boolean)
+    .map((value) => value.replace(/[\\/:*?"<>|]+/g, '-'))
+  return parts.length > 0 ? ['Qtn', ...parts].join('_') : undefined
+}
+
 // Mock data for quotation template design testing
 const getMockQuotationData = (): QuotationData => ({
   quotationNumber: 'ARQT/24-25/0097',
@@ -513,10 +528,16 @@ function QuotationPageInner() {
     )
   )
 
+  const printFileName =
+    buildQuotationFileName(doorCoreData) ??
+    buildQuotationFileName(doorSet2Data) ??
+    buildQuotationFileName(doorSet1Data) ??
+    buildQuotationFileName(fitoutData)
+
   return (
     <main className="quotation-doc" style={{ padding: '16px' }}>
       <div className="no-print" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '16px' }}>
-        <PrintButton />
+        <PrintButton fileName={printFileName} />
       </div>
 
       {loading && (
