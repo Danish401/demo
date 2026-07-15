@@ -7,8 +7,53 @@ function escapeHtml(value: string): string {
 }
 
 const PX_PER_MM = 96 / 25.4
+/** Full A4 height — used for in-content page stamps so numbers still show when print Margins = None */
+const A4_PAGE_HEIGHT_MM = 297
+const A4_PAGE_HEIGHT_PX = A4_PAGE_HEIGHT_MM * PX_PER_MM
 /** A4 height (297mm) minus the 1cm top / 1.6cm bottom page margins on named @page rules in globals.css */
 const A4_PAGE_CONTENT_HEIGHT_PX = (297 - 10 - 16) * PX_PER_MM
+
+/**
+ * Absolute page-number stamps (one slab per estimated sheet). Works when print Margins = None,
+ * because @page margin boxes are suppressed in that mode and cannot draw "Page X of Y".
+ */
+function appendPrintPageStamps(clone: HTMLElement, totalPages: number): void {
+  if (totalPages < 1) return
+
+  const prevPosition = clone.style.position
+  if (!prevPosition || prevPosition === 'static') {
+    clone.style.position = 'relative'
+  }
+
+  const layer = document.createElement('div')
+  layer.setAttribute('data-print-page-stamps', 'true')
+  layer.setAttribute('aria-hidden', 'true')
+  layer.style.cssText =
+    'position:absolute;left:0;top:0;right:0;width:100%;height:0;overflow:visible;pointer-events:none;z-index:99999;'
+
+  for (let i = 1; i <= totalPages; i++) {
+    const stamp = document.createElement('div')
+    stamp.textContent = `Page ${i} of ${totalPages}`
+    stamp.style.cssText = [
+      'position:absolute',
+      `top:${(i - 1) * A4_PAGE_HEIGHT_MM}mm`,
+      'left:0.5cm',
+      `height:${A4_PAGE_HEIGHT_MM}mm`,
+      'box-sizing:border-box',
+      'display:flex',
+      'align-items:flex-end',
+      'padding-bottom:0.45cm',
+      'font-family:Arial, Helvetica, sans-serif',
+      'font-size:8.5px',
+      'font-weight:700',
+      'color:#333',
+      'white-space:nowrap',
+    ].join(';')
+    layer.appendChild(stamp)
+  }
+
+  clone.appendChild(layer)
+}
 
 /**
  * Estimates printed pages from header/footer/body heights vs printable A4 content height.
@@ -17,13 +62,14 @@ const A4_PAGE_CONTENT_HEIGHT_PX = (297 - 10 - 16) * PX_PER_MM
  */
 function estimatePagesFromLayout(
   root: HTMLElement,
-  selectors: { header: string; footer: string; body: string }
+  selectors: { header: string; footer: string; body: string },
+  pageHeightPx: number = A4_PAGE_CONTENT_HEIGHT_PX
 ): number | null {
   const headerHeight = root.querySelector(selectors.header)?.getBoundingClientRect().height ?? 0
   const footerHeight = root.querySelector(selectors.footer)?.getBoundingClientRect().height ?? 0
   const bodyHeight = root.querySelector(selectors.body)?.getBoundingClientRect().height ?? 0
 
-  const availablePerPage = A4_PAGE_CONTENT_HEIGHT_PX - headerHeight - footerHeight
+  const availablePerPage = pageHeightPx - headerHeight - footerHeight
   if (!(availablePerPage > 0) || !(bodyHeight > 0)) return null
 
   return Math.max(1, Math.ceil(bodyHeight / availablePerPage))
@@ -179,7 +225,8 @@ export function printQuotationDocument(fileName?: string): void {
   const doorCorePages = doorCorePageCount ?? (doorCoreRoot ? 1 : null)
   const doorSet1Pages = doorSet1PageCount ?? (doorSet1Root ? 1 : null)
 
-  // Fill left-side footer labels before clone so on-screen footer also reflects total
+  // On-screen footer can show estimated total; print uses @page counter(page) instead
+  // (static "Page 1 of N" in the footer band cannot increment per printed sheet).
   if (fitoutRoot && fitoutPages != null) {
     fitoutRoot.querySelectorAll<HTMLElement>('[data-fitout-page-label]').forEach((el) => {
       el.textContent = `Page 1 of ${fitoutPages}`
@@ -198,6 +245,69 @@ export function printQuotationDocument(fileName?: string): void {
 
   const clone = sourceRoot.cloneNode(true) as HTMLElement
   clone.querySelectorAll('.no-print').forEach((el) => el.remove())
+  // Clear static "Page 1 of N" — it cannot increment per sheet
+  clone
+    .querySelectorAll<HTMLElement>(
+      '[data-fitout-page-label], [data-door-core-page-label], [data-door-set1-page-label]'
+    )
+    .forEach((el) => {
+      el.textContent = ''
+    })
+
+  // In-content stamps: visible even when print dialog Margins = None (@page margin boxes are off then).
+  // Full-bleed A4 (margin:0 below) so stamps align under both Default and None.
+  const doorSet2Pages = doorSet2Root
+    ? estimatePagesFromLayout(
+        doorSet2Root,
+        {
+          header: '.door-core-layout-header-cell',
+          footer: '.door-core-layout-footer-cell',
+          body: '.door-core-layout-ell',
+        },
+        A4_PAGE_HEIGHT_PX
+      ) ?? 1
+    : null
+  const stampPages =
+    (doorSet1Root
+      ? estimatePagesFromLayout(
+          doorSet1Root,
+          {
+            header: '.door-core-layout-header-cell',
+            footer: '.door-core-layout-footer-cell',
+            body: '.door-core-layout-ell',
+          },
+          A4_PAGE_HEIGHT_PX
+        )
+      : null) ??
+    doorSet2Pages ??
+    (doorCoreRoot
+      ? estimatePagesFromLayout(
+          doorCoreRoot,
+          {
+            header: '.door-core-layout-header-cell',
+            footer: '.door-core-layout-footer-cell',
+            body: '.door-core-layout-ell',
+          },
+          A4_PAGE_HEIGHT_PX
+        )
+      : null) ??
+    (fitoutRoot
+      ? estimatePagesFromLayout(
+          fitoutRoot,
+          {
+            header: '.quotation-fitout-header-cell',
+            footer: '.quotation-fitout-footer-cell',
+            body: '.quotation-fitout-body-cell',
+          },
+          A4_PAGE_HEIGHT_PX
+        )
+      : null) ??
+    doorSet1Pages ??
+    doorCorePages ??
+    fitoutPages
+  if (stampPages != null) {
+    appendPrintPageStamps(clone, stampPages)
+  }
   resetSpacers()
 
   const stylesheetLinks = Array.from(
@@ -216,27 +326,25 @@ export function printQuotationDocument(fileName?: string): void {
 
   const title = fileName?.trim() ? escapeHtml(fileName.trim()) : ' '
 
-  const leftPageCss = (pageName: string, total: number) =>
+  // Zero @page margins so Default and None share the same full-page height (297mm).
+  // Page numbers then come from in-content stamps (margin boxes need margin space and vanish on None).
+  const pageNumberOverrideCss = (pageName: string) =>
     `@page ${pageName} {
-      @bottom-left {
-        content: "Page " counter(page) " of ${total}";
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 8.5px;
-        font-weight: 700;
-        color: #333;
-      }
+      size: A4;
+      margin: 0 !important;
+      @bottom-left { content: none; }
       @bottom-center { content: none; }
       @bottom-right { content: none; }
     }`
 
-  // Browsers don't support CSS counter(pages), so inject a literal estimated total for named pages.
-  const pageNumberOverrideCss = doorSet1Pages != null
-    ? leftPageCss('door-set-1-quotation-page', doorSet1Pages)
-    : doorCorePages != null
-      ? leftPageCss('door-core-quotation-page', doorCorePages)
-      : fitoutPages != null
-        ? leftPageCss('fitout-quotation-page', fitoutPages)
-        : ''
+  const namedPageCss =
+    doorSet1Root || doorSet2Root
+      ? pageNumberOverrideCss('door-set-1-quotation-page')
+      : doorCoreRoot
+        ? pageNumberOverrideCss('door-core-quotation-page')
+        : fitoutRoot
+          ? pageNumberOverrideCss('fitout-quotation-page')
+          : ''
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -253,7 +361,7 @@ export function printQuotationDocument(fileName?: string): void {
       overflow: visible !important;
     }
     * { overflow: visible !important; max-width: 100%; }
-    ${pageNumberOverrideCss}
+    ${namedPageCss}
   </style>
 </head>
 <body class="${document.body.className}">

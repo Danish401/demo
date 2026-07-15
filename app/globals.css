@@ -210,6 +210,13 @@ body {
     page: fitout-quotation-page;
   }
 
+  /* Static footer always prints "Page 1 of N" on every sheet (same HTML node).
+     Hide it — real Page X of Y comes from @page @bottom-left counter(page). */
+  .door-core-page-number,
+  .quotation-fitout-page-number {
+    visibility: hidden !important;
+  }
+
   body {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
