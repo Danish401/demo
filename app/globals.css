@@ -117,6 +117,99 @@ body {
     }
   }
 
+  /* Quotation_Door_Set1_Report: page numbers bottom-LEFT at 8.5px (matches Fitout) */
+  @page door-set-1-quotation-page {
+    size: A4;
+    margin-top: 1cm;
+    margin-bottom: 1.6cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
+
+    @bottom-center {
+      content: none;
+    }
+
+    @bottom-right {
+      content: none;
+    }
+
+    @bottom-left {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #333;
+    }
+  }
+
+  .door-set-1-quotation {
+    page: door-set-1-quotation-page;
+  }
+
+  /* Door Set 2 reuses the same named page (bottom margin clears fixed footer + page numbers) */
+  .door-set-2-quotation {
+    page: door-set-1-quotation-page;
+  }
+
+  /* Quotation_Log_Door_Core: page numbers bottom-LEFT at 8.5px (matches Fitout / Door Set 1) */
+  @page door-core-quotation-page {
+    size: A4;
+    margin-top: 1cm;
+    margin-bottom: 1.6cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
+
+    @bottom-center {
+      content: none;
+    }
+
+    @bottom-right {
+      content: none;
+    }
+
+    @bottom-left {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #333;
+    }
+  }
+
+  .door-core-standalone {
+    page: door-core-quotation-page;
+  }
+
+  /* Quotation_Log_Fitout_2: page numbers bottom-LEFT at 8.5px. Leave extra bottom margin so the
+     fixed footer overlay cannot cover the margin-box text. */
+  @page fitout-quotation-page {
+    size: A4;
+    margin-top: 1cm;
+    margin-bottom: 1.6cm;
+    margin-left: 0.5cm;
+    margin-right: 0.5cm;
+
+    @bottom-center {
+      content: none;
+    }
+
+    @bottom-right {
+      content: none;
+    }
+
+    @bottom-left {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #333;
+    }
+  }
+
+  .quotation-fitout-container {
+    page: fitout-quotation-page;
+  }
+
   body {
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
@@ -443,7 +536,11 @@ body {
   }
 
   .door-core-layout-footer-cell {
-    height: 100px !important;
+    /* Clear gap between last table row and footer band (trade name / cert logos) */
+    height: auto !important;
+    min-height: 0 !important;
+    padding-top: 10mm !important;
+    box-sizing: border-box !important;
   }
 
   .door-core-signature-block {
@@ -460,12 +557,15 @@ body {
 
   .door-core-product-table tr,
   .door-set-2-quotation .door-core-product-table tr,
-  .door-set-2-quotation .door-core-subform-table tr {
-    page-break-inside: avoid;
+  .door-set-2-quotation .door-core-subform-table tr,
+  .quotation-fitout-product-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   .door-set-2-quotation .door-core-product-table thead,
-  .door-set-2-quotation .door-core-subform-table thead {
+  .door-set-2-quotation .door-core-subform-table thead,
+  .quotation-fitout-product-table thead {
     display: table-header-group !important;
   }
 
@@ -612,35 +712,54 @@ body {
     flex: 0 0 auto !important;
   }
 
-  /* Quotation_Log_Door_Core: keep the real <tfoot> repeating per page for its layout/pagination role
-     (unchanged from before), just make it invisible so it doesn't double-print alongside the fixed
-     overlay below. visibility:hidden preserves its box/position, it just doesn't paint, so nothing
-     about how content splits across pages changes. */
+  /* Quotation_Log_Door_Core: Fitout-style footer pin —
+     hidden <tfoot> reserves space on every page (incl. last); fixed overlay paints the visible footer
+     at the bottom so short last pages don't leave a large gap under the band. */
   .door-core-standalone .door-core-page-layout > tfoot {
+    display: table-footer-group !important;
     visibility: hidden !important;
   }
 
-  /* The generic footer-cell height (100px) was sized before the distributor line + disclaimer note
-     were added — it's too short for the full footer now, so the last line overflows the box and lands
-     with regular body content instead of staying anchored with the rest of the footer band. Let it
-     grow to fit its actual content on both the hidden original and the fixed overlay. */
-  .door-core-standalone .door-core-layout-footer-cell {
+  .door-core-standalone .door-core-page-layout > tfoot .door-core-layout-footer-cell {
     height: auto !important;
-    min-height: 100px !important;
+    min-height: 52mm !important;
+    padding-top: 8mm !important;
+    box-sizing: border-box !important;
   }
 
-  /* Fixed-position duplicate of the footer band — CSS2.1 defines position:fixed to repeat on every page
-     in paged/print media (already relied on elsewhere in this file for .door-core-static-pattern), so
-     unlike the real <tfoot>, this lands at the same bottom-anchored spot on EVERY page regardless of how
-     much real content precedes it — including the last, partially-filled page. */
   .door-core-standalone .door-core-print-footer-overlay {
     display: block !important;
     visibility: visible !important;
     position: fixed !important;
     left: 0.5cm !important;
     right: 0.5cm !important;
-    bottom: 0 !important;
+    bottom: 1.4cm !important;
     z-index: 10 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    /* Match (.door-core-standalone .door-core-layout-footer-cell) — not the shared 10% inset */
+    padding: 4px 2% 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    box-sizing: border-box !important;
+    border: none !important;
+  }
+
+  /* Spacer no longer needed for last-page pin (fixed overlay handles it); keep collapsed */
+  .door-core-standalone .door-core-layout-ell {
+    min-height: 0 !important;
+  }
+
+  .door-core-standalone .door-core-table-section {
+    flex: 0 0 auto !important;
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .door-core-standalone .door-core-print-end-spacer {
+    display: none !important;
+    height: 0 !important;
+    min-height: 0 !important;
   }
 
   .door-core-tender-pdf-status {
@@ -679,7 +798,8 @@ body {
   .quotation-fitout-page-layout tfoot,
   .quotation-fitout-container .quotation-fitout-page-layout tfoot {
     display: table-footer-group !important;
-    visibility: visible !important;
+    /* Keep in layout for page-break space; fixed overlay paints the visible footer */
+    visibility: hidden !important;
   }
 
   .quotation-fitout-page-layout tfoot tr {
@@ -696,6 +816,14 @@ body {
     border: none !important;
   }
 
+  /* Fitout: reserved <tfoot> height must cover logos + contact + gap so rows never sit under overlay */
+  .quotation-fitout-page-layout tfoot .quotation-fitout-footer-cell {
+    height: auto !important;
+    min-height: 52mm !important;
+    padding-top: 8mm !important;
+    box-sizing: border-box !important;
+  }
+
   /* Same pattern as Door Core: body cell min-height 267mm, inner flex column, last-page block + spacer push footer to bottom */
   .quotation-fitout-page-layout tbody tr {
     min-height: 267mm !important;
@@ -706,6 +834,14 @@ body {
     flex-direction: column !important;
     min-height: 267mm !important;
     height: 100% !important;
+  }
+
+  /* Multi-page Fitout with line items: do NOT force full-page body height — that breaks
+     fragmentation and paints the footer mid-table on pricing pages. */
+  .quotation-fitout-container:not(.quotation-fitout-has-no-rows) .quotation-fitout-page-layout tbody tr,
+  .quotation-fitout-container:not(.quotation-fitout-has-no-rows) .quotation-fitout-body-cell {
+    min-height: 0 !important;
+    height: auto !important;
   }
 
   /* Like door-core-table-section: flex 1 1 auto, min-height 0 so it grows; flex column for last-page-wrap */
@@ -790,28 +926,19 @@ body {
     min-height: 0 !important;
   }
 
-  /* Fitout: keep the real <tfoot> repeating per page for its layout/pagination role (unchanged from before),
-     just make it invisible so it doesn't double-print alongside the fixed overlay below. visibility:hidden
-     preserves its box/position, it just doesn't paint, so nothing about how content splits across pages
-     changes. Matches the exact selector (and appears after it in source order) of the existing
-     "visibility: visible" rule above so this override reliably wins the tie-break. */
-  .quotation-fitout-page-layout tfoot,
-  .quotation-fitout-container .quotation-fitout-page-layout tfoot {
-    visibility: hidden !important;
-  }
-
-  /* Fitout: fixed-position duplicate of the footer band — CSS2.1 defines position:fixed to repeat on every
-     page in paged/print media (already relied on elsewhere in this file for the static background pattern),
-     so unlike the real <tfoot>, this lands at the same bottom-anchored spot on EVERY page regardless of how
-     much real content precedes it — including the last, partially-filled page. */
+  /* Fitout footer: hidden <tfoot> reserves space; fixed overlay draws footer on every page (including last) */
   .quotation-fitout-print-footer-overlay {
     display: block !important;
     visibility: visible !important;
     position: fixed !important;
     left: 0.5cm !important;
     right: 0.5cm !important;
-    bottom: 0 !important;
+    bottom: 1.4cm !important;
     z-index: 10 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding-top: 4mm !important;
+    box-sizing: border-box !important;
   }
 
   /* Door Set 2: cover letter (intro + value/terms/notes + signature) always ends with a fresh page break
@@ -848,35 +975,41 @@ body {
     max-width: 100% !important;
   }
 
-  /* Door Set 2: keep the real <tfoot> repeating per page for its layout/pagination role (unchanged from
-     before — this is what already makes pages 1-3 paginate correctly), just make it invisible so it
-     doesn't double-print alongside the fixed overlay below. visibility:hidden preserves its box/position,
-     it just doesn't paint, so nothing about how content splits across pages changes. */
+  /* Door Set 1 / Set 2: use the REAL repeating <tfoot> only — never a fixed overlay.
+     Fixed overlays were covering the last item row(s) on a page (e.g. SL.NO. 22 vanishing
+     between page breaks). Visible tfoot lets Chrome reserve space for nested item tables. */
   .door-set-2-quotation .door-core-page-layout > tfoot {
-    visibility: hidden !important;
+    visibility: visible !important;
   }
 
-  /* Door Set 2: the generic footer-cell height (100px) was sized before the distributor line + disclaimer
-     note were added — it's too short for the full footer now, so the last line overflows the box and
-     lands with regular body content instead of staying anchored with the rest of the footer band.
-     Let it grow to fit its actual content on both the hidden original and the fixed overlay. */
   .door-set-2-quotation .door-core-layout-footer-cell {
     height: auto !important;
-    min-height: 100px !important;
+    min-height: 0 !important;
+    padding-top: 6mm !important;
+    box-sizing: border-box !important;
   }
 
-  /* Door Set 2: fixed-position duplicate of the footer band — CSS2.1 defines position:fixed to repeat on
-     every page in paged/print media (already relied on elsewhere in this file for .door-core-static-pattern),
-     so unlike the real <tfoot>, this lands at the same bottom-anchored spot on EVERY page regardless of how
-     much real content precedes it — including the last, partially-filled page. */
-  .door-set-2-quotation .door-set-2-print-footer-overlay {
+  .door-set-2-quotation .door-set-2-print-footer-overlay,
+  .door-set-1-quotation .door-set-2-print-footer-overlay {
+    display: none !important;
+  }
+
+  /* Pricing body: spacer height is set in print-document.ts so the last page fills to the footer */
+  .door-set-2-quotation .door-core-layout-ell {
+    min-height: 0 !important;
+  }
+
+  .door-set-2-quotation .door-core-table-section {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+  }
+
+  .door-set-2-quotation .door-set-1-print-end-spacer {
     display: block !important;
-    visibility: visible !important;
-    position: fixed !important;
-    left: 0.5cm !important;
-    right: 0.5cm !important;
-    bottom: 0 !important;
-    z-index: 10 !important;
+    flex: 0 0 auto !important;
+    /* height / min-height applied inline at print time */
   }
 
   .door-set-2-quotation .door-core-product-table.door-set-2-product-table {
@@ -884,6 +1017,11 @@ body {
     max-width: 100% !important;
     table-layout: fixed !important;
     font-size: 11px !important;
+  }
+
+  /* Quotation_Door_Set1_Report: keep 8.5px in print (Door Set 2 uses 11px for column fit) */
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table {
+    font-size: 8.5px !important;
   }
 
   .door-set-2-quotation .door-core-subform-table,
@@ -922,6 +1060,11 @@ body {
     overflow: visible !important;
   }
 
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table th,
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table td {
+    font-size: 8.5px !important;
+  }
+
   .door-set-2-quotation .door-core-product-table.door-set-2-product-table thead th {
     text-align: center !important;
     vertical-align: middle !important;
@@ -931,8 +1074,20 @@ body {
   .door-set-2-quotation .door-core-subform-table td:nth-child(4),
   .door-set-2-quotation .door-core-subform-table th:nth-child(5),
   .door-set-2-quotation .door-core-subform-table td:nth-child(5) {
-    min-width: 5em !important;
+    min-width: 6.5em !important;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
     overflow: visible !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td:last-child,
+  .quotation-fitout-subtotal td:last-child,
+  .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(5),
+  .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(6) {
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
   }
 
   /* Print: Quotation_Log_Door_Core BOQ — same treatment as Door Set 1 main table */
@@ -951,8 +1106,28 @@ body {
   .door-core-product-table.door-core-boq-product-table th,
   .door-core-product-table.door-core-boq-product-table td {
     font-size: 8.5px !important;
-    padding: 4px 3px !important;
-    overflow: visible !important;
+    padding: 2px 1.5px !important;
+    line-height: 1.25 !important;
+    overflow: hidden !important;
+    min-width: 0 !important;
+  }
+
+  /* Print: long cell text wraps in Door Core / Door Set / Fitout tables */
+  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(6),
+  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(7),
+  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),
+  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(14),
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
+  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16),
+  .door-set-2-quotation .door-core-subform-table td:nth-child(2),
+  .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(2),
+  .quotation-fitout-manual-items-table td:nth-child(1),
+  .quotation-fitout-manual-items-table td:nth-child(2) {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
   }
 
   .door-core-product-table.door-core-boq-product-table th {
@@ -1146,8 +1321,8 @@ body {
 /* Quotation_Log_Door_Core only: the shared 10% left/right padding left too much dead space on either side
    of the footer — tighten it up. Scoped so Door Set 2 (same shared class) keeps its existing padding. */
 .door-core-standalone .door-core-layout-footer-cell {
-  padding-left: 3%;
-  padding-right: 3%;
+  padding-left: 2%;
+  padding-right: 2%;
 }
 
 /* Quotation_Log_Door_Core only: bigger, clearer certification logo matching the reference footer */
@@ -1218,9 +1393,32 @@ body {
 }
 
 .door-core-footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   text-align: center;
   margin-top: 10px;
   font-size: 12px;
+}
+
+.door-core-footer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.door-core-page-number {
+  flex: 0 0 auto;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+  min-width: 4.5em;
+  text-align: left;
 }
 
 .door-core-icon,
@@ -1243,12 +1441,20 @@ body {
   display: none;
 }
 
+/* End spacer only used in print to push last-page footer down */
+.door-set-1-print-end-spacer,
+.door-core-print-end-spacer {
+  display: none;
+}
+
 /* Door Set 2: "computer generated, no signature required" note — repeats in the footer on every printed page */
 .door-set-2-quotation .door-set-2-footer-signature-note {
+  flex: 1 1 auto;
   font-size: 10.5px;
   font-style: italic;
   color: #6b7280;
-  margin-top: 4px;
+  margin: 0;
+  text-align: center;
 }
 
 /* Quotation_Log_Door_Core: print-only fixed footer overlay — invisible on screen, shown only when printing */
@@ -1258,10 +1464,11 @@ body {
 
 /* Quotation_Log_Door_Core: "computer generated, no signature required" note — repeats in the footer on every printed page */
 .door-core-standalone .door-core-footer-signature-note {
-  font-size: 10.5px;
+  flex: 1 1 auto;
+  font-size: 8.5px;
   font-style: italic;
   color: #6b7280;
-  margin-top: 4px;
+  margin: 0;
   text-align: center;
 }
 
@@ -1274,9 +1481,51 @@ body {
   margin: 6px 0 10px;
 }
 
+/* Quotation_Door_Set1_Report: uniform 8.5px typography (matches item-pricing table) across cover,
+   terms, footer, and tables — scoped so Quotation_Log_Door_Set_2 keeps its 11pt cover letter. */
+.door-set-1-quotation.door-set-2-quotation.door-core-quotation-container {
+  font-size: 8.5px;
+}
+
+.door-set-1-quotation.door-set-2-quotation .door-core-details-row,
+.door-set-1-quotation.door-set-2-quotation .door-core-seal-row,
+.door-set-1-quotation.door-set-2-quotation .door-core-details-label,
+.door-set-1-quotation.door-set-2-quotation .door-core-seal-label,
+.door-set-1-quotation.door-set-2-quotation .door-core-details-value,
+.door-set-1-quotation.door-set-2-quotation .door-core-seal-value,
+.door-set-1-quotation.door-set-2-quotation .door-core-seal-description-item,
+.door-set-1-quotation.door-set-2-quotation .door-core-salutation,
+.door-set-1-quotation.door-set-2-quotation .door-core-intro-p,
+.door-set-1-quotation.door-set-2-quotation .door-core-terms-p,
+.door-set-1-quotation.door-set-2-quotation .door-core-notes-p.door-core-notes-html,
+.door-set-1-quotation.door-set-2-quotation .door-core-terms,
+.door-set-1-quotation.door-set-2-quotation .door-core-signature-label,
+.door-set-1-quotation.door-set-2-quotation .door-core-signature-line,
+.door-set-1-quotation.door-set-2-quotation .door-core-signature-placeholder,
+.door-set-1-quotation.door-set-2-quotation .door-core-signature-block,
+.door-set-1-quotation.door-set-2-quotation .door-core-terms,
+.door-set-1-quotation.door-set-2-quotation .door-set-2-quotation-value-note,
+.door-set-1-quotation .door-core-footer-left,
+.door-set-1-quotation .door-core-footer-contact,
+.door-set-1-quotation .door-core-footer-bottom,
+.door-set-1-quotation .door-core-distributor-text,
+.door-set-1-quotation .door-set-2-footer-signature-note {
+  font-size: 8.5px !important;
+}
+
+.door-set-1-quotation.door-set-2-quotation .door-core-cover-title {
+  font-size: 12px !important;
+  margin-top: -1%;
+  margin-bottom: 14px;
+}
+
+.door-set-1-quotation .door-core-subform-table .door-core-subform-section-title {
+  font-size: 12px !important;
+}
+
 /* Quotation_Log_Door_Core: "Total Quotation value ..." note — shown once on the cover letter (Normal type only) */
 .door-core-standalone .door-core-quotation-value-note {
-  font-size: 11pt;
+  font-size: 8.5px;
   font-weight: 700;
   color: #111827;
   line-height: 1.5;
@@ -1307,6 +1556,7 @@ body {
 .door-core-seal-value {
   flex: 1 1 70%;
   white-space: pre-line;
+  overflow-wrap: anywhere;
   word-break: break-word;
   font-size: 12px;
   min-width: 0;
@@ -1433,7 +1683,7 @@ body {
   table-layout: fixed;
   border-collapse: collapse;
   box-sizing: border-box;
-  font-size: 8.5px;
+  font-size: 8.5px !important;
   border: 1.5px solid #333;
   margin-top: 8px;
 }
@@ -1442,14 +1692,16 @@ body {
 .door-core-product-table.door-core-boq-product-table td {
   border: 1px solid #333;
   box-sizing: border-box;
-  padding: 4px 3px;
+  padding: 2px 1.5px;
   vertical-align: middle;
-  line-height: 1.35;
+  line-height: 1.25;
+  font-size: 8.5px !important;
+  overflow: hidden;
 }
 
 /* BOQ header row: one consistent treatment — all titles centered, same padding/weight */
 .door-core-product-table.door-core-boq-product-table thead th {
-  font-size: 8.5px;
+  font-size: 8.5px !important;
   font-weight: 700;
   text-align: center !important;
   vertical-align: middle;
@@ -1469,39 +1721,33 @@ body {
 }
 
 .door-core-product-table.door-core-boq-product-table thead th:nth-child(1) {
-  white-space: nowrap;
+  white-space: normal;
 }
 
 .door-core-product-table.door-core-boq-product-table td {
-  font-size: 8.5px;
+  font-size: 8.5px !important;
   text-align: left;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-/* 14 columns: widths set via <colgroup>, not th/td nth-child — the header row now groups Width/Height
-   under a shared "Door Leaf Size" cell (colSpan 2), so header <th> count no longer matches body <td>
-   count per row, and nth-child position would misalign between thead and tbody. colgroup sizes the
-   actual column tracks directly, independent of how header cells span them.
-   Added Remarks — every other column trimmed slightly to make room (safe now that the font-size
-   dropped from 11px to 8.5px, which freed up slack that wasn't there before).
-   4.5+6.5+7.5+7.5+6.5+7+9.5+7.5+5.5+7.5+5+8.5+9.5+7.5 = 100% */
+/* 14 columns via <colgroup>. Width/Height bumped slightly so "Width (mm)" / numbers stay in-cell at 8.5px.
+   Sum = 100%. */
 .door-core-product-table.door-core-boq-product-table col.door-core-boq-col-slno { width: 4.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doorref { width: 6.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-width { width: 7.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-height { width: 7.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-leafthick { width: 6.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doortype { width: 7%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-productref { width: 9.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-acoustic { width: 7.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-fire { width: 5.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-vision { width: 7.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-qty { width: 5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-unitprice { width: 8.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-totalprice { width: 9.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-remarks { width: 7.5%; }
-
-.door-core-product-table.door-core-boq-product-table td:nth-child(1) {
-  min-width: 3.5em;
-}
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doorref { width: 5.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-width { width: 7%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-height { width: 7%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-leafthick { width: 5.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doortype { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-productref { width: 9%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-acoustic { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-fire { width: 5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-vision { width: 12.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-qty { width: 4%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-unitprice { width: 8%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-totalprice { width: 8.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-remarks { width: 10.5%; }
 
 /* Body data rows (excl. totals): every column except Unit Price / Total Unit Price centered
    horizontally and vertically, matching Door Set 2's table */
@@ -1526,30 +1772,31 @@ body {
   text-align: right;
 }
 
-/* Door Ref, Width, Height, Leaf Thick, Acoustic, Fire, Vision Panel, Qty: short codes/numbers —
-   keep on one line (a space/hyphen is otherwise a valid break point, e.g. "800*452" or "IDF-001") */
+/* Door Ref, Width, Height, Leaf Thick, Acoustic, Fire, Qty: prefer one line; clip if too long */
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(2),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(3),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(4),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(5),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(8),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(11) {
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
 }
 
-/* Door Type, Product Ref, Remarks: the only columns that can hold genuinely longer text ("Single Leaf",
-   "IDEAL ACOUFIRE 45") — wrap at word boundaries ONLY, never split mid-word (overflow-wrap: break-word
-   previously turned "Single Leaf" into "Singl e Leaf" in a narrow column) */
+/* Door Type, Product Ref, Vision Panel, Remarks: wrap long API text inside the cell (no overflow) */
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(6),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(7),
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(14) {
   white-space: normal;
-  overflow-wrap: normal;
-  word-break: keep-all;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   vertical-align: middle;
   min-width: 0;
+  max-width: 0; /* force wrap within fixed table-layout column */
+  overflow: hidden;
 }
 
 .door-core-product-table.door-core-boq-product-table .door-core-total-label,
@@ -1619,13 +1866,28 @@ body {
   color: #333;
 }
 
-.door-core-subtotal {
-  font-weight: bold;
-  background-color: #f9f9f9;
+/* Subform section title row — spans all columns inside the table border grid */
+.door-set-2-quotation .door-core-subform-table .door-core-subform-section-header-row th.door-core-subform-section-title,
+.door-core-subform-table .door-core-subform-section-header-row th.door-core-subform-section-title {
+  text-align: left !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  color: #333;
+  padding: 6px 5px 10px 5px !important;
+  background-color: #ffffff;
+  border: 1px solid #333;
+  vertical-align: middle;
+  white-space: normal !important;
 }
 
 .door-core-subform-table {
+  margin-top: 12px;
   margin-bottom: 10px;
+}
+
+.door-core-subtotal {
+  font-weight: bold;
+  background-color: #f9f9f9;
 }
 
 /* Cover letter (Ref/Date/To/Scope/Dear/intro/Payment Terms/signature): bumped from the shared
@@ -1660,12 +1922,12 @@ body {
   font-size: 11pt;
 }
 
-/* Quotation_Log_Door_Core: same cover-letter font-size standardization as Door Set 2 above, scoped
-   under .door-core-standalone instead so it can't leak into Door Set 2 or Fitout. Door Core's
+/* Quotation_Log_Door_Core: uniform 8.5px typography (matches item-pricing table / Door Set 1),
+   scoped under .door-core-standalone so it can't leak into Door Set 2 or Fitout. Door Core's
    Payment Terms paragraph is additionally wrapped in .door-core-payment-section (Validity isn't),
    which carries its own font-size rule elsewhere — matched here too so both read the same size. */
 .door-core-standalone.door-core-quotation-container {
-  font-size: 11pt;
+  font-size: 8.5px;
 }
 
 .door-core-standalone .door-core-details-row,
@@ -1684,8 +1946,22 @@ body {
 .door-core-standalone .door-core-signature-label,
 .door-core-standalone .door-core-signature-line,
 .door-core-standalone .door-core-signature-placeholder,
-.door-core-standalone .door-core-signature-block {
-  font-size: 11pt;
+.door-core-standalone .door-core-signature-block,
+.door-core-standalone .door-core-signature-greeting,
+.door-core-standalone .door-core-signature-for-line,
+.door-core-standalone .door-core-signature-detail,
+.door-core-standalone .door-core-footer-left,
+.door-core-standalone .door-core-footer-contact,
+.door-core-standalone .door-core-footer-bottom,
+.door-core-standalone .door-core-distributor-text,
+.door-core-standalone .door-core-footer-signature-note,
+.door-core-standalone .door-core-quotation-value-note,
+.door-core-standalone .door-core-total-amount-in-words-line {
+  font-size: 8.5px !important;
+}
+
+.door-core-standalone .door-core-cover-title {
+  font-size: 12px !important;
 }
 
 .door-set-2-quotation .door-core-table-section {
@@ -1784,17 +2060,16 @@ body {
   white-space: nowrap;
 }
 
-/* Door Type, Product Ref, Hardware Set: the only columns that can hold genuinely longer text
-   ("Single Leaf", "IDEAL ACOUFIRE 45") — wrap at word boundaries ONLY, never split mid-word
-   (previous overflow-wrap: break-word turned "Single Leaf" into "Singl e Leaf") */
+/* Door Type, Product Ref, Hardware Set, Remarks: wrap long API text inside fixed columns */
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16) {
   white-space: normal;
-  overflow-wrap: normal;
-  word-break: keep-all;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   line-height: 1.35;
+  min-width: 0;
 }
 
 /* ── Door Set 2 main table TH: bold, centered, crisp border grid (2-row grouped header) ── */
@@ -1826,13 +2101,14 @@ body {
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table td {
   box-sizing: border-box;
   white-space: normal;
-  overflow-wrap: break-word;
-  word-break: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   font-size: 8.5px !important;
   vertical-align: middle;
   padding: 4px 3px;
   line-height: 1.25;
   text-align: right;
+  min-width: 0;
 }
 
 /* Non-main-table th/td (Section_1/2/3 subform tables) — matched to the main item table's font-size
@@ -1857,11 +2133,21 @@ body {
   box-sizing: border-box;
   white-space: normal;
   word-wrap: break-word;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   font-size: 8.5px !important;
   vertical-align: middle;
   padding: 4px 3px;
   line-height: 1.25;
+  min-width: 0;
+}
+
+/* Subform Description: long item text must wrap inside the column */
+.door-set-2-quotation .door-core-subform-table td:nth-child(2) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
 }
 
 /* Door Set 2: subform column widths */
@@ -1879,7 +2165,7 @@ body {
 
 .door-set-2-quotation .door-core-subform-table th:nth-child(2),
 .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
-  width: 66%;
+  width: 58%;
   min-width: 8em;
   text-align: left !important;
 }
@@ -1895,28 +2181,47 @@ body {
   text-align: right;
 }
 
-/* Unit Price (AED) — right-aligned header + data */
+/* Unit Price (AED) — right-aligned header + data; keep amounts on one line */
 .door-set-2-quotation .door-core-subform-table th:nth-child(4) {
-  width: 10%;
+  width: 14%;
   text-align: right !important;
 }
 
 .door-set-2-quotation .door-core-subform-table td:nth-child(4) {
-  width: 10%;
+  width: 14%;
   text-align: right;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  min-width: 6.5em;
 }
 
-/* Total Price (AED) — right-aligned header + data */
+/* Total Price (AED) — right-aligned; wide enough for values like 690,000.00 */
 .door-set-2-quotation .door-core-subform-table th:nth-child(5) {
-  width: 10%;
-  min-width: 5em;
+  width: 14%;
+  min-width: 6.5em;
   text-align: right !important;
 }
 
 .door-set-2-quotation .door-core-subform-table td:nth-child(5) {
-  width: 10%;
-  min-width: 5em;
+  width: 14%;
+  min-width: 6.5em;
   text-align: right;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+/* Sub Total amount cell (last column of subtotal row — colspan changes nth-child) */
+.door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td:last-child {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  text-align: right !important;
+}
+
+.door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td {
+  overflow: visible;
 }
 
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table .door-core-subtotal td {
@@ -1982,6 +2287,8 @@ body {
 .door-core-notes-p.door-core-notes-html {
   margin-left: 0;
   font-size: 12px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .door-core-notes-html ol,
@@ -2320,7 +2627,7 @@ body {
 /* ══ Quotation Fitout (Quotation_Log_Fitout_2 – Ideal Fitouts template) ══ */
 .quotation-fitout-container {
   font-family: Arial, sans-serif;
-  font-size: 11pt;
+  font-size: 8.5px;
   line-height: 1.45;
   margin: 0;
   padding: 0;
@@ -2434,7 +2741,7 @@ body {
   flex: 0 0 auto;
   page-break-inside: avoid;
   break-inside: avoid;
-  font-size: 11pt;
+  font-size: 8.5px;
   line-height: 1.45;
 }
 
@@ -2447,7 +2754,7 @@ body {
   text-align: center;
   margin-top: -1%;
   margin-bottom: 10px;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.3;
 }
@@ -2460,7 +2767,7 @@ body {
 .quotation-fitout-details-row {
   display: flex;
   align-items: flex-start;
-  font-size: 11pt;
+  font-size: 8.5px;
   margin-bottom: 6px;
 }
 
@@ -2472,18 +2779,22 @@ body {
 
 .quotation-fitout-details-value {
   flex: 1;
+  min-width: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .quotation-fitout-salutation {
   margin: 0 0 0.35em 0;
-  font-size: 11pt;
+  font-size: 8.5px;
   line-height: 1.45;
 }
 
 .quotation-fitout-intro {
   margin-top: 0;
   margin-bottom: 8px;
-  font-size: 11pt;
+  font-size: 8.5px;
   line-height: 1.45;
 }
 
@@ -2493,20 +2804,39 @@ body {
   font-size: 12px;
 }
 
+/* Subform section title row — spans all columns inside the table border grid (matches Door Set 1) */
+.quotation-fitout-subform-table .quotation-fitout-subform-section-header-row th.quotation-fitout-subform-section-title {
+  text-align: left !important;
+  font-weight: 700 !important;
+  font-size: 12px !important;
+  color: #333;
+  padding: 6px 5px 10px 5px !important;
+  background-color: #ffffff;
+  border: 1px solid #000;
+  vertical-align: middle;
+  white-space: normal !important;
+}
+
+.quotation-fitout-subform-table {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
 .quotation-fitout-product-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 8.5px;
-  border: 1.5px solid #333;
+  border: 1px solid #000;
   margin-bottom: 10px;
 }
 
 .quotation-fitout-product-table th,
 .quotation-fitout-product-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #000;
   padding: 4px 3px;
   vertical-align: middle;
+  min-width: 0;
 }
 
 .quotation-fitout-product-table th {
@@ -2533,23 +2863,30 @@ body {
 .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(5),
 .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(6) {
   text-align: right;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  min-width: 6.5em;
 }
 
-/* Description: wrap at word boundaries ONLY — never split mid-word (word-break: break-word could
-   otherwise turn a long item name into an awkward mid-word split in a narrow column) */
+/* Description: wrap long API text (words first, mid-word only if needed) */
 .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(2),
 .quotation-fitout-product-table th:nth-child(2) {
   text-align: center;
-  overflow-wrap: normal;
-  word-break: keep-all;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
 }
 
-/* Manually_Filled table: Item + Description centered, Amount stays right-aligned via .quotation-fitout-text-right */
+/* Manually_Filled table: Item + Description wrap; Amount stays right-aligned via .quotation-fitout-text-right */
 .quotation-fitout-manual-items-table td:nth-child(1),
 .quotation-fitout-manual-items-table td:nth-child(2) {
   text-align: center;
-  overflow-wrap: normal;
-  word-break: keep-all;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .quotation-fitout-text-right {
@@ -2561,17 +2898,24 @@ body {
   background-color: #f9f9f9;
 }
 
+/* Sub Total amount must stay on one line in the Total Price column */
+.quotation-fitout-subtotal td:last-child {
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: normal !important;
+  text-align: right !important;
+  min-width: 6.5em;
+}
+
 .quotation-fitout-totals-table {
   width: 100%;
   table-layout: auto;
-  /* Totals (Grand Total/Discount/VAT) shares .quotation-fitout-product-table's base class but should
-     read at the normal cover-letter size, not the item table's compact 8.5px — matching Door Set 2 /
-     Door Core, where the totals summary is a fully separate table that was never shrunk. */
-  font-size: 11pt;
+  /* Totals (Grand Total/Discount/VAT) — same 8.5px as item tables / Door Set 1 */
+  font-size: 8.5px;
 }
 
 .quotation-fitout-totals-table tbody tr.quotation-fitout-total-row td {
-  border: 1px solid #ddd;
+  border: 1px solid #000;
   padding: 6px;
   font-weight: bold;
   background-color: #f9f9f9;
@@ -2603,13 +2947,13 @@ body {
 
 .quotation-fitout-terms-p {
   margin-left: 1%;
-  font-size: 11pt;
+  font-size: 8.5px;
   margin-bottom: 5px;
 }
 
 .quotation-fitout-terms {
   margin-top: 10px;
-  font-size: 11pt;
+  font-size: 8.5px;
 }
 
 .quotation-fitout-terms p {
@@ -2619,7 +2963,7 @@ body {
 .quotation-fitout-signature-label {
   display: block;
   text-align: left;
-  font-size: 11pt;
+  font-size: 8.5px;
   font-weight: 700;
 }
 
@@ -2652,15 +2996,19 @@ body {
 }
 
 .quotation-fitout-signature-placeholder {
-  font-size: 11pt;
+  font-size: 8.5px;
   color: #666;
+}
+
+.quotation-fitout-signature-block-spacer {
+  margin-bottom: 60px;
 }
 
 .quotation-fitout-signature-line-wrap {
   margin-top: 1.5em;
   margin-bottom: 60px;
   text-align: left;
-  font-size: 11pt;
+  font-size: 8.5px;
   font-weight: 700;
 }
 
@@ -2673,8 +3021,10 @@ body {
 /* Notes: render HTML (ol/li) without showing raw tags */
 .quotation-fitout-notes-html {
   margin-left: 1%;
-  font-size: 11pt;
+  font-size: 8.5px;
   margin-bottom: 8px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .quotation-fitout-notes-html ol,
@@ -2785,12 +3135,33 @@ body {
   line-height: 1.4;
 }
 
+/* Footer bottom: page number on the left, disclaimer centered */
+.quotation-fitout-footer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.quotation-fitout-page-number {
+  flex: 0 0 auto;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #333;
+  font-family: Arial, Helvetica, sans-serif;
+  white-space: nowrap;
+  min-width: 4.5em;
+}
+
 /* "computer generated, no signature required" note — repeats in the footer on every printed page */
 .quotation-fitout-footer-signature-note {
-  font-size: 10.5px;
+  flex: 1 1 auto;
+  font-size: 8.5px;
   font-style: italic;
   color: #6b7280;
-  margin-top: 6px;
+  margin: 0;
   text-align: center;
 }
 

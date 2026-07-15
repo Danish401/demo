@@ -139,12 +139,13 @@ export function numberToWords(num: number): string {
 }
 
 /**
- * Amount in words for "Total Amount : AED …" line (e.g. Ten Thousand … and Fifty Fils Only).
+ * Amount in words for totals lines (e.g. "Dirhams Ten Thousand … and Fifty Fils Only").
+ * Uses the word "Dirhams", not the Dirham currency glyph.
  */
 export function formatAedAmountInWords(value: string | number | undefined): string {
-  if (value === undefined || value === null) return integerToWords(0) + ' Only'
+  if (value === undefined || value === null) return 'Dirhams ' + integerToWords(0) + ' Only'
   const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : Number(value)
-  if (!Number.isFinite(num)) return integerToWords(0) + ' Only'
+  if (!Number.isFinite(num)) return 'Dirhams ' + integerToWords(0) + ' Only'
 
   const abs = Math.abs(num)
   const intPart = Math.floor(abs)
@@ -155,7 +156,7 @@ export function formatAedAmountInWords(value: string | number | undefined): stri
     const filWord = decPart === 1 ? 'Fil' : 'Fils'
     s += ' and ' + integerToWords(decPart) + ' ' + filWord
   }
-  return s + ' Only'
+  return 'Dirhams ' + s + ' Only'
 }
 
 function escapeHtml(text: string): string {

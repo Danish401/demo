@@ -1,0 +1,81 @@
+TOOL=StrReplace LINE=7
+LEN=1797
+===OLD===
+function getSalesPersonDetails(
+  salesPerson?: string
+): { name: string; designation: string; contact: string; signature?: string } {
+  const name = (salesPerson || '').trim()
+  const signature = name ? SALES_SIGNATURES[name] : undefined
+  switch (name) {
+    case 'Santosh P.B':
+      return { name, designation: 'Sr. Manager', contact: '050 8961908', signature }
+    case 'Dawood Hussain':
+      return { name, designation: 'Project Sales Manager', contact: '052 8046858', signature }
+    case 'Jerry Thomas':
+      return { name, designation: 'Sales Manager', contact: '050 9421886', signature }
+    case 'Antony Joy Panikulam':
+      return { name, designation: 'Director', contact: '050 3513428', signature }
+    case 'Ritu Antony':
+      return { name, designation: 'Division Head - Fit Out', contact: '050 3063428', signature }
+    case 'Noureddin Alzaben':
+      return { name, designation: 'Business Development Manager', contact: '052 8531082', signature }
+    default:
+      return {
+        name: name || '—',
+        designation: 'Designation not available',
+        contact: 'Contact not available',
+        signature,
+      }
+  }
+}
+
+/** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
+function parseAED(value: string | number | undefined | null): number {
+  if (value === undefined || value === null) return 0
+  const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
+  return isNaN(num) ? 0 : num
+}
+
+function formatAED(value: string | number | undefined): string {
+  return parseAED(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+===NEW===
+function getSalesPersonDetails(
+  salesPerson?: string
+): { name: string; designation: string; contact: string; signature?: string } {
+  const name = (salesPerson || '').trim()
+  const signature = name ? SALES_SIGNATURES[name] : undefined
+  switch (name) {
+    case 'Santosh P.B':
+      return { name, designation: 'Sr. Manager', contact: '+971 50 896 1908', signature }
+    case 'Dawood Hussain':
+      return { name, designation: 'Project Sales Manager', contact: '+971 52 804 6858', signature }
+    case 'Jerry Thomas':
+      return { name, designation: 'Sales Manager', contact: '+971 50 942 1886', signature }
+    case 'Antony Joy Panikulam':
+      return { name, designation: 'Director', contact: '+971 50 351 3428', signature }
+    case 'Ritu Antony':
+      return { name, designation: 'Division Head - Fit Out', contact: '+971 50 306 3428', signature }
+    case 'Noureddin Alzaben':
+      return { name, designation: 'Business Development Manager', contact: '+971 52 853 1082', signature }
+    default:
+      return {
+        name: name || '—',
+        designation: 'Sales Executive',
+        contact: '+971 50 306 3428',
+        signature,
+      }
+  }
+}
+
+/** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
+function parseAED(value: string | number | undefined | null): number {
+  if (value === undefined || value === null) return 0
+  const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
+  return isNaN(num) ? 0 : num
+}
+
+/** Format AED values for display using standard international 3-digit comma grouping (e.g. 1,328,510.40) */
+function formatAED(value: string | number | undefined): string {
+  return parseAED(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}

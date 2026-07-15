@@ -1,0 +1,6 @@
+TOOL=StrReplace LINE=73
+LEN=149
+===OLD===
+              <FooterBandContent footerData={footerData} data={data} isAjmanOrExportSubdivision={isAjmanOrExportSubdivision} />
+===NEW===
+              <FooterBandContent footerData={footerData} data={data} isAjmanOrExportSubdivision={isAjmanOrExportSubdivision} pageLabel={pageLabel} />

@@ -1,0 +1,27 @@
+TOOL=StrReplace LINE=106
+LEN=50
+===OLD===
+/** Default "3. Notes" content when API does not return Notes1 (e.g. Core_Cover_page_Report). Numbered 1–8 with bullet sub-list under 1. */
+const DEFAULT_NOTES_HTML = `
+<ol class="door-core-notes-count-list">
+<li>The following are excluded from our scope:
+<ul>
+<li>Installation of door sets</li>
+<li>Ironmongeries</li>
+<li>Moulding, paneling, and any other design work apart from what is mentioned above</li>
+<li>Any other items which are not specifically mentioned</li>
+</ul>
+</li>
+<li>Alteration of any kind of our doors (e.g., making grooves or recesses) can significantly impact their performance and must not be done without our prior approval.</li>
+<li>Installation must be carried out in accordance with standard practice for Fire and Acoustic doors. Details shall be shared upon supply.</li>
+<li>Vision panels, wherever applicable, shall be strictly built-in as per the required size during fabrication at additional cost.</li>
+<li>For Fire Rated Doors, all ironmongeries and accessories must have valid fire rating certification and Civil Defense approval. Intumescent protection for hardware (hinges, lock case, closer, etc.) is mandatory.</li>
+<li>Upon completion, labels and Civil Defense Certificate will be issued after inspection (for Fire Rating only). Manufacturer's Acoustic Certificate will also be provided.</li>
+<li>Issuance of labels and certificates is subject to clearance of any outstanding payments.</li>
+<li>All our products carry a 1-year warranty from the date of installation/certification/labelling, covering manufacturing defects only.</li>
+</ol>
+`.trim()
+
+export default function DoorCoreQuotationContent({
+===NEW===
+export default function DoorCoreQuotationContent({

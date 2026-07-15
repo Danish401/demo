@@ -6,6 +6,103 @@ function escapeHtml(value: string): string {
     .replace(/"/g, '&quot;')
 }
 
+const PX_PER_MM = 96 / 25.4
+/** A4 height (297mm) minus the 1cm top / 1.6cm bottom page margins on named @page rules in globals.css */
+const A4_PAGE_CONTENT_HEIGHT_PX = (297 - 10 - 16) * PX_PER_MM
+
+/**
+ * Estimates printed pages from header/footer/body heights vs printable A4 content height.
+ * Needed because browsers don't support CSS `counter(pages)`, so margin-box "Page X of Y" total
+ * is blank unless we inject a literal estimate at print time.
+ */
+function estimatePagesFromLayout(
+  root: HTMLElement,
+  selectors: { header: string; footer: string; body: string }
+): number | null {
+  const headerHeight = root.querySelector(selectors.header)?.getBoundingClientRect().height ?? 0
+  const footerHeight = root.querySelector(selectors.footer)?.getBoundingClientRect().height ?? 0
+  const bodyHeight = root.querySelector(selectors.body)?.getBoundingClientRect().height ?? 0
+
+  const availablePerPage = A4_PAGE_CONTENT_HEIGHT_PX - headerHeight - footerHeight
+  if (!(availablePerPage > 0) || !(bodyHeight > 0)) return null
+
+  return Math.max(1, Math.ceil(bodyHeight / availablePerPage))
+}
+
+function estimateDoorSet1PageCount(root: HTMLElement): number | null {
+  return estimatePagesFromLayout(root, {
+    header: '.door-core-layout-header-cell',
+    footer: '.door-core-layout-footer-cell',
+    body: '.door-core-layout-ell',
+  })
+}
+
+/**
+ * Fill leftover space on the last pricing page so the repeating <tfoot> sits at the bottom.
+ * Used by Door Set (`.door-set-1-print-end-spacer`) and Door Core (`.door-core-print-end-spacer`).
+ *
+ * Important: when the last page has only a little content, the remaining gap is nearly a full
+ * page — that is exactly when we must apply the spacer. Do not reject large gaps.
+ */
+function fillLastPageSpacer(root: HTMLElement, spacerSelector: string): () => void {
+  const spacer = root.querySelector<HTMLElement>(spacerSelector)
+  if (!spacer) return () => {}
+
+  const previousCssText = spacer.style.cssText
+  spacer.style.cssText = 'display:block;height:0;min-height:0;flex:none;margin:0;padding:0;'
+
+  const headerEl = root.querySelector<HTMLElement>(
+    '.door-core-page-layout > thead .door-core-layout-header-cell'
+  )
+  const footerEl = root.querySelector<HTMLElement>(
+    '.door-core-page-layout > tfoot .door-core-layout-footer-cell'
+  )
+  const headerH = headerEl?.getBoundingClientRect().height ?? 0
+  const footerH = footerEl?.getBoundingClientRect().height ?? 0
+
+  const available = A4_PAGE_CONTENT_HEIGHT_PX - headerH - footerH
+  const tableSection = root.querySelector<HTMLElement>('.door-core-table-section')
+  if (!(available > 0) || !tableSection) {
+    return () => {
+      spacer.style.cssText = previousCssText
+    }
+  }
+
+  void tableSection.offsetHeight
+  const sectionH = tableSection.getBoundingClientRect().height
+  const usedOnLastPage = sectionH % available
+  // Near-zero residue → content already landed on an exact page boundary
+  const gap = usedOnLastPage < 0.5 ? 0 : available - usedOnLastPage
+
+  if (gap > 2) {
+    // Leave a couple px so we don't spill a blank page from float / border rounding
+    const px = Math.max(0, Math.floor(gap) - 2)
+    if (px > 2) {
+      spacer.style.cssText = `display:block;height:${px}px;min-height:${px}px;flex:none;margin:0;padding:0;`
+    }
+  }
+
+  return () => {
+    spacer.style.cssText = previousCssText
+  }
+}
+
+function fillDoorSetLastPageSpacer(root: HTMLElement): () => void {
+  return fillLastPageSpacer(root, '.door-set-1-print-end-spacer')
+}
+
+function fillDoorCoreLastPageSpacer(root: HTMLElement): () => void {
+  return fillLastPageSpacer(root, '.door-core-print-end-spacer')
+}
+
+function estimateFitoutPageCount(root: HTMLElement): number | null {
+  return estimatePagesFromLayout(root, {
+    header: '.quotation-fitout-header-cell',
+    footer: '.quotation-fitout-footer-cell',
+    body: '.quotation-fitout-body-cell',
+  })
+}
+
 /**
  * Print quotation content without the current page URL in the browser header/footer.
  * Uses a hidden iframe with a blank document title so Chrome/Edge show minimal chrome
@@ -43,8 +140,65 @@ export function printQuotationDocument(fileName?: string): void {
     document.querySelector<HTMLElement>('.export-quotation-container') ??
     document.body
 
+  // Containers may be nested under main.quotation-doc — check both root and descendants
+  const doorSet1Root =
+    sourceRoot.classList.contains('door-set-1-quotation')
+      ? sourceRoot
+      : sourceRoot.querySelector<HTMLElement>('.door-set-1-quotation')
+  const doorSet2Root =
+    !doorSet1Root
+      ? sourceRoot.classList.contains('door-set-2-quotation')
+        ? sourceRoot
+        : sourceRoot.querySelector<HTMLElement>('.door-set-2-quotation')
+      : null
+  const doorSetRoot = doorSet1Root ?? doorSet2Root
+  const doorCoreRoot =
+    !doorSetRoot &&
+    (sourceRoot.classList.contains('door-core-standalone')
+      ? sourceRoot
+      : sourceRoot.querySelector<HTMLElement>('.door-core-standalone'))
+  const fitoutRoot =
+    !doorSetRoot &&
+    !doorCoreRoot &&
+    (sourceRoot.classList.contains('quotation-fitout-container')
+      ? sourceRoot
+      : sourceRoot.querySelector<HTMLElement>('.quotation-fitout-container'))
+
+  // Fill last-page gap before measuring pages / cloning so footer sits at bottom without fixed overlay
+  const resetDoorSetSpacer = doorSetRoot ? fillDoorSetLastPageSpacer(doorSetRoot) : () => {}
+  const resetDoorCoreSpacer = doorCoreRoot ? fillDoorCoreLastPageSpacer(doorCoreRoot) : () => {}
+  const resetSpacers = () => {
+    resetDoorSetSpacer()
+    resetDoorCoreSpacer()
+  }
+
+  const doorSet1PageCount = doorSet1Root ? estimateDoorSet1PageCount(doorSet1Root) : null
+  const doorCorePageCount = doorCoreRoot ? estimateDoorSet1PageCount(doorCoreRoot) : null
+  const fitoutPageCount = fitoutRoot ? estimateFitoutPageCount(fitoutRoot) : null
+  const fitoutPages = fitoutPageCount ?? (fitoutRoot ? 1 : null)
+  const doorCorePages = doorCorePageCount ?? (doorCoreRoot ? 1 : null)
+  const doorSet1Pages = doorSet1PageCount ?? (doorSet1Root ? 1 : null)
+
+  // Fill left-side footer labels before clone so on-screen footer also reflects total
+  if (fitoutRoot && fitoutPages != null) {
+    fitoutRoot.querySelectorAll<HTMLElement>('[data-fitout-page-label]').forEach((el) => {
+      el.textContent = `Page 1 of ${fitoutPages}`
+    })
+  }
+  if (doorCoreRoot && doorCorePages != null) {
+    doorCoreRoot.querySelectorAll<HTMLElement>('[data-door-core-page-label]').forEach((el) => {
+      el.textContent = `Page 1 of ${doorCorePages}`
+    })
+  }
+  if (doorSet1Root && doorSet1Pages != null) {
+    doorSet1Root.querySelectorAll<HTMLElement>('[data-door-set1-page-label]').forEach((el) => {
+      el.textContent = `Page 1 of ${doorSet1Pages}`
+    })
+  }
+
   const clone = sourceRoot.cloneNode(true) as HTMLElement
   clone.querySelectorAll('.no-print').forEach((el) => el.remove())
+  resetSpacers()
 
   const stylesheetLinks = Array.from(
     document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
@@ -62,6 +216,28 @@ export function printQuotationDocument(fileName?: string): void {
 
   const title = fileName?.trim() ? escapeHtml(fileName.trim()) : ' '
 
+  const leftPageCss = (pageName: string, total: number) =>
+    `@page ${pageName} {
+      @bottom-left {
+        content: "Page " counter(page) " of ${total}";
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 8.5px;
+        font-weight: 700;
+        color: #333;
+      }
+      @bottom-center { content: none; }
+      @bottom-right { content: none; }
+    }`
+
+  // Browsers don't support CSS counter(pages), so inject a literal estimated total for named pages.
+  const pageNumberOverrideCss = doorSet1Pages != null
+    ? leftPageCss('door-set-1-quotation-page', doorSet1Pages)
+    : doorCorePages != null
+      ? leftPageCss('door-core-quotation-page', doorCorePages)
+      : fitoutPages != null
+        ? leftPageCss('fitout-quotation-page', fitoutPages)
+        : ''
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,7 +246,6 @@ export function printQuotationDocument(fileName?: string): void {
   ${stylesheetLinks}
   ${inlineStyles}
   <style>
-    @page { size: A4; margin: 1cm; }
     html, body { margin: 0; padding: 0; overflow: visible !important; height: auto !important; }
     body {
       print-color-adjust: exact;
@@ -78,6 +253,7 @@ export function printQuotationDocument(fileName?: string): void {
       overflow: visible !important;
     }
     * { overflow: visible !important; max-width: 100%; }
+    ${pageNumberOverrideCss}
   </style>
 </head>
 <body class="${document.body.className}">

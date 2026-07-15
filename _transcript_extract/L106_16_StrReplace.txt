@@ -1,0 +1,19 @@
+TOOL=StrReplace LINE=106
+LEN=451
+===OLD===
+                    <ClosingSignatureGroup
+                      signatureForEntity={signatureForEntity}
+                      isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
+                      salesDetails={salesDetails}
+                      showSignature={showSignature}
+                    />
+                    {!showTenderPdfBoq && <div className="door-core-last-page-spacer" />}
+===NEW===
+                    <ClosingSignatureGroup
+                      signatureForEntity={signatureForEntity}
+                      isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
+                      salesDetails={salesDetails}
+                      showSignature={showSignature}
+                      hasSalesPerson={hasSalesPerson}
+                    />
+                    {!showTenderPdfBoq && <div className="door-core-last-page-spacer" />}

@@ -568,7 +568,7 @@ function QuotationPageInner() {
       )}
 
       {!loading && !error && !fitoutData && doorSet1Data && (
-        <QuotationLogDoorSet2Content data={doorSet1Data} viewMode={viewMode} />
+        <QuotationLogDoorSet2Content data={doorSet1Data} viewMode={viewMode} variant="door-set-1" />
       )}
 
       {!loading && !error && !fitoutData && !doorSet1Data && doorSet2Data && (

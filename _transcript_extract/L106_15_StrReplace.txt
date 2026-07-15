@@ -1,0 +1,122 @@
+TOOL=StrReplace LINE=106
+LEN=3463
+===OLD===
+                    <tr className="door-core-boq-totals-row">
+                      <td colSpan={10} className="door-core-total-label">
+                        <strong>Total Quantity:</strong>
+                      </td>
+                      <td className="door-core-total-value door-core-text-center">{totalQty || ''}</td>
+                      <td className="door-core-total-value" />
+                      <td className="door-core-total-value" />
+                      <td className="door-core-total-value" />
+                    </tr>
+                    <tr className="door-core-boq-totals-row">
+                      <td colSpan={12} className="door-core-total-label">
+                        Total Amount
+                      </td>
+                      <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
+                      <td className="door-core-total-value" />
+                    </tr>
+                    {hasDiscount && (
+                      <>
+                        <tr className="door-core-boq-totals-row">
+                          <td colSpan={12} className="door-core-total-label">
+                            Less Special Discount <DirhamSymbol /> :-
+                          </td>
+                          <td className="door-core-total-value door-core-text-right">
+                            {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                          </td>
+                          <td className="door-core-total-value" />
+                        </tr>
+                        <tr className="door-core-boq-totals-row">
+                          <td colSpan={12} className="door-core-total-label">
+                            Amount After Discount <DirhamSymbol /> :-
+                          </td>
+                          <td className="door-core-total-value door-core-text-right">
+                            {formatAED(amountAfterDiscount)}
+                          </td>
+                          <td className="door-core-total-value" />
+                        </tr>
+                      </>
+                    )}
+                    {hasVat && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={12} className="door-core-total-label">
+                          VAT 5%
+                        </td>
+                        <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}
+                    <tr className="door-core-boq-totals-row">
+                      <td colSpan={12} className="door-core-total-label door-core-grand-total-label-cell">
+                        <div className="door-core-total-amount-in-words-line">
+                          <strong>Total Amount :</strong> {formatAedAmountInWords(data.Grand_Total_AED)}
+                        </div>
+                      </td>
+                      <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>
+                      <td className="door-core-total-value" />
+                    </tr>
+===NEW===
+                    {hasBoqRows && totalQty > 0 && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={10} className="door-core-total-label">
+                          <strong>Total Quantity:</strong>
+                        </td>
+                        <td className="door-core-total-value door-core-text-center">{totalQty}</td>
+                        <td className="door-core-total-value" />
+                        <td className="door-core-total-value" />
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}
+                    {hasTotalAmount && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={12} className="door-core-total-label">
+                          Total Amount
+                        </td>
+                        <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}
+                    {hasDiscount && (
+                      <>
+                        <tr className="door-core-boq-totals-row">
+                          <td colSpan={12} className="door-core-total-label">
+                            Less Special Discount <DirhamSymbol /> :-
+                          </td>
+                          <td className="door-core-total-value door-core-text-right">
+                            {formatAED(data.Provision_for_Less_Special_Discount_AED)}
+                          </td>
+                          <td className="door-core-total-value" />
+                        </tr>
+                        <tr className="door-core-boq-totals-row">
+                          <td colSpan={12} className="door-core-total-label">
+                            Amount After Discount <DirhamSymbol /> :-
+                          </td>
+                          <td className="door-core-total-value door-core-text-right">
+                            {formatAED(amountAfterDiscount)}
+                          </td>
+                          <td className="door-core-total-value" />
+                        </tr>
+                      </>
+                    )}
+                    {hasVat && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={12} className="door-core-total-label">
+                          VAT 5%
+                        </td>
+                        <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}
+                    {hasGrandTotal && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={12} className="door-core-total-label door-core-grand-total-label-cell">
+                          <div className="door-core-total-amount-in-words-line">
+                            <strong>Total Amount :</strong> {formatAedAmountInWords(data.Grand_Total_AED)}
+                          </div>
+                        </td>
+                        <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}

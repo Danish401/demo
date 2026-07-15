@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import {
   QuotationLogFitout2Data,
   QuotationLogFitout2Item,
@@ -7,13 +8,18 @@ import {
   QuotationLogFitout2ManualItem,
   QuotationLogFitout2SubItem,
 } from '@/lib/types'
+import DirhamSymbol from './DirhamSymbol'
 
-/** Format AED values for display */
-function formatAED(value: string | number | undefined): string {
-  if (value === undefined || value === null) return '0.00'
+/** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
+function parseAED(value: string | number | undefined | null): number {
+  if (value === undefined || value === null) return 0
   const num = typeof value === 'string' ? parseFloat(String(value).replace(/,/g, '')) : value
-  if (isNaN(num)) return '0.00'
-  return num.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return isNaN(num) ? 0 : num
+}
+
+/** Format AED values for display using standard international 3-digit comma grouping (e.g. 1,328,510.40) */
+function formatAED(value: string | number | undefined | null): string {
+  return parseAED(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 /** True if field has displayable value (hide row/section when false) */
@@ -23,24 +29,91 @@ function hasValue(v: unknown): boolean {
   return s !== ''
 }
 
-/**
- * New UAE Dirham currency symbol (Unicode U+20C3, accepted for Unicode 18.0 / Sept 2026).
- * Rendered as inline SVG rather than the Unicode character since no OS/browser ships the
- * glyph yet — path data sourced from the Central Bank of UAE coin glyph.
- */
-function DirhamSymbol() {
+/** Normalized product-line row for Fitout subform tables */
+type FitoutSectionRow = {
+  slNo?: string | number | null
+  description?: string | null
+  unit?: string | null
+  qty?: string | number | null
+  unitPrice?: string | number | null
+  totalPrice?: string | number | null
+}
+
+/** Product table with section header as first thead row (matches Door Set 1 SubForm pattern) */
+function FitoutSubformSectionTable({
+  header,
+  rows,
+  subTotal,
+}: {
+  header?: string
+  rows: FitoutSectionRow[]
+  subTotal?: string | number | null
+}) {
+  const headerText = (header ?? '').trim()
+
   return (
-    <svg
-      viewBox="0 0 1000 870"
-      width="0.78em"
-      height="0.68em"
-      fill="currentColor"
-      role="img"
-      aria-label="AED"
-      style={{ display: 'inline-block', verticalAlign: '-0.05em' }}
-    >
-      <path d="m88.3 1c0.4 0.6 2.6 3.3 4.7 5.9 15.3 18.2 26.8 47.8 33 85.1 4.1 24.5 4.3 32.2 4.3 125.6v87h-41.8c-38.2 0-42.6-0.2-50.1-1.7-11.8-2.5-24-9.2-32.2-17.8-6.5-6.9-6.3-7.3-5.9 13.6 0.5 17.3 0.7 19.2 3.2 28.6 4 14.9 9.5 26 17.8 35.9 11.3 13.6 22.8 21.2 39.2 26.3 3.5 1 10.9 1.4 37.1 1.6l32.7 0.5v43.3 43.4l-46.1-0.3-46.3-0.3-8-3.2c-9.5-3.8-13.8-6.6-23.1-14.9l-6.8-6.1 0.4 19.1c0.5 17.7 0.6 19.7 3.1 28.7 8.7 31.8 29.7 54.5 57.4 61.9 6.9 1.9 9.6 2 38.5 2.4l30.9 0.4v89.6c0 54.1-0.3 94-0.8 100.8-0.5 6.2-2.1 17.8-3.5 25.9-6.5 37.3-18.2 65.4-35 83.6l-3.4 3.7h169.1c101.1 0 176.7-0.4 187.8-0.9 19.5-1 63-5.3 72.8-7.4 3.1-0.6 8.9-1.5 12.7-2.1 8.1-1.2 21.5-4 40.8-8.9 27.2-6.8 52-15.3 76.3-26.1 7.6-3.4 29.4-14.5 35.2-18 3.1-1.8 6.8-4 8.2-4.7 3.9-2.1 10.4-6.3 19.9-13.1 4.7-3.4 9.4-6.7 10.4-7.4 4.2-2.8 18.7-14.9 25.3-21 25.1-23.1 46.1-48.8 62.4-76.3 2.3-4 5.3-9 6.6-11.1 3.3-5.6 16.9-33.6 18.2-37.8 0.6-1.9 1.4-3.9 1.8-4.3 2.6-3.4 17.6-50.6 19.4-60.9 0.6-3.3 0.9-3.8 3.4-4.3 1.6-0.3 24.9-0.3 51.8-0.1 53.8 0.4 53.8 0.4 65.7 5.9 6.7 3.1 8.7 4.5 16.1 11.2 9.7 8.7 8.8 10.1 8.2-11.7-0.4-12.8-0.9-20.7-1.8-23.9-3.4-12.3-4.2-14.9-7.2-21.1-9.8-21.4-26.2-36.7-47.2-44l-8.2-3-33.4-0.4-33.3-0.5 0.4-11.7c0.4-15.4 0.4-45.9-0.1-61.6l-0.4-12.6 44.6-0.2c38.2-0.2 45.3 0 49.5 1.1 12.6 3.5 21.1 8.3 31.5 17.8l5.8 5.4v-14.8c0-17.6-0.9-25.4-4.5-37-7.1-23.5-21.1-41-41.1-51.8-13-7-13.8-7.2-58.5-7.5-26.2-0.2-39.9-0.6-40.6-1.2-0.6-0.6-1.1-1.6-1.1-2.4 0-0.8-1.5-7.1-3.5-13.9-23.4-82.7-67.1-148.4-131-197.1-8.7-6.7-30-20.8-38.6-25.6-3.3-1.9-6.9-3.9-7.8-4.5-4.2-2.3-28.3-14.1-34.3-16.6-3.6-1.6-8.3-3.6-10.4-4.4-35.3-15.3-94.5-29.8-139.7-34.3-7.4-0.7-17.2-1.8-21.7-2.2-20.4-2.3-48.7-2.6-209.4-2.6-135.8 0-169.9 0.3-169.4 1zm330.7 43.3c33.8 2 54.6 4.6 78.9 10.5 74.2 17.6 126.4 54.8 164.3 117 3.5 5.8 18.3 36 20.5 42.1 10.5 28.3 15.6 45.1 20.1 67.3 1.1 5.4 2.6 12.6 3.3 16 0.7 3.3 1 6.4 0.7 6.7-0.5 0.4-100.9 0.6-223.3 0.5l-222.5-0.2-0.3-128.5c-0.1-70.6 0-129.3 0.3-130.4l0.4-1.9h71.1c39 0 78 0.4 86.5 0.9zm297.5 350.3c0.7 4.3 0.7 77.3 0 80.9l-0.6 2.7-227.5-0.2-227.4-0.3-0.2-42.4c-0.2-23.3 0-42.7 0.2-43.1 0.3-0.5 97.2-0.8 227.7-0.8h227.2zm-10.2 171.7c0.5 1.5-1.9 13.8-6.8 33.8-5.6 22.5-13.2 45.2-20.9 62-3.8 8.6-13.3 27.2-15.6 30.7-1.1 1.6-4.3 6.7-7.1 11.2-18 28.2-43.7 53.9-73 72.9-10.7 6.8-32.7 18.4-38.6 20.2-1.2 0.3-2.5 0.9-3 1.3-0.7 0.6-9.8 4-20.4 7.8-19.5 6.9-56.6 14.4-86.4 17.5-19.3 1.9-22.4 2-96.7 2h-76.9v-129.7-129.8l220.9-0.4c121.5-0.2 221.6-0.5 222.4-0.7 0.9-0.1 1.8 0.5 2.1 1.2z" />
-    </svg>
+    <table className="quotation-fitout-product-table quotation-fitout-subform-table">
+      <colgroup>
+        <col style={{ width: '7.5%' }} />
+        <col style={{ width: '47.5%' }} />
+        <col style={{ width: '10%' }} />
+        <col style={{ width: '10%' }} />
+        <col style={{ width: '12%' }} />
+        <col style={{ width: '13%' }} />
+      </colgroup>
+      <thead>
+        {headerText && (
+          <tr className="quotation-fitout-subform-section-header-row">
+            <th colSpan={6} className="quotation-fitout-subform-section-title">
+              {headerText}
+            </th>
+          </tr>
+        )}
+        <tr>
+          <th>SL.{'\u00A0'}NO.</th>
+          <th>Description</th>
+          <th>Unit</th>
+          <th>Qty</th>
+          <th>
+            Unit
+            <br />
+            Price
+            <br />(<DirhamSymbol />)
+          </th>
+          <th>
+            Total
+            <br />
+            Price
+            <br />(<DirhamSymbol />)
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((record, idx) => (
+          <tr key={idx}>
+            <td>{record.slNo ?? ''}</td>
+            <td>{record.description ?? ''}</td>
+            <td>{record.unit ?? ''}</td>
+            <td className="quotation-fitout-text-right">{record.qty ?? ''}</td>
+            <td className="quotation-fitout-text-right">
+              {record.unitPrice != null ? formatAED(record.unitPrice) : ''}
+            </td>
+            <td className="quotation-fitout-text-right">
+              {record.totalPrice != null ? formatAED(record.totalPrice) : ''}
+            </td>
+          </tr>
+        ))}
+        {hasValue(subTotal) && (
+          <tr className="quotation-fitout-subtotal">
+            <td colSpan={4} />
+            <td>
+              <strong>Sub Total:</strong>
+            </td>
+            <td className="quotation-fitout-text-right">{formatAED(subTotal)}</td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   )
 }
 
@@ -64,17 +137,17 @@ function getSalesPersonDetails(
   const signature = name ? SALES_SIGNATURES[name] : undefined
   switch (name) {
     case 'Jerry Thomas':
-      return { name, designation: 'Sales Manager', contact: '050 9421886', signature }
+      return { name, designation: 'Sales Manager', contact: '+971 50 942 1886', signature }
     case 'Santosh P.B':
-      return { name, designation: 'Sr. Manager', contact: '050 8961908', signature }
+      return { name, designation: 'Sr. Manager', contact: '+971 50 896 1908', signature }
     case 'Dawood Hussain':
-      return { name, designation: 'Project Sales Manager', contact: '052 8046858', signature }
+      return { name, designation: 'Project Sales Manager', contact: '+971 52 804 6858', signature }
     case 'Antony Joy Panikulam':
-      return { name, designation: 'Director', contact: '050 3513428', signature }
+      return { name, designation: 'Director', contact: '+971 50 351 3428', signature }
     case 'Ritu Antony':
-      return { name, designation: 'Division Head - Fit Out', contact: '050 3063428', signature }
+      return { name, designation: 'Division Head - Fit Out', contact: '+971 50 306 3428', signature }
     case 'Noureddin Alzaben':
-      return { name, designation: 'Business Development Manager', contact: '052 8531082', signature }
+      return { name, designation: 'Business Development Manager', contact: '+971 52 853 1082', signature }
     default:
       return {
         name: name || '—',
@@ -100,7 +173,7 @@ function getFooterData(subDivisions?: string): FooterData {
     trade_name: 'Ideal Fitout Decoration Design & Fit-Out Co. L.L.C',
     part_of: 'Ideal Special Products F.Z.C',
     location: 'Unit 1108, 51 Tower, Business Bay, Dubai, UAE PO.Box: 94956',
-    phone: '+97142986983',
+    phone: '+971 42986983',
     email1: 'fitouts@ideal.ae',
     email2: 'idealind@eim.ae',
     website: 'www.idealfitouts.ae',
@@ -113,7 +186,13 @@ function getFooterData(subDivisions?: string): FooterData {
  * in print) and once more in a position:fixed overlay so it's pinned to the bottom of every printed
  * page — including the last one, whose real content may not reach the page bottom.
  */
-function FooterBandContent({ footerData }: { footerData: FooterData }) {
+function FooterBandContent({
+  footerData,
+  pageLabel,
+}: {
+  footerData: FooterData
+  pageLabel: string
+}) {
   return (
     <>
       <div className="quotation-fitout-footer-row quotation-fitout-footer-top">
@@ -176,9 +255,14 @@ function FooterBandContent({ footerData }: { footerData: FooterData }) {
           </span>
         </span>
       </div>
-      <p className="quotation-fitout-footer-signature-note">
-        ** This is a computer generated quotation and hence does not require a signature. **
-      </p>
+      <div className="quotation-fitout-footer-bottom-bar">
+        <span className="quotation-fitout-page-number" data-fitout-page-label>
+          {pageLabel}
+        </span>
+        <p className="quotation-fitout-footer-signature-note">
+          ** This is a computer generated quotation and hence does not require a signature. **
+        </p>
+      </div>
     </>
   )
 }
@@ -194,12 +278,40 @@ interface QuotationFitoutContentProps {
 export default function QuotationFitoutContent({ data, viewMode = 'simple' }: QuotationFitoutContentProps) {
   const footerData = getFooterData(data.Sub_Divisions)
   const salesDetails = getSalesPersonDetails(data.Sales_Person)
+  const hasSalesPerson = hasValue(data.Sales_Person)
   const approvalStatus = (data.SalesPerson_Approval_Status ?? data.Approval ?? '').toString().trim()
-  const showSignature = approvalStatus === 'Approved' && viewMode === 'approved'
+  const showSignature = approvalStatus === 'Approved' && viewMode === 'approved' && hasSalesPerson
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
   const hasVat = data.VAT_5 != null && Number(data.VAT_5) !== 0
+  const hasTotalAmount = hasValue(data.Total_Amount_AED1)
+  const hasGrandTotal = hasValue(data.Grand_Total_AED1)
+  const hasAmountAfterDiscount = hasValue(data.Total_amount_after_discount_AED)
+
+  const [pageLabel, setPageLabel] = useState('Page 1')
+
+  useEffect(() => {
+    const PX_PER_MM = 96 / 25.4
+    const pageContentPx = (297 - 10 - 16) * PX_PER_MM
+    const update = () => {
+      const root = document.querySelector<HTMLElement>('.quotation-fitout-container')
+      if (!root) return
+      const headerH = root.querySelector('.quotation-fitout-header-cell')?.getBoundingClientRect().height ?? 0
+      const footerH = root.querySelector('.quotation-fitout-footer-cell')?.getBoundingClientRect().height ?? 0
+      const bodyH = root.querySelector('.quotation-fitout-body-cell')?.getBoundingClientRect().height ?? 0
+      const available = pageContentPx - headerH - footerH
+      const pages = available > 0 && bodyH > 0 ? Math.max(1, Math.ceil(bodyH / available)) : 1
+      setPageLabel(`Page 1 of ${pages}`)
+    }
+    update()
+    const t = window.setTimeout(update, 400)
+    window.addEventListener('resize', update)
+    return () => {
+      window.clearTimeout(t)
+      window.removeEventListener('resize', update)
+    }
+  }, [data])
 
   const toItemsArray = (val: unknown): QuotationLogFitout2Item[] =>
     val == null ? [] : Array.isArray(val) ? (val as QuotationLogFitout2Item[]) : [val as QuotationLogFitout2Item]
@@ -245,7 +357,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
         <tfoot>
           <tr>
             <td className="quotation-fitout-footer-cell">
-              <FooterBandContent footerData={footerData} />
+              <FooterBandContent footerData={footerData} pageLabel={pageLabel} />
             </td>
           </tr>
         </tfoot>
@@ -323,7 +435,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         <tr>
                           <th>Item</th>
                           <th>Description</th>
-                          <th>Amount <DirhamSymbol /></th>
+                          <th>Amount (<DirhamSymbol />)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -372,17 +484,18 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                   </div>
                   <div className="quotation-fitout-signature-block">
                     <p className="quotation-fitout-signature-greeting">Thanks and Regards</p>
-                    <p className="quotation-fitout-signature-team">
-                      <strong>
-
-
-                        For {footerData.trade_name}
-
-                      </strong>
-                    </p>
-                    <p className="quotation-fitout-signature-detail">{salesDetails.name}</p>
-                    <p className="quotation-fitout-signature-detail">{salesDetails.designation}</p>
-                    <p className="quotation-fitout-signature-detail">{salesDetails.contact}</p>
+                    {hasValue(footerData.trade_name) && (
+                      <p className="quotation-fitout-signature-team">
+                        <strong>For {footerData.trade_name}</strong>
+                      </p>
+                    )}
+                    {hasSalesPerson && (
+                      <>
+                        <p className="quotation-fitout-signature-detail">{salesDetails.name}</p>
+                        <p className="quotation-fitout-signature-detail">{salesDetails.designation}</p>
+                        <p className="quotation-fitout-signature-detail">{salesDetails.contact}</p>
+                      </>
+                    )}
                     {showSignature ? (
                       <div className="quotation-fitout-signature-image-wrap">
                         {salesDetails.signature ? (
@@ -401,11 +514,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         )}
                       </div>
                     ) : (
-                      <div className="quotation-fitout-signature-line-wrap">
-                        Signature:
-                        <br />
-                        <span />
-                      </div>
+                      <div className="quotation-fitout-signature-block-spacer" />
                     )}
                   </div>
                   {!hasAnyRows && <div className="quotation-fitout-last-page-spacer" />}
@@ -415,269 +524,128 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                 <div className="quotation-fitout-pricing-section">
                   {/* Section 1: Subform_Header + Items_Details – only when there are rows */}
                   {items.length > 0 && (
-                    <>
-                      <div className="quotation-fitout-section-title">
-                        <strong>{data.Subform_Header ?? ''}</strong>
-                      </div>
-                      <table className="quotation-fitout-product-table">
-                        <colgroup>
-                          <col style={{ width: '7.5%' }} />
-                          <col style={{ width: '47.5%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '12%' }} />
-                          <col style={{ width: '13%' }} />
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th>SL.{'\u00A0'}NO.</th>
-                            <th>Description</th>
-                            <th>Unit</th>
-                            <th>Qty</th>
-                            <th>Unit Price <DirhamSymbol /></th>
-                            <th>Total Price <DirhamSymbol /></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {items.map((record, idx) => (
-                            <tr key={idx}>
-                              <td>{record.S_No1 ?? ''}</td>
-                              <td>{record.Item_Description ?? ''}</td>
-                              <td>{record.Unit ?? ''}</td>
-                              <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Unit_Price != null ? formatAED(record.Unit_Price) : ''}
-                              </td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Amount_AED1 != null ? formatAED(record.Amount_AED1) : ''}
-                              </td>
-                            </tr>
-                          ))}
-                          <tr className="quotation-fitout-subtotal">
-                            <td colSpan={4} />
-                            <td>
-                              <strong>Sub Total:</strong>
-                            </td>
-                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </>
+                    <FitoutSubformSectionTable
+                      header={data.Subform_Header}
+                      subTotal={data.Sub_Total}
+                      rows={items.map((record) => ({
+                        slNo: record.S_No1,
+                        description: record.Item_Description,
+                        unit: record.Unit,
+                        qty: record.Quantity1,
+                        unitPrice: record.Unit_Price,
+                        totalPrice: record.Amount_AED1,
+                      }))}
+                    />
                   )}
 
                   {showItems1 && (
-                    <>
-                      <br />
-                      <div className="quotation-fitout-section-title">
-                        <strong>{data.Subform_Header1 ?? ''}</strong>
-                      </div>
-                      <table className="quotation-fitout-product-table">
-                        <colgroup>
-                          <col style={{ width: '7.5%' }} />
-                          <col style={{ width: '47.5%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '12%' }} />
-                          <col style={{ width: '13%' }} />
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th>SL.{'\u00A0'}NO.</th>
-                            <th>Description</th>
-                            <th>Unit</th>
-                            <th>Qty</th>
-                            <th>Unit Price <DirhamSymbol /></th>
-                            <th>Total Price <DirhamSymbol /></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {items1.map((record, idx) => (
-                            <tr key={idx}>
-                              <td>{record.S_No1 ?? ''}</td>
-                              <td>{record.Item_Description ?? ''}</td>
-                              <td>{record.Unit1 ?? ''}</td>
-                              <td className="quotation-fitout-text-right">{record.Quantity1 ?? ''}</td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
-                              </td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
-                              </td>
-                            </tr>
-                          ))}
-                          <tr className="quotation-fitout-subtotal">
-                            <td colSpan={4} />
-                            <td>
-                              <strong>Sub Total:</strong>
-                            </td>
-                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total1)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </>
+                    <FitoutSubformSectionTable
+                      header={data.Subform_Header1}
+                      subTotal={data.Sub_Total1}
+                      rows={items1.map((record) => ({
+                        slNo: record.S_No1,
+                        description: record.Item_Description,
+                        unit: record.Unit1,
+                        qty: record.Quantity1,
+                        unitPrice: record.Unit_Price1,
+                        totalPrice: record.Amount_AED,
+                      }))}
+                    />
                   )}
 
                   {showSubForm1 && (
-                    <>
-                      <br />
-                      <div className="quotation-fitout-section-title">
-                        <strong>{data.Subform_Header2 ?? ''}</strong>
-                      </div>
-                      <table className="quotation-fitout-product-table">
-                        <colgroup>
-                          <col style={{ width: '7.5%' }} />
-                          <col style={{ width: '47.5%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '12%' }} />
-                          <col style={{ width: '13%' }} />
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th>SL.{'\u00A0'}NO.</th>
-                            <th>Description</th>
-                            <th>Unit</th>
-                            <th>Qty</th>
-                            <th>Unit Price <DirhamSymbol /></th>
-                            <th>Total Price <DirhamSymbol /></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {subForm1.map((record, idx) => (
-                            <tr key={idx}>
-                              <td>{record.S_No1 ?? ''}</td>
-                              <td>{record.Item_Description ?? ''}</td>
-                              <td>{record.Unit1 ?? ''}</td>
-                              <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
-                              </td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
-                              </td>
-                            </tr>
-                          ))}
-                          <tr className="quotation-fitout-subtotal">
-                            <td colSpan={4} />
-                            <td>
-                              <strong>Sub Total:</strong>
-                            </td>
-                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total2)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </>
+                    <FitoutSubformSectionTable
+                      header={data.Subform_Header2}
+                      subTotal={data.Sub_Total2}
+                      rows={subForm1.map((record) => ({
+                        slNo: record.S_No1,
+                        description: record.Item_Description,
+                        unit: record.Unit1,
+                        qty: record.Qty1,
+                        unitPrice: record.Unit_Price1,
+                        totalPrice: record.Amount_AED,
+                      }))}
+                    />
                   )}
 
                   {showSubForm2 && (
-                    <>
-                      <br />
-                      <div className="quotation-fitout-section-title">
-                        <strong>{data.Subform_Header3 ?? ''}</strong>
-                      </div>
-                      <table className="quotation-fitout-product-table">
-                        <colgroup>
-                          <col style={{ width: '7.5%' }} />
-                          <col style={{ width: '47.5%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '10%' }} />
-                          <col style={{ width: '12%' }} />
-                          <col style={{ width: '13%' }} />
-                        </colgroup>
-                        <thead>
-                          <tr>
-                            <th>SL.{'\u00A0'}NO.</th>
-                            <th>Description</th>
-                            <th>Unit</th>
-                            <th>Qty</th>
-                            <th>Unit Price <DirhamSymbol /></th>
-                            <th>Total Price <DirhamSymbol /></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {subForm2.map((record, idx) => (
-                            <tr key={idx}>
-                              <td>{record.S_No1 ?? ''}</td>
-                              <td>{record.Item_Description ?? ''}</td>
-                              <td>{record.Unit1 ?? ''}</td>
-                              <td className="quotation-fitout-text-right">{record.Qty1 ?? ''}</td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Unit_Price1 != null ? formatAED(record.Unit_Price1) : ''}
-                              </td>
-                              <td className="quotation-fitout-text-right">
-                                {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
-                              </td>
-                            </tr>
-                          ))}
-                          <tr className="quotation-fitout-subtotal">
-                            <td colSpan={4} />
-                            <td>
-                              <strong>Sub Total:</strong>
-                            </td>
-                            <td className="quotation-fitout-text-right">{formatAED(data.Sub_Total3)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </>
+                    <FitoutSubformSectionTable
+                      header={data.Subform_Header3}
+                      subTotal={data.Sub_Total3}
+                      rows={subForm2.map((record) => ({
+                        slNo: record.S_No1,
+                        description: record.Item_Description,
+                        unit: record.Unit1,
+                        qty: record.Qty1,
+                        unitPrice: record.Unit_Price1,
+                        totalPrice: record.Amount_AED,
+                      }))}
+                    />
                   )}
 
                   {/* Totals: only when there is at least one row in any section */}
-                  {hasAnyRows && (
+                  {hasAnyRows && (hasTotalAmount || hasDiscount || hasVat || hasGrandTotal) && (
                     <>
                       <br />
                       <table className="quotation-fitout-product-table quotation-fitout-totals-table">
                         <tbody>
-                          <tr className="quotation-fitout-total-row">
-                            <td colSpan={10} />
-                            <td className="quotation-fitout-totals-label">
-                              <strong>Total Amount <DirhamSymbol />:</strong>
-                            </td>
-                            <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                              {formatAED(data.Total_Amount_AED1 ?? 0)}
-                            </td>
-                          </tr>
+                          {hasTotalAmount && (
+                            <tr className="quotation-fitout-total-row">
+                              <td colSpan={10} />
+                              <td className="quotation-fitout-totals-label">
+                                <strong>Total Amount (<DirhamSymbol />):</strong>
+                              </td>
+                              <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                                {formatAED(data.Total_Amount_AED1)}
+                              </td>
+                            </tr>
+                          )}
                           {hasDiscount && (
                             <>
                               <tr className="quotation-fitout-total-row">
                                 <td colSpan={10} />
                                 <td className="quotation-fitout-totals-label">
-                                  <strong>Less Special Discount <DirhamSymbol />:</strong>
+                                  <strong>Less Special Discount (<DirhamSymbol />):</strong>
                                 </td>
                                 <td className="quotation-fitout-totals-value quotation-fitout-text-right">
                                   {formatAED(data.Provision_for_Less_Special_Discount_AED)}
                                 </td>
                               </tr>
-                              <tr className="quotation-fitout-total-row">
-                                <td colSpan={10} />
-                                <td className="quotation-fitout-totals-label">
-                                  <strong>Total Amount After Discount <DirhamSymbol />:</strong>
-                                </td>
-                                <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                                  {formatAED(data.Total_amount_after_discount_AED)}
-                                </td>
-                              </tr>
+                              {hasAmountAfterDiscount && (
+                                <tr className="quotation-fitout-total-row">
+                                  <td colSpan={10} />
+                                  <td className="quotation-fitout-totals-label">
+                                    <strong>Total Amount After Discount (<DirhamSymbol />):</strong>
+                                  </td>
+                                  <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                                    {formatAED(data.Total_amount_after_discount_AED)}
+                                  </td>
+                                </tr>
+                              )}
                             </>
                           )}
                           {hasVat && (
                             <tr className="quotation-fitout-total-row">
                               <td colSpan={10} />
                               <td className="quotation-fitout-totals-label">
-                                <strong>VAT 5% <DirhamSymbol />:</strong>
+                                <strong>VAT 5% (<DirhamSymbol />):</strong>
                               </td>
                               <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                                {formatAED(data.VAT_5 ?? 0)}
+                                {formatAED(data.VAT_5)}
                               </td>
                             </tr>
                           )}
-                          <tr className="quotation-fitout-total-row">
-                            <td colSpan={10} />
-                            <td className="quotation-fitout-totals-label">
-                              <strong>Grand Total <DirhamSymbol />:</strong>
-                            </td>
-                            <td className="quotation-fitout-totals-value quotation-fitout-text-right">
-                              {formatAED(data.Grand_Total_AED1 ?? 0)}
-                            </td>
-                          </tr>
+                          {hasGrandTotal && (
+                            <tr className="quotation-fitout-total-row">
+                              <td colSpan={10} />
+                              <td className="quotation-fitout-totals-label">
+                                <strong>Grand Total (<DirhamSymbol />):</strong>
+                              </td>
+                              <td className="quotation-fitout-totals-value quotation-fitout-text-right">
+                                {formatAED(data.Grand_Total_AED1)}
+                              </td>
+                            </tr>
+                          )}
                         </tbody>
                       </table>
                     </>
@@ -696,7 +664,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
           normally for on-screen viewing and keeps its original layout/pagination role for print, just
           hidden visually there, so this doesn't change how content already paginates across pages. */}
       <div className="quotation-fitout-print-footer-overlay quotation-fitout-footer-cell" aria-hidden="true">
-        <FooterBandContent footerData={footerData} />
+        <FooterBandContent footerData={footerData} pageLabel={pageLabel} />
       </div>
     </div>
   )

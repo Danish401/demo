@@ -32,11 +32,11 @@ function DirhamSymbol() {
   )
 }
 
-/** "Total Quotation value: Ð x,xxx (Ð words Only)" note, shown once on the cover letter above the closing signature (Normal type only) */
+/** "Total Quotation value: Ð x,xxx (Dirhams … Only)" — numeric uses Dirham symbol; words use "Dirhams" */
 function QuotationValueNote({ data }: { data: CoreCoverPageData }) {
   return (
     <p className="door-core-quotation-value-note">
-      Total Quotation value: <DirhamSymbol /> {formatAED(data.Grand_Total_AED)} (<DirhamSymbol />{' '}
+      Total Quotation value: <DirhamSymbol /> {formatAED(data.Grand_Total_AED)} (
       {formatAedAmountInWords(data.Grand_Total_AED)})
       <br />
       For detailed quotation refer the attached sheet.
@@ -50,7 +50,7 @@ interface DoorCoreQuotationContentProps {
   data: CoreCoverPageData
   /** 'simple' = no signature (default); 'approved' = show signature when data.Approval === 'Approved' */
   viewMode?: DoorCoreViewMode
-  /** Zoho report link name for attachment download API */
+  /** Kept for call-site compatibility; Tender PDF attachment is no longer used */
   reportName?: string
 }
 
@@ -69,7 +69,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'ABU DHABI':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING - L.L.C - S.P.C',
-        phone: '+971 25513828',
+        phone: '+971 2 551 3828',
         location: '94956, Abu Dhabi',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -78,7 +78,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'DUBAI':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC',
-        phone: '+971 42986983',
+        phone: '+971 4 298 6983',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -87,7 +87,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'FUJAIRAH':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC FUJAIRAH BRANCH 1',
-        phone: '+971 42986983',
+        phone: '+971 4 298 6983',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -96,7 +96,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'RAS AL KHAIMAH':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC OPC - RAK Branch',
-        phone: '+971 42986983',
+        phone: '+971 4 298 6983',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -105,7 +105,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'SHARJAH':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC - SHJ.BR 1',
-        phone: '+971 42986983',
+        phone: '+971 4 298 6983',
         location: '66976, Sharjah, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -114,7 +114,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'IDEAL FITOUTS':
       return {
         trade_name: 'Ideal Fitout Decoration Design & Fit-Out Co. L.L.C',
-        phone: '+97142986983',
+        phone: '+971 4 298 6983',
         location: 'Unit 1108, 51 Tower, Business Bay, Dubai, UAE PO.Box: 94956',
         email1: 'fitouts@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -123,7 +123,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'AJMAN':
       return {
         trade_name: '',
-        phone: '+971 67404840',
+        phone: '+971 6 740 4840',
         location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
         email1: 'sales@ideal.ae',
         email2: '',
@@ -132,7 +132,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'Export':
       return {
         trade_name: '',
-        phone: '+971 67404840',
+        phone: '+971 6 740 4840',
         location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
         email1: 'sales@ideal.ae',
         email2: '',
@@ -141,7 +141,7 @@ function getFooterData(subDivisions?: string): FooterData {
     default:
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC',
-        phone: '+971 25513828',
+        phone: '+971 2 551 3828',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -166,22 +166,22 @@ function getSalesPersonDetails(
   const signature = name ? SALES_SIGNATURES[name] : undefined
   switch (name) {
     case 'Santosh P.B':
-      return { name, designation: 'Sr. Manager', contact: '050 8961908', signature }
+      return { name, designation: 'Sr. Manager', contact: '+971 50 896 1908', signature }
     case 'Dawood Hussain':
-      return { name, designation: 'Project Sales Manager', contact: '052 8046858', signature }
+      return { name, designation: 'Project Sales Manager', contact: '+971 52 804 6858', signature }
     case 'Jerry Thomas':
-      return { name, designation: 'Sales Manager', contact: '050 9421886', signature }
+      return { name, designation: 'Sales Manager', contact: '+971 50 942 1886', signature }
     case 'Antony Joy Panikulam':
-      return { name, designation: 'Director', contact: '050 3513428', signature }
+      return { name, designation: 'Director', contact: '+971 50 351 3428', signature }
     case 'Ritu Antony':
-      return { name, designation: 'Division Head - Fit Out', contact: '050 3063428', signature }
+      return { name, designation: 'Division Head - Fit Out', contact: '+971 50 306 3428', signature }
     case 'Noureddin Alzaben':
-      return { name, designation: 'Business Development Manager', contact: '052 8531082', signature }
+      return { name, designation: 'Business Development Manager', contact: '+971 52 853 1082', signature }
     default:
       return {
         name: name || '—',
         designation: 'Designation not available',
-        contact: 'Contact not available',
+        contact: '+971 50 306 3428',
         signature,
       }
   }
@@ -195,21 +195,22 @@ function parseAED(value: string | number | undefined | null): number {
 }
 
 function formatAED(value: string | number | undefined): string {
-  return parseAED(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return parseAED(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-/** "Thanks and Regards" + signature block. Rendered once, positioned either on the cover letter (Normal
- * type) or after the BOQ/terms (Tender type) — see the two call sites below. */
+/** "Thanks and Regards" + signature block — rendered on the cover letter before BOQ */
 function ClosingSignatureGroup({
   signatureForEntity,
   isAjmanOrExportSubdivision,
   salesDetails,
   showSignature,
+  hasSalesPerson,
 }: {
   signatureForEntity: string
   isAjmanOrExportSubdivision: boolean
   salesDetails: { name: string; designation: string; contact: string; signature?: string }
   showSignature: boolean
+  hasSalesPerson: boolean
 }) {
   return (
     <div className="door-core-closing-print-group">
@@ -218,14 +219,18 @@ function ClosingSignatureGroup({
       </div>
       <div className="door-core-signature-block">
         <p className="door-core-signature-greeting">Thanks and Regards</p>
-        {!isAjmanOrExportSubdivision && (
+        {!isAjmanOrExportSubdivision && hasValue(signatureForEntity) && (
           <p className="door-core-signature-for-line">
             <strong>For {signatureForEntity}</strong>
           </p>
         )}
-        <p className="door-core-signature-detail">{salesDetails.name}</p>
-        <p className="door-core-signature-detail">{salesDetails.designation}</p>
-        <p className="door-core-signature-detail">{salesDetails.contact}</p>
+        {hasSalesPerson && (
+          <>
+            <p className="door-core-signature-detail">{salesDetails.name}</p>
+            <p className="door-core-signature-detail">{salesDetails.designation}</p>
+            <p className="door-core-signature-detail">{salesDetails.contact}</p>
+          </>
+        )}
         {showSignature ? (
           <div className="door-core-signature-image-wrap">
             {salesDetails.signature ? (
@@ -253,18 +258,19 @@ function ClosingSignatureGroup({
 
 /**
  * Trade name / certs / contact / distributor / disclaimer footer band.
- * Rendered twice: once inside the real <tfoot> (kept for its layout/pagination role, hidden visually
- * in print) and once more in a position:fixed overlay so it's pinned to the bottom of every printed
- * page — including the last one, whose real content may not reach the page bottom.
+ * Rendered in the repeating <tfoot> (reserves space; hidden in print) and in a fixed overlay
+ * that pins the visible footer to the bottom of every printed page — including short last pages.
  */
 function FooterBandContent({
   footerData,
   data,
   isAjmanOrExportSubdivision,
+  pageLabel,
 }: {
   footerData: FooterData
   data: CoreCoverPageData
   isAjmanOrExportSubdivision: boolean
+  pageLabel?: string
 }) {
   return (
     <>
@@ -350,16 +356,20 @@ function FooterBandContent({
             {plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, 'Ideal Special Products F.Z.C')}
           </span>
         </p>
-        <p className="door-core-footer-signature-note">
-          ** This is a computer generated quotation and hence does not require a signature. **
-        </p>
+        <div className="door-core-footer-bottom-bar">
+          <span className="door-core-page-number" data-door-core-page-label>
+            {pageLabel ?? 'Page 1'}
+          </span>
+          <p className="door-core-footer-signature-note">
+            ** This is a computer generated quotation and hence does not require a signature. **
+          </p>
+        </div>
       </div>
     </>
   )
 }
 
-/** Payment Terms / Validity / Notes. Rendered once, positioned either on the cover letter (Normal type)
- * or with the BOQ below (Tender type) — see the two call sites below. */
+/** Payment Terms / Validity / Notes — rendered on the cover letter before BOQ */
 function PaymentTermsValidityNotes({ data }: { data: CoreCoverPageData }) {
   return (
     <>
@@ -379,121 +389,68 @@ function PaymentTermsValidityNotes({ data }: { data: CoreCoverPageData }) {
           <br />
         </>
       )}
-      {/* Always show 3. Notes: use API Notes1 when present (Quotation_Log_Door_Core), else default (Core_Cover_page_Report) */}
-      <strong>3. Notes</strong>
-      <div
-        className="door-core-notes-p door-core-notes-html"
-        dangerouslySetInnerHTML={{ __html: hasValue(data.Notes1) ? (data.Notes1 ?? '') : DEFAULT_NOTES_HTML }}
-      />
+      {hasValue(data.Notes1) && (
+        <>
+          <strong>3. Notes</strong>
+          <div
+            className="door-core-notes-p door-core-notes-html"
+            dangerouslySetInnerHTML={{ __html: data.Notes1 ?? '' }}
+          />
+        </>
+      )}
     </>
   )
 }
 
-/** Default "3. Notes" content when API does not return Notes1 (e.g. Core_Cover_page_Report). Numbered 1–8 with bullet sub-list under 1. */
-const DEFAULT_NOTES_HTML = `
-<ol class="door-core-notes-count-list">
-<li>The following are excluded from our scope:
-<ul>
-<li>Installation of door sets</li>
-<li>Ironmongeries</li>
-<li>Moulding, paneling, and any other design work apart from what is mentioned above</li>
-<li>Any other items which are not specifically mentioned</li>
-</ul>
-</li>
-<li>Alteration of any kind of our doors (e.g., making grooves or recesses) can significantly impact their performance and must not be done without our prior approval.</li>
-<li>Installation must be carried out in accordance with standard practice for Fire and Acoustic doors. Details shall be shared upon supply.</li>
-<li>Vision panels, wherever applicable, shall be strictly built-in as per the required size during fabrication at additional cost.</li>
-<li>For Fire Rated Doors, all ironmongeries and accessories must have valid fire rating certification and Civil Defense approval. Intumescent protection for hardware (hinges, lock case, closer, etc.) is mandatory.</li>
-<li>Upon completion, labels and Civil Defense Certificate will be issued after inspection (for Fire Rating only). Manufacturer's Acoustic Certificate will also be provided.</li>
-<li>Issuance of labels and certificates is subject to clearance of any outstanding payments.</li>
-<li>All our products carry a 1-year warranty from the date of installation/certification/labelling, covering manufacturing defects only.</li>
-</ol>
-`.trim()
-
 export default function DoorCoreQuotationContent({
   data,
   viewMode = 'simple',
-  reportName = 'Quotation_Log_Door_Core',
 }: DoorCoreQuotationContentProps) {
-  const typeField = (data.Type_field ?? '').trim()
-  const isTender = typeField.toLowerCase() === 'tender'
-  const hasTenderAttachment = Boolean(data.Excel_Upload1_filepath?.trim())
-
-  const [tenderPdfPages, setTenderPdfPages] = useState<string[]>([])
-  const [tenderPdfLoading, setTenderPdfLoading] = useState(false)
-  const [tenderPdfError, setTenderPdfError] = useState<string | null>(null)
-
-  /** Hide subform only when Tender has attachment and PDF is loading/loaded; fallback to table if no attachment or PDF fails */
-  const showBoqSubformTable =
-    !isTender || !hasTenderAttachment || Boolean(tenderPdfError)
-  const showTenderPdfBoq = isTender && hasTenderAttachment
+  const [pageLabel, setPageLabel] = useState('Page 1')
 
   useEffect(() => {
-    if (!showTenderPdfBoq || !data.ID || !data.Excel_Upload1_filepath) {
-      setTenderPdfPages([])
-      setTenderPdfError(null)
-      setTenderPdfLoading(false)
-      return
+    const PX_PER_MM = 96 / 25.4
+    const pageContentPx = (297 - 10 - 16) * PX_PER_MM
+    const update = () => {
+      const root = document.querySelector<HTMLElement>('.door-core-standalone')
+      if (!root) return
+      const headerH = root.querySelector('.door-core-layout-header-cell')?.getBoundingClientRect().height ?? 0
+      const footerH = root.querySelector('.door-core-layout-footer-cell')?.getBoundingClientRect().height ?? 0
+      const bodyH = root.querySelector('.door-core-layout-ell')?.getBoundingClientRect().height ?? 0
+      const available = pageContentPx - headerH - footerH
+      const pages = available > 0 && bodyH > 0 ? Math.max(1, Math.ceil(bodyH / available)) : 1
+      setPageLabel(`Page 1 of ${pages}`)
     }
-
-    let cancelled = false
-    const filepath = data.Excel_Upload1_filepath
-
-    async function loadTenderPdf() {
-      setTenderPdfLoading(true)
-      setTenderPdfError(null)
-      try {
-        const params = new URLSearchParams({
-          id: data.ID,
-          report: reportName,
-          field: 'Excel_Upload1',
-          filepath,
-        })
-        const res = await fetch(`/api/zoho-file?${params.toString()}`)
-        if (!res.ok) {
-          const errBody = (await res.json().catch(() => ({}))) as { error?: string }
-          throw new Error(errBody.error || `Failed to load attachment (${res.status})`)
-        }
-        const bytes = await res.arrayBuffer()
-        const { renderPdfToPageImages } = await import('@/lib/tender-pdf-render')
-        const pages = await renderPdfToPageImages(bytes)
-        if (!cancelled) {
-          setTenderPdfPages(pages)
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setTenderPdfPages([])
-          setTenderPdfError(err instanceof Error ? err.message : 'Failed to load BOQ PDF')
-        }
-      } finally {
-        if (!cancelled) {
-          setTenderPdfLoading(false)
-        }
-      }
-    }
-
-    loadTenderPdf()
+    update()
+    const t = window.setTimeout(update, 400)
+    window.addEventListener('resize', update)
     return () => {
-      cancelled = true
+      window.clearTimeout(t)
+      window.removeEventListener('resize', update)
     }
-  }, [showTenderPdfBoq, data.ID, data.Excel_Upload1_filepath, reportName])
+  }, [data])
 
   const footerData = getFooterData(data.Sub_Divisions)
   const signatureForEntity =
     plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, '') || footerData.trade_name
   const salesDetails = getSalesPersonDetails(data.Sales_Person)
+  const hasSalesPerson = hasValue(data.Sales_Person)
   const approvalStatus = (data.Approval ?? '').trim()
-  const showSignature = approvalStatus === 'Approved' && viewMode === 'approved'
+  const showSignature = approvalStatus === 'Approved' && viewMode === 'approved' && hasSalesPerson
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
   const hasVat = data.VAT_5 != null && Number(data.VAT_5) !== 0
   const amountAfterDiscount = parseAED(data.Total_Amount_AED) - parseAED(data.Provision_for_Less_Special_Discount_AED)
   const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
-  const totalQty = (data.BOQ || []).reduce((sum, record) => {
+  const boqRows = data.BOQ || []
+  const hasBoqRows = boqRows.length > 0
+  const totalQty = boqRows.reduce((sum, record) => {
     const qty = typeof record.Qty1 === 'string' ? parseFloat(record.Qty1) : record.Qty1
     return sum + (typeof qty === 'number' && !isNaN(qty) ? qty : 0)
   }, 0)
+  const hasGrandTotal = hasValue(data.Grand_Total_AED)
+  const hasTotalAmount = hasValue(data.Total_Amount_AED)
 
   const subDivision = (data.Sub_Divisions ?? '').trim().toUpperCase()
   const isAjmanOrExportSubdivision = subDivision === 'AJMAN' || subDivision === 'EXPORT'
@@ -504,13 +461,7 @@ export default function DoorCoreQuotationContent({
       : 'https://i.ibb.co/bjs2kFm4/Screenshot-2026-01-13-171206.png'
 
   return (
-    <div
-      className={
-        showTenderPdfBoq
-          ? 'door-core-quotation-container door-core-standalone door-core-quotation-container--tender-pdf'
-          : 'door-core-quotation-container door-core-standalone'
-      }
-    >
+    <div className="door-core-quotation-container door-core-standalone">
       <div
         className={
           isAjmanOrExportSubdivision
@@ -536,7 +487,12 @@ export default function DoorCoreQuotationContent({
         <tfoot>
           <tr>
             <td className="door-core-layout-footer-cell">
-              <FooterBandContent footerData={footerData} data={data} isAjmanOrExportSubdivision={isAjmanOrExportSubdivision} />
+              <FooterBandContent
+                footerData={footerData}
+                data={data}
+                isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
+                pageLabel={pageLabel}
+              />
             </td>
           </tr>
         </tfoot>
@@ -660,30 +616,26 @@ export default function DoorCoreQuotationContent({
                 )}
               </div>
 
-              {/* Normal type: cover letter closes here with the value summary, terms/notes, and signature;
-                  BOQ starts fresh on the next page. Tender type: unchanged — all of this stays with the
-                  BOQ below instead (see door-core-last-page-wrap further down). */}
-              {!isTender && (
-                <div className="door-core-cover-terms-block">
-                  <QuotationValueNote data={data} />
-                  <PaymentTermsValidityNotes data={data} />
-                </div>
-              )}
+              {/* Cover letter closes with value summary, terms/notes, and signature —
+                  BOQ subform starts after (Normal and Tender both use BOQ_Details, never PDF). */}
+              <div className="door-core-cover-terms-block">
+                {hasGrandTotal && <QuotationValueNote data={data} />}
+                <PaymentTermsValidityNotes data={data} />
+              </div>
 
-              {!isTender && (
-                <div className="door-core-last-page-wrap door-core-cover-close">
-                  <ClosingSignatureGroup
-                    signatureForEntity={signatureForEntity}
-                    isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
-                    salesDetails={salesDetails}
-                    showSignature={showSignature}
-                  />
-                </div>
-              )}
+              <div className="door-core-last-page-wrap door-core-cover-close">
+                <ClosingSignatureGroup
+                  signatureForEntity={signatureForEntity}
+                  isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
+                  salesDetails={salesDetails}
+                  showSignature={showSignature}
+                  hasSalesPerson={hasSalesPerson}
+                />
+              </div>
 
-              {/* BOQ: Normal uses BOQ_Details; Tender uses Excel_Upload1 PDF when attached, else BOQ subform fallback */}
+              {/* BOQ subform table (same for Normal + Tender) */}
               <div className="door-core-table-section door-core-boq-table-section">
-                {showBoqSubformTable && (
+                {hasBoqRows && (
                 <table className="door-core-product-table door-core-boq-product-table">
                   <colgroup>
                     <col className="door-core-boq-col-slno" />
@@ -703,7 +655,11 @@ export default function DoorCoreQuotationContent({
                   </colgroup>
                   <thead>
                     <tr>
-                      <th rowSpan={2}>SL.{'\u00A0'}NO.</th>
+                      <th rowSpan={2}>
+                        SL.
+                        <br />
+                        NO.
+                      </th>
                       <th rowSpan={2}>
                         Door
                         <br />
@@ -752,12 +708,20 @@ export default function DoorCoreQuotationContent({
                       <th rowSpan={2}>Remarks</th>
                     </tr>
                     <tr>
-                      <th>Width (mm)</th>
-                      <th>Height (mm)</th>
+                      <th>
+                        Width
+                        <br />
+                        (mm)
+                      </th>
+                      <th>
+                        Height
+                        <br />
+                        (mm)
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {(data.BOQ || []).map((record, idx) => (
+                    {boqRows.map((record, idx) => (
                       <tr key={idx}>
                         <td>{record.S_No1 ?? ''}</td>
                         <td>{record.Door_Ref ?? ''}</td>
@@ -779,22 +743,26 @@ export default function DoorCoreQuotationContent({
                         <td>{record.Remarks ?? ''}</td>
                       </tr>
                     ))}
-                    <tr className="door-core-boq-totals-row">
-                      <td colSpan={10} className="door-core-total-label">
-                        <strong>Total Quantity:</strong>
-                      </td>
-                      <td className="door-core-total-value door-core-text-center">{totalQty || ''}</td>
-                      <td className="door-core-total-value" />
-                      <td className="door-core-total-value" />
-                      <td className="door-core-total-value" />
-                    </tr>
-                    <tr className="door-core-boq-totals-row">
-                      <td colSpan={12} className="door-core-total-label">
-                        Total Amount
-                      </td>
-                      <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
-                      <td className="door-core-total-value" />
-                    </tr>
+                    {hasBoqRows && totalQty > 0 && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={10} className="door-core-total-label">
+                          <strong>Total Quantity:</strong>
+                        </td>
+                        <td className="door-core-total-value door-core-text-center">{totalQty}</td>
+                        <td className="door-core-total-value" />
+                        <td className="door-core-total-value" />
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}
+                    {hasTotalAmount && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={12} className="door-core-total-label">
+                          Total Amount
+                        </td>
+                        <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}
                     {hasDiscount && (
                       <>
                         <tr className="door-core-boq-totals-row">
@@ -826,74 +794,34 @@ export default function DoorCoreQuotationContent({
                         <td className="door-core-total-value" />
                       </tr>
                     )}
-                    <tr className="door-core-boq-totals-row">
-                      <td colSpan={12} className="door-core-total-label door-core-grand-total-label-cell">
-                        <div className="door-core-total-amount-in-words-line">
-                          <strong>Total Amount :</strong> <DirhamSymbol /> {formatAedAmountInWords(data.Grand_Total_AED)}
-                        </div>
-                      </td>
-                      <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>
-                      <td className="door-core-total-value" />
-                    </tr>
+                    {hasGrandTotal && (
+                      <tr className="door-core-boq-totals-row">
+                        <td colSpan={12} className="door-core-total-label door-core-grand-total-label-cell">
+                          <div className="door-core-total-amount-in-words-line">
+                            <strong>Total Amount :</strong> {formatAedAmountInWords(data.Grand_Total_AED)}
+                          </div>
+                        </td>
+                        <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>
+                        <td className="door-core-total-value" />
+                      </tr>
+                    )}
                   </tbody>
                 </table>
                 )}
-
-                {/* Normal type: Payment Terms / Validity / Notes already rendered on the cover letter above. */}
-                {isTender && (
-                  <>
-                    <br />
-                    <PaymentTermsValidityNotes data={data} />
-                  </>
-                )}
-
-                {/* Closing lines + signature stay on one page when printing (avoid orphan “Assuring you…” before signature).
-                    Normal type: closing already rendered on the cover letter above (see door-core-cover-close). */}
-                {isTender && (
-                  <div className="door-core-last-page-wrap">
-                    <ClosingSignatureGroup
-                      signatureForEntity={signatureForEntity}
-                      isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
-                      salesDetails={salesDetails}
-                      showSignature={showSignature}
-                    />
-                    {!showTenderPdfBoq && <div className="door-core-last-page-spacer" />}
-                  </div>
-                )}
-
-                {/* Tender + Excel_Upload1: attached BOQ PDF appended at end (after signature) */}
-                {showTenderPdfBoq && (
-                  <div className="door-core-tender-pdf-section">
-                    {tenderPdfLoading && (
-                      <p className="door-core-tender-pdf-status">Loading attached BOQ…</p>
-                    )}
-                    {tenderPdfError && (
-                      <p className="door-core-tender-pdf-status door-core-tender-pdf-status--error">
-                        {tenderPdfError}
-                      </p>
-                    )}
-                    {tenderPdfPages.map((src, idx) => (
-                      <img
-                        key={idx}
-                        src={src}
-                        alt={`BOQ page ${idx + 1}`}
-                        className="door-core-tender-pdf-page"
-                      />
-                    ))}
-                  </div>
-                )}
+                <div className="door-core-print-end-spacer" aria-hidden="true" />
               </div>
             </td>
           </tr>
         </tbody>
       </table>
 
-      {/* Print-only duplicate of the footer band, pinned to the bottom of every printed page (including
-          the last one, whose real content may not reach the page bottom). The <tfoot> above still renders
-          normally for on-screen viewing and keeps its original layout/pagination role for print, just
-          hidden visually there, so this doesn't change how content already paginates across pages. */}
       <div className="door-core-print-footer-overlay door-core-layout-footer-cell" aria-hidden="true">
-        <FooterBandContent footerData={footerData} data={data} isAjmanOrExportSubdivision={isAjmanOrExportSubdivision} />
+        <FooterBandContent
+          footerData={footerData}
+          data={data}
+          isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
+          pageLabel={pageLabel}
+        />
       </div>
     </div>
   )

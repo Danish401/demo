@@ -1,0 +1,35 @@
+TOOL=StrReplace LINE=101
+LEN=1071
+===OLD===
+  const salesDetails = getSalesPersonDetails(data.Sales_Person)
+  const approvalStatus = (data.Approval ?? '').trim()
+  const showSignature = approvalStatus === 'Approved' && viewMode === 'approved'
+  const hasDiscount =
+    data.Provision_for_Less_Special_Discount_AED != null &&
+    Number(data.Provision_for_Less_Special_Discount_AED) !== 0
+  const hasVat = data.VAT_5 != null && Number(data.VAT_5) !== 0
+  const amountAfterDiscount = parseAED(data.Total_Amount_AED) - parseAED(data.Provision_for_Less_Special_Discount_AED)
+  const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
+  const totalQty = (data.BOQ || []).reduce((sum, record) => {
+    const qty = typeof record.Qty1 === 'string' ? parseFloat(record.Qty1) : record.Qty1
+    return sum + (typeof qty === 'number' && !isNaN(qty) ? qty : 0)
+  }, 0)
+===NEW===
+  const salesDetails = getSalesPersonDetails(data.Sales_Person)
+  const hasSalesPerson = hasValue(data.Sales_Person)
+  const approvalStatus = (data.Approval ?? '').trim()
+  const showSignature = approvalStatus === 'Approved' && viewMode === 'approved' && hasSalesPerson
+  const hasDiscount =
+    data.Provision_for_Less_Special_Discount_AED != null &&
+    Number(data.Provision_for_Less_Special_Discount_AED) !== 0
+  const hasVat = data.VAT_5 != null && Number(data.VAT_5) !== 0
+  const amountAfterDiscount = parseAED(data.Total_Amount_AED) - parseAED(data.Provision_for_Less_Special_Discount_AED)
+  const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
+  const boqRows = data.BOQ || []
+  const hasBoqRows = boqRows.length > 0
+  const totalQty = boqRows.reduce((sum, record) => {
+    const qty = typeof record.Qty1 === 'string' ? parseFloat(record.Qty1) : record.Qty1
+    return sum + (typeof qty === 'number' && !isNaN(qty) ? qty : 0)
+  }, 0)
+  const hasGrandTotal = hasValue(data.Grand_Total_AED)
+  const hasTotalAmount = hasValue(data.Total_Amount_AED)

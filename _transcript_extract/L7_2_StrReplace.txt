@@ -1,0 +1,6 @@
+TOOL=StrReplace LINE=7
+LEN=31
+===OLD===
+        phone: '+97142986983',
+===NEW===
+        phone: '+971 42986983',
