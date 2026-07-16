@@ -640,13 +640,13 @@ export default function DoorCoreQuotationContent({
                   <colgroup>
                     <col className="door-core-boq-col-slno" />
                     <col className="door-core-boq-col-doorref" />
+                    <col className="door-core-boq-col-productref" />
+                    <col className="door-core-boq-col-fire" />
+                    <col className="door-core-boq-col-acoustic" />
                     <col className="door-core-boq-col-width" />
                     <col className="door-core-boq-col-height" />
                     <col className="door-core-boq-col-leafthick" />
                     <col className="door-core-boq-col-doortype" />
-                    <col className="door-core-boq-col-productref" />
-                    <col className="door-core-boq-col-acoustic" />
-                    <col className="door-core-boq-col-fire" />
                     <col className="door-core-boq-col-vision" />
                     <col className="door-core-boq-col-qty" />
                     <col className="door-core-boq-col-unitprice" />
@@ -665,6 +665,21 @@ export default function DoorCoreQuotationContent({
                         <br />
                         Ref
                       </th>
+                      <th rowSpan={2}>
+                        Product
+                        <br />
+                        Ref
+                      </th>
+                      <th rowSpan={2}>
+                        Fire
+                        <br />
+                        Rating (mins)
+                      </th>
+                      <th rowSpan={2}>
+                        Acoustic
+                        <br />
+                        Rating (db)
+                      </th>
                       <th colSpan={2}>{data.Width_Height?.trim() || 'Door Leaf Size'}</th>
                       <th rowSpan={2}>
                         Leaf
@@ -675,21 +690,6 @@ export default function DoorCoreQuotationContent({
                         Door
                         <br />
                         Type
-                      </th>
-                      <th rowSpan={2}>
-                        Product
-                        <br />
-                        Ref
-                      </th>
-                      <th rowSpan={2}>
-                        Acoustic
-                        <br />
-                        Rating (db)
-                      </th>
-                      <th rowSpan={2}>
-                        Fire
-                        <br />
-                        Rating (mins)
                       </th>
                       <th rowSpan={2}>
                         Vision
@@ -725,13 +725,13 @@ export default function DoorCoreQuotationContent({
                       <tr key={idx}>
                         <td>{record.S_No1 ?? ''}</td>
                         <td>{record.Door_Ref ?? ''}</td>
+                        <td>{record.Product_Ref ?? ''}</td>
+                        <td>{record.Fire_Rating_mins ?? ''}</td>
+                        <td>{record.Acoustic_Rating_db ?? ''}</td>
                         <td>{record.Door_Leaf_Width_mm ?? ''}</td>
                         <td>{record.Door_Leaf_Height_mm ?? ''}</td>
                         <td>{record.Leaf_Thick_mm ?? ''}</td>
                         <td>{record.Door_Type ?? ''}</td>
-                        <td>{record.Product_Ref ?? ''}</td>
-                        <td>{record.Acoustic_Rating_db ?? ''}</td>
-                        <td>{record.Fire_Rating_mins ?? ''}</td>
                         <td>{record.Vision_Panel_mm ?? ''}</td>
                         <td>{record.Qty1 ?? ''}</td>
                         <td className="door-core-text-right">

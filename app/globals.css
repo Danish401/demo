@@ -1119,15 +1119,22 @@ body {
     min-width: 0 !important;
   }
 
-  /* Print: long cell text wraps in Door Core / Door Set / Fitout tables */
-  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(6),
-  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(7),
+  /* Print: long cell text wraps in Door Core / Door Set / Fitout tables
+     Door Core order: 3 Product Ref, 9 Door Type, 10 Vision, 14 Remarks
+     Door Set 2 order: 7 Door Type, 8 Product Ref, 12 Hardware, 16 Remarks
+     Door Set 1 order: 3 Product Ref, 10 Door Type, 12 Hardware, 16 Remarks */
+  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(3),
+  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(14),
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
-  .door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16),
+  .door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
+  .door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
+  .door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
+  .door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16),
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(3),
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16),
   .door-set-2-quotation .door-core-subform-table td:nth-child(2),
   .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(2),
   .quotation-fitout-manual-items-table td:nth-child(1),
@@ -1805,22 +1812,23 @@ body {
   text-align: right;
 }
 
-/* Door Ref, Width, Height, Leaf Thick, Acoustic, Fire, Qty: prefer one line; clip if too long */
+/* Door Ref, Fire, Acoustic, Width, Height, Leaf Thick, Qty: prefer one line; clip if too long
+   (order: 1 SL, 2 Door Ref, 3 Product Ref, 4 Fire, 5 Acoustic, 6 Width, 7 Height, 8 Leaf, 9 Type, 10 Vision, 11 Qty, …) */
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(2),
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(3),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(4),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(5),
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(6),
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(7),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(8),
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(11) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: clip;
 }
 
-/* Door Type, Product Ref, Vision Panel, Remarks: wrap long API text inside the cell (no overflow) */
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(6),
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(7),
+/* Product Ref, Door Type, Vision Panel, Remarks: wrap long API text inside the cell (no overflow) */
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(3),
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(14) {
   white-space: normal;
@@ -2045,9 +2053,11 @@ body {
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-totalprice { width: 9.5%; }
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-remarks { width: 7.5%; }
 
-/* Data column order: 1 SL.NO, 2 Door Ref, 3 Width, 4 Height, 5 Jamb, 6 Leaf Thick, 7 Door Type,
+/* Data column order (Door Set 2): 1 SL.NO, 2 Door Ref, 3 Width, 4 Height, 5 Jamb, 6 Leaf Thick, 7 Door Type,
    8 Product Ref, 9 Acoustic Rating, 10 Fire Rating, 11 Vision Panel, 12 Hardware Set, 13 Qty, 14 Unit Price,
    15 Total Unit Price, 16 Remarks */
+/* Door Set 1 order: 1 SL, 2 Door Ref, 3 Product Ref, 4 Fire, 5 Acoustic, 6 Width, 7 Height, 8 Jamb,
+   9 Leaf Thick, 10 Door Type, 11 Vision, 12 Hardware, 13 Qty, 14 Unit, 15 Total, 16 Remarks */
 
 /* Every column except Unit Price / Total Unit Price: centered horizontally and vertically, so the
    quotation reads cleanly for the client. SL.NO., Door Ref, Width, Height, Jamb, Leaf Thick, Door Type,
@@ -2070,19 +2080,29 @@ body {
   vertical-align: middle;
 }
 
-/* Door Ref, Width, Height, Jamb, Leaf Thick, Acoustic, Fire Rating, Vision Panel, Qty: short codes/
-   numbers — keep on one line regardless of exact width (a stray space or hyphen, e.g. "IDF-001" or
-   "200 x 600", is otherwise a valid break point even with word-break: keep-all, which only blocks
-   mid-word breaks, not breaks at spaces/hyphens). */
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(2),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(3),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(4),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(5),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(6),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(9),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(11),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(13) {
+/* Door Set 2: Door Ref, Width, Height, Jamb, Leaf Thick, Acoustic, Fire Rating, Vision Panel, Qty */
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(2),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(3),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(4),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(5),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(6),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(9),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(11),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(13) {
+  white-space: nowrap;
+}
+
+/* Door Set 1: Door Ref, Fire, Acoustic, Width, Height, Jamb, Leaf Thick, Vision, Qty */
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(2),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(4),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(5),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(6),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(9),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(11),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(13) {
   white-space: nowrap;
 }
 
@@ -2093,11 +2113,23 @@ body {
   white-space: nowrap;
 }
 
-/* Door Type, Product Ref, Hardware Set, Remarks: wrap long API text inside fixed columns */
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
-.door-set-2-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16) {
+/* Door Set 2: Door Type, Product Ref, Hardware Set, Remarks */
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(7),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
+.door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+  min-width: 0;
+}
+
+/* Door Set 1: Product Ref, Door Type, Hardware Set, Remarks */
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(3),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16) {
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;

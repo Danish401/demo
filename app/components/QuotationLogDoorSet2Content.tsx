@@ -710,14 +710,29 @@ export default function QuotationLogDoorSet2Content({
                   <colgroup>
                     <col className="ds2-col-slno" />
                     <col className="ds2-col-doorref" />
-                    <col className="ds2-col-width" />
-                    <col className="ds2-col-height" />
-                    <col className="ds2-col-jamb" />
-                    <col className="ds2-col-leafthick" />
-                    <col className="ds2-col-doortype" />
-                    <col className="ds2-col-productref" />
-                    <col className="ds2-col-acoustic" />
-                    <col className="ds2-col-fire" />
+                    {isDoorSet1 ? (
+                      <>
+                        <col className="ds2-col-productref" />
+                        <col className="ds2-col-fire" />
+                        <col className="ds2-col-acoustic" />
+                        <col className="ds2-col-width" />
+                        <col className="ds2-col-height" />
+                        <col className="ds2-col-jamb" />
+                        <col className="ds2-col-leafthick" />
+                        <col className="ds2-col-doortype" />
+                      </>
+                    ) : (
+                      <>
+                        <col className="ds2-col-width" />
+                        <col className="ds2-col-height" />
+                        <col className="ds2-col-jamb" />
+                        <col className="ds2-col-leafthick" />
+                        <col className="ds2-col-doortype" />
+                        <col className="ds2-col-productref" />
+                        <col className="ds2-col-acoustic" />
+                        <col className="ds2-col-fire" />
+                      </>
+                    )}
                     <col className="ds2-col-vision" />
                     <col className="ds2-col-hardware" />
                     <col className="ds2-col-qty" />
@@ -729,17 +744,29 @@ export default function QuotationLogDoorSet2Content({
                     <tr>
                       <th className="door-set-2-th-slno" rowSpan={2}>SL.<br />NO.</th>
                       <th rowSpan={2}>Door Ref</th>
-                      <th colSpan={2}>
-                        {isDoorSet1
-                          ? 'Structural Opening'
-                          : data.Width_Height?.trim() || 'Door Leaf Size'}
-                      </th>
-                      <th rowSpan={2}>Jamb<br />(mm)</th>
-                      <th rowSpan={2}>Leaf Thick<br />(mm)</th>
-                      <th rowSpan={2}>Door Type</th>
-                      <th rowSpan={2}>Product Ref.</th>
-                      <th rowSpan={2}>Acoustic<br />Rating (dB)</th>
-                      <th rowSpan={2}>Fire Rating<br />(Min)</th>
+                      {isDoorSet1 ? (
+                        <>
+                          <th rowSpan={2}>Product Ref.</th>
+                          <th rowSpan={2}>Fire Rating<br />(Min)</th>
+                          <th rowSpan={2}>Acoustic<br />Rating (dB)</th>
+                          <th colSpan={2}>Structural Opening</th>
+                          <th rowSpan={2}>Jamb<br />(mm)</th>
+                          <th rowSpan={2}>Leaf Thick<br />(mm)</th>
+                          <th rowSpan={2}>Door Type</th>
+                        </>
+                      ) : (
+                        <>
+                          <th colSpan={2}>
+                            {data.Width_Height?.trim() || 'Door Leaf Size'}
+                          </th>
+                          <th rowSpan={2}>Jamb<br />(mm)</th>
+                          <th rowSpan={2}>Leaf Thick<br />(mm)</th>
+                          <th rowSpan={2}>Door Type</th>
+                          <th rowSpan={2}>Product Ref.</th>
+                          <th rowSpan={2}>Acoustic<br />Rating (dB)</th>
+                          <th rowSpan={2}>Fire Rating<br />(Min)</th>
+                        </>
+                      )}
                       <th rowSpan={2}>Vision Panel<br />(mm)</th>
                       <th rowSpan={2}>Hardware<br />Set</th>
                       <th rowSpan={2}>Qty<br />(Nos)</th>
@@ -763,14 +790,29 @@ export default function QuotationLogDoorSet2Content({
                       <tr key={idx}>
                         <td>{record.S_No1 ?? ''}</td>
                         <td>{record.Door_Ref ?? ''}</td>
-                        <td>{record.Door_Leaf_width_mm ?? ''}</td>
-                        <td>{record.Door_Leaf_Height_mm ?? ''}</td>
-                        <td>{record.Jamb_mm ?? ''}</td>
-                        <td>{record.Leaf_Thick_mm ?? ''}</td>
-                        <td>{record.Door_Type ?? ''}</td>
-                        <td>{record.Product_Ref ?? ''}</td>
-                        <td>{record.Acoustic_Rating_db ?? ''}</td>
-                        <td>{record.Fire_Rating_Min ?? ''}</td>
+                        {isDoorSet1 ? (
+                          <>
+                            <td>{record.Product_Ref ?? ''}</td>
+                            <td>{record.Fire_Rating_Min ?? ''}</td>
+                            <td>{record.Acoustic_Rating_db ?? ''}</td>
+                            <td>{record.Door_Leaf_width_mm ?? ''}</td>
+                            <td>{record.Door_Leaf_Height_mm ?? ''}</td>
+                            <td>{record.Jamb_mm ?? ''}</td>
+                            <td>{record.Leaf_Thick_mm ?? ''}</td>
+                            <td>{record.Door_Type ?? ''}</td>
+                          </>
+                        ) : (
+                          <>
+                            <td>{record.Door_Leaf_width_mm ?? ''}</td>
+                            <td>{record.Door_Leaf_Height_mm ?? ''}</td>
+                            <td>{record.Jamb_mm ?? ''}</td>
+                            <td>{record.Leaf_Thick_mm ?? ''}</td>
+                            <td>{record.Door_Type ?? ''}</td>
+                            <td>{record.Product_Ref ?? ''}</td>
+                            <td>{record.Acoustic_Rating_db ?? ''}</td>
+                            <td>{record.Fire_Rating_Min ?? ''}</td>
+                          </>
+                        )}
                         <td>{record.Vision_Panel_MM ?? ''}</td>
                         <td>{record.Hardware_Set ?? ''}</td>
                         <td>{record.Quantity1 ?? ''}</td>
