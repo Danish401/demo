@@ -180,12 +180,12 @@ body {
     page: door-core-quotation-page;
   }
 
-  /* Quotation_Log_Fitout_2: page numbers bottom-LEFT at 8.5px. Leave extra bottom margin so the
-     fixed footer overlay cannot cover the margin-box text. */
+  /* Quotation_Log_Fitout_2: page numbers bottom-LEFT at 14px. Extra bottom margin clears
+     the fixed footer overlay + page-number strip. */
   @page fitout-quotation-page {
     size: A4;
     margin-top: 1cm;
-    margin-bottom: 1.6cm;
+    margin-bottom: 1.8cm;
     margin-left: 0.5cm;
     margin-right: 0.5cm;
 
@@ -200,7 +200,7 @@ body {
     @bottom-left {
       content: "Page " counter(page) " of " counter(pages);
       font-family: Cambria, serif;
-      font-size: 8.5px;
+      font-size: 14px;
       font-weight: 700;
       color: #333;
     }
@@ -779,6 +779,27 @@ body {
     width: 100% !important;
     padding: 0 !important;
     border: none !important;
+    background: #fff !important;
+  }
+
+  /* Same as Door Core: keep the dotted corner watermark visible on every printed page.
+     Page layout must stay transparent so it does not paint over the fixed pattern. */
+  .quotation-fitout-static-pattern {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 320px !important;
+    height: 100% !important;
+    background-image: radial-gradient(circle, rgba(243, 156, 18, 0.35) 2px, transparent 2px) !important;
+    background-size: 16px 16px !important;
+    opacity: 0.55 !important;
+    pointer-events: none !important;
+    clip-path: polygon(100% 0%, 0% 50%, 100% 100%) !important;
+    z-index: 0 !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
   }
 
   .quotation-fitout-page-layout {
@@ -786,6 +807,12 @@ body {
     height: 100% !important;
     margin: 0 !important;
     border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .quotation-fitout-body-cell {
+    background: transparent !important;
   }
 
   .quotation-fitout-page-layout thead,
@@ -805,7 +832,7 @@ body {
   .quotation-fitout-page-layout tfoot,
   .quotation-fitout-container .quotation-fitout-page-layout tfoot {
     display: table-footer-group !important;
-    /* Keep in layout for page-break space; fixed overlay paints the visible footer */
+    /* Reserve space only — fixed overlay paints the visible footer at the page bottom */
     visibility: hidden !important;
   }
 
@@ -823,11 +850,11 @@ body {
     border: none !important;
   }
 
-  /* Fitout: reserved <tfoot> height must cover logos + contact + gap so rows never sit under overlay */
+  /* Fitout @ 14px: footer band is taller — reserve enough so rows never enter the overlay zone */
   .quotation-fitout-page-layout tfoot .quotation-fitout-footer-cell {
     height: auto !important;
-    min-height: 52mm !important;
-    padding-top: 8mm !important;
+    min-height: 72mm !important;
+    padding-top: 10mm !important;
     box-sizing: border-box !important;
   }
 
@@ -862,17 +889,28 @@ body {
   /* Like door-core-details-block: flex 0 0 auto so it does not grow */
   .quotation-fitout-details-block {
     flex: 0 0 auto !important;
-    page-break-after: avoid !important;
   }
 
-  /* Like door-core-last-page-wrap: min-height 267mm so last page content area filled, footer at bottom of A4 */
+  /* Closing + signature: size naturally and flow into leftover space on the cover page.
+     Do NOT use min-height:267mm or page-break-inside:avoid here — that forced the whole
+     block onto the next page whenever remaining space was short, leaving a large blank gap. */
   .quotation-fitout-last-page-wrap {
     display: flex !important;
     flex-direction: column !important;
     flex: 1 1 auto !important;
-    min-height: 267mm !important;
-    page-break-before: auto !important;
+    min-height: 0 !important;
+    page-break-before: avoid !important;
+    break-before: avoid-page !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  /* Keep the signature name/image cluster together (small); allow the closing lines above to split */
+  .quotation-fitout-signature-block {
     page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-before: avoid !important;
+    break-before: avoid-page !important;
   }
 
   /* When no line items: one page only, footer at bottom of A4 – table = full page height so body cell fills and footer sits at bottom */
@@ -905,6 +943,8 @@ body {
   /* Fitout: Payment Terms / Validity / Notes now live on the cover letter, sized naturally like the details block */
   .quotation-fitout-cover-terms-block {
     flex: 0 0 auto !important;
+    page-break-after: avoid !important;
+    break-after: avoid-page !important;
   }
 
   /* Fitout: optional Manually_Filled subform (Item/Description/Amount), sits between the intro and Payment Terms */
@@ -912,10 +952,8 @@ body {
     flex: 0 0 auto !important;
   }
 
-  /* Fitout: when there IS item pricing to show, .quotation-fitout-last-page-wrap is no longer the true end
-     of the document (the pricing section below it is) — so it should size naturally like a normal cover
-     block and force a page break, instead of stretching to fill a full 267mm page like it did when it was
-     the final content. (Higher-specificity companion class wins over the base rule above.) */
+  /* Fitout: when there IS item pricing, close the cover letter then start BOQ on the next page.
+     Cover content above still flows onto one page when space allows. */
   .quotation-fitout-last-page-wrap.quotation-fitout-cover-close {
     flex: 0 0 auto !important;
     min-height: 0 !important;
@@ -933,19 +971,33 @@ body {
     min-height: 0 !important;
   }
 
-  /* Fitout footer: hidden <tfoot> reserves space; fixed overlay draws footer on every page (including last) */
+  /* Fitout: pin footer to the bottom of every printed page (including short last pages).
+     Hidden <tfoot> above reserves matching clearance so table rows never paint under this overlay. */
   .quotation-fitout-print-footer-overlay {
     display: block !important;
     visibility: visible !important;
     position: fixed !important;
     left: 0.5cm !important;
     right: 0.5cm !important;
-    bottom: 1.4cm !important;
+    bottom: 1.2cm !important;
     z-index: 10 !important;
     height: auto !important;
     min-height: 0 !important;
-    padding-top: 4mm !important;
+    padding: 4px 3% 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
     box-sizing: border-box !important;
+    border: none !important;
+  }
+
+  .quotation-fitout-pricing-section {
+    padding-bottom: 4mm !important;
+  }
+
+  .quotation-fitout-totals-block {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: avoid !important;
   }
 
   /* Door Set 2: cover letter (intro + value/terms/notes + signature) always ends with a fresh page break
@@ -2692,7 +2744,7 @@ body {
 /* ══ Quotation Fitout (Quotation_Log_Fitout_2 – Ideal Fitouts template) ══ */
 .quotation-fitout-container {
   font-family: Cambria, serif;
-  font-size: 8.5px;
+  font-size: 14px;
   line-height: 1.45;
   margin: 0;
   padding: 0;
@@ -2707,12 +2759,14 @@ body {
   right: 0;
   width: 320px;
   height: 100%;
-  background-image: radial-gradient(circle, rgba(243, 156, 18, 0.2) 2px, transparent 2px);
+  background-image: radial-gradient(circle, rgba(243, 156, 18, 0.35) 2px, transparent 2px);
   background-size: 16px 16px;
-  opacity: 0.5;
+  opacity: 0.55;
   pointer-events: none;
   clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
   z-index: 0;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }
 
 .quotation-fitout-page-layout {
@@ -2791,22 +2845,23 @@ body {
   min-height: 0;
 }
 
-/* Signature block: no forced page break before; flows onto previous page when space allows */
+/* Signature / closing: flow onto previous page when space allows; do not keep-together the whole wrap */
 .quotation-fitout-last-page-wrap {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  page-break-before: auto;
-  page-break-inside: avoid;
-  break-inside: avoid;
+  page-break-before: avoid;
+  page-break-inside: auto;
+  break-inside: auto;
 }
 
 .quotation-fitout-signature-block {
   flex: 0 0 auto;
   page-break-inside: avoid;
   break-inside: avoid;
-  font-size: 8.5px;
+  page-break-before: avoid;
+  font-size: 14px;
   line-height: 1.45;
 }
 
@@ -2819,7 +2874,7 @@ body {
   text-align: center;
   margin-top: -1%;
   margin-bottom: 10px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.3;
 }
@@ -2834,7 +2889,7 @@ body {
   align-items: flex-start;
   justify-content: flex-start;
   gap: 0.75em;
-  font-size: 8.5px;
+  font-size: 14px;
   margin-bottom: 6px;
 }
 
@@ -2857,34 +2912,36 @@ body {
 
 .quotation-fitout-salutation {
   margin: 0 0 0.35em 0;
-  font-size: 8.5px;
+  font-size: 14px;
   line-height: 1.45;
 }
 
 .quotation-fitout-intro {
   margin-top: 0;
   margin-bottom: 8px;
-  font-size: 8.5px;
+  font-size: 14px;
   line-height: 1.45;
 }
 
 .quotation-fitout-section-title {
   font-weight: bold;
   margin: 10px 0 6px 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 
 /* Subform section title row — spans all columns inside the table border grid (matches Door Set 1) */
 .quotation-fitout-subform-table .quotation-fitout-subform-section-header-row th.quotation-fitout-subform-section-title {
   text-align: left !important;
   font-weight: 700 !important;
-  font-size: 12px !important;
+  font-size: 14px !important;
   color: #333;
   padding: 6px 5px 10px 5px !important;
   background-color: #ffffff;
   border: 1px solid #000;
   vertical-align: middle;
   white-space: normal !important;
+  page-break-after: avoid;
+  break-after: avoid-page;
 }
 
 .quotation-fitout-subform-table {
@@ -2892,11 +2949,27 @@ body {
   margin-bottom: 10px;
 }
 
+/* Combined Fitout sections: one continuous table, no inter-section gaps */
+.quotation-fitout-combined-table {
+  margin-top: 0;
+  margin-bottom: 12px;
+  border-collapse: collapse;
+}
+
+.quotation-fitout-combined-table thead {
+  display: table-header-group;
+}
+
+.quotation-fitout-combined-table .quotation-fitout-subtotal {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
 .quotation-fitout-product-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 8.5px;
+  font-size: 14px;
   border: 1px solid #000;
   margin-bottom: 10px;
 }
@@ -2904,9 +2977,10 @@ body {
 .quotation-fitout-product-table th,
 .quotation-fitout-product-table td {
   border: 1px solid #000;
-  padding: 4px 3px;
+  padding: 5px 4px;
   vertical-align: middle;
   min-width: 0;
+  font-size: 14px;
 }
 
 .quotation-fitout-product-table th {
@@ -2949,7 +3023,7 @@ body {
   min-width: 0;
 }
 
-/* Manually_Filled table: Item + Description wrap; Amount stays right-aligned via .quotation-fitout-text-right */
+/* Manually_Filled table: Item + Description wrap; Amount column right-aligned */
 .quotation-fitout-manual-items-table td:nth-child(1),
 .quotation-fitout-manual-items-table td:nth-child(2) {
   text-align: center;
@@ -2957,6 +3031,22 @@ body {
   overflow-wrap: anywhere;
   word-break: break-word;
   min-width: 0;
+}
+
+.quotation-fitout-manual-items-table th:nth-child(3),
+.quotation-fitout-manual-items-table td:nth-child(3),
+.quotation-fitout-manual-items-table .quotation-fitout-text-right {
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.quotation-fitout-manual-items-total td {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.quotation-fitout-manual-items-total td:first-child {
+  text-align: left;
 }
 
 .quotation-fitout-text-right {
@@ -2980,8 +3070,16 @@ body {
 .quotation-fitout-totals-table {
   width: 100%;
   table-layout: auto;
-  /* Totals (Grand Total/Discount/VAT) — same 8.5px as item tables / Door Set 1 */
-  font-size: 8.5px;
+  /* Totals (Grand Total/Discount/VAT) — same 14px as item tables */
+  font-size: 14px;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+.quotation-fitout-totals-block {
+  margin-top: 12px;
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .quotation-fitout-totals-table tbody tr.quotation-fitout-total-row td {
@@ -3017,13 +3115,13 @@ body {
 
 .quotation-fitout-terms-p {
   margin-left: 1%;
-  font-size: 8.5px;
+  font-size: 14px;
   margin-bottom: 5px;
 }
 
 .quotation-fitout-terms {
   margin-top: 10px;
-  font-size: 8.5px;
+  font-size: 14px;
 }
 
 .quotation-fitout-terms p {
@@ -3033,7 +3131,7 @@ body {
 .quotation-fitout-signature-label {
   display: block;
   text-align: left;
-  font-size: 8.5px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -3066,7 +3164,7 @@ body {
 }
 
 .quotation-fitout-signature-placeholder {
-  font-size: 8.5px;
+  font-size: 14px;
   color: #666;
 }
 
@@ -3078,7 +3176,7 @@ body {
   margin-top: 1.5em;
   margin-bottom: 60px;
   text-align: left;
-  font-size: 8.5px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -3091,7 +3189,7 @@ body {
 /* Notes: render HTML (ol/li) without showing raw tags */
 .quotation-fitout-notes-html {
   margin-left: 1%;
-  font-size: 8.5px;
+  font-size: 14px;
   margin-bottom: 8px;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -3130,7 +3228,7 @@ body {
 
 .quotation-fitout-footer-left {
   flex: 1;
-  font-size: 12px;
+  font-size: 14px;
   color: #4b5563;
 }
 
@@ -3152,7 +3250,7 @@ body {
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
-  font-size: 12px;
+  font-size: 14px;
   color: #4b5563;
 }
 
@@ -3173,7 +3271,7 @@ body {
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px 1.5em;
-  font-size: 12px;
+  font-size: 14px;
   color: #374151;
 }
 
@@ -3217,7 +3315,7 @@ body {
 
 .quotation-fitout-page-number {
   flex: 0 0 auto;
-  font-size: 8.5px;
+  font-size: 14px;
   font-weight: 700;
   color: #333;
   font-family: Cambria, serif;
@@ -3228,7 +3326,7 @@ body {
 /* "computer generated, no signature required" note — repeats in the footer on every printed page */
 .quotation-fitout-footer-signature-note {
   flex: 1 1 auto;
-  font-size: 8.5px;
+  font-size: 14px;
   font-style: italic;
   color: #6b7280;
   margin: 0;
@@ -3242,13 +3340,27 @@ body {
 
 @media print {
   .quotation-fitout-container {
-    background: #fff;
+    background: #fff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .quotation-fitout-static-pattern {
+    display: block !important;
+    visibility: visible !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
   }
 
   .quotation-fitout-page-layout {
     width: 100%;
     margin: 0;
     box-shadow: none;
+    background: transparent !important;
+  }
+
+  .quotation-fitout-body-cell {
+    background: transparent !important;
   }
 
   .quotation-fitout-page-layout>thead {
@@ -3257,15 +3369,45 @@ body {
 
   .quotation-fitout-page-layout>tfoot {
     display: table-footer-group !important;
+    visibility: hidden !important;
   }
 
-  /* Footer at bottom of A4 last page: handled by flex + spacer in main @media print block.
-     Scoped to .quotation-fitout-container (not bare body) — this previously targeted body
-     unconditionally, which shrank every template's print output to 85%, not just Fitout's,
-     leaving a large blank strip on the right/bottom of every printed page (zoom shrinks from
-     the top-left corner, so the freed space isn't centered). */
-  .quotation-fitout-container {
-    zoom: 0.85;
+  .quotation-fitout-container,
+  .quotation-fitout-product-table,
+  .quotation-fitout-product-table th,
+  .quotation-fitout-product-table td {
+    font-size: 14px !important;
+  }
+
+  .quotation-fitout-combined-table thead {
+    display: table-header-group !important;
+  }
+
+  .quotation-fitout-combined-table .quotation-fitout-subform-section-header-row {
+    page-break-after: avoid !important;
+    break-after: avoid-page !important;
+  }
+
+  .quotation-fitout-combined-table .quotation-fitout-subtotal {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .quotation-fitout-totals-block,
+  .quotation-fitout-totals-table {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .quotation-fitout-print-footer-overlay {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    left: 0.5cm !important;
+    right: 0.5cm !important;
+    bottom: 1.2cm !important;
+    z-index: 10 !important;
+    background: #fff !important;
   }
 }
 

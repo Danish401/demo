@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import {
   QuotationLogFitout2Data,
   QuotationLogFitout2Item,
@@ -40,20 +40,19 @@ type FitoutSectionRow = {
   totalPrice?: string | number | null
 }
 
-/** Product table with section header as first thead row (matches Door Set 1 SubForm pattern) */
-function FitoutSubformSectionTable({
-  header,
-  rows,
-  subTotal,
-}: {
+type FitoutProductSection = {
   header?: string
   rows: FitoutSectionRow[]
   subTotal?: string | number | null
-}) {
-  const headerText = (header ?? '').trim()
+}
+
+/** Single combined product table for all Fitout sections (no gaps between Joinery / Civil / etc.) */
+function FitoutCombinedProductTable({ sections }: { sections: FitoutProductSection[] }) {
+  const visible = sections.filter((section) => section.rows.length > 0)
+  if (visible.length === 0) return null
 
   return (
-    <table className="quotation-fitout-product-table quotation-fitout-subform-table">
+    <table className="quotation-fitout-product-table quotation-fitout-subform-table quotation-fitout-combined-table">
       <colgroup>
         <col style={{ width: '7.5%' }} />
         <col style={{ width: '47.5%' }} />
@@ -63,13 +62,6 @@ function FitoutSubformSectionTable({
         <col style={{ width: '13%' }} />
       </colgroup>
       <thead>
-        {headerText && (
-          <tr className="quotation-fitout-subform-section-header-row">
-            <th colSpan={6} className="quotation-fitout-subform-section-title">
-              {headerText}
-            </th>
-          </tr>
-        )}
         <tr>
           <th>SL.{'\u00A0'}NO.</th>
           <th>Description</th>
@@ -90,29 +82,43 @@ function FitoutSubformSectionTable({
         </tr>
       </thead>
       <tbody>
-        {rows.map((record, idx) => (
-          <tr key={idx}>
-            <td>{record.slNo ?? ''}</td>
-            <td>{record.description ?? ''}</td>
-            <td>{record.unit ?? ''}</td>
-            <td className="quotation-fitout-text-right">{record.qty ?? ''}</td>
-            <td className="quotation-fitout-text-right">
-              {record.unitPrice != null ? formatAED(record.unitPrice) : ''}
-            </td>
-            <td className="quotation-fitout-text-right">
-              {record.totalPrice != null ? formatAED(record.totalPrice) : ''}
-            </td>
-          </tr>
-        ))}
-        {hasValue(subTotal) && (
-          <tr className="quotation-fitout-subtotal">
-            <td colSpan={4} />
-            <td>
-              <strong>Sub Total:</strong>
-            </td>
-            <td className="quotation-fitout-text-right">{formatAED(subTotal)}</td>
-          </tr>
-        )}
+        {visible.map((section, sectionIdx) => {
+          const headerText = (section.header ?? '').trim()
+          return (
+            <Fragment key={sectionIdx}>
+              {headerText && (
+                <tr className="quotation-fitout-subform-section-header-row">
+                  <th colSpan={6} className="quotation-fitout-subform-section-title">
+                    {headerText}
+                  </th>
+                </tr>
+              )}
+              {section.rows.map((record, idx) => (
+                <tr key={`${sectionIdx}-${idx}`}>
+                  <td>{record.slNo ?? ''}</td>
+                  <td>{record.description ?? ''}</td>
+                  <td>{record.unit ?? ''}</td>
+                  <td className="quotation-fitout-text-right">{record.qty ?? ''}</td>
+                  <td className="quotation-fitout-text-right">
+                    {record.unitPrice != null ? formatAED(record.unitPrice) : ''}
+                  </td>
+                  <td className="quotation-fitout-text-right">
+                    {record.totalPrice != null ? formatAED(record.totalPrice) : ''}
+                  </td>
+                </tr>
+              ))}
+              {hasValue(section.subTotal) && (
+                <tr className="quotation-fitout-subtotal">
+                  <td colSpan={4} />
+                  <td>
+                    <strong>Sub Total:</strong>
+                  </td>
+                  <td className="quotation-fitout-text-right">{formatAED(section.subTotal)}</td>
+                </tr>
+              )}
+            </Fragment>
+          )
+        })}
       </tbody>
     </table>
   )
@@ -332,6 +338,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
   const showSubForm1 = subForm1.length > 0
   const showSubForm2 = subForm2.length > 0
   const showManuallyFilled = manuallyFilled.length > 0
+  const manuallyFilledTotal = manuallyFilled.reduce((sum, record) => sum + parseAED(record.Amount), 0)
   const hasAnyRows = items.length > 0 || showItems1 || showSubForm1 || showSubForm2
 
   const projectName = data.Project?.trim() || data.Project_Name?.trim()
@@ -436,7 +443,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                         <tr>
                           <th>Item</th>
                           <th>Description</th>
-                          <th>Amount (<DirhamSymbol />)</th>
+                          <th className="quotation-fitout-text-right">Amount (<DirhamSymbol />)</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -449,6 +456,16 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                             </td>
                           </tr>
                         ))}
+                        <tr className="quotation-fitout-manual-items-total">
+                          <td colSpan={2}>
+                            <strong>
+                              Total Amount (<DirhamSymbol />)
+                            </strong>
+                          </td>
+                          <td className="quotation-fitout-text-right">
+                            <strong>{formatAED(manuallyFilledTotal)}</strong>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
@@ -523,71 +540,62 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
 
                 {hasAnyRows && (
                 <div className="quotation-fitout-pricing-section">
-                  {/* Section 1: Subform_Header + Items_Details – only when there are rows */}
-                  {items.length > 0 && (
-                    <FitoutSubformSectionTable
-                      header={data.Subform_Header}
-                      subTotal={data.Sub_Total}
-                      rows={items.map((record) => ({
-                        slNo: record.S_No1,
-                        description: record.Item_Description,
-                        unit: record.Unit,
-                        qty: record.Quantity1,
-                        unitPrice: record.Unit_Price,
-                        totalPrice: record.Amount_AED1,
-                      }))}
-                    />
-                  )}
-
-                  {showItems1 && (
-                    <FitoutSubformSectionTable
-                      header={data.Subform_Header1}
-                      subTotal={data.Sub_Total1}
-                      rows={items1.map((record) => ({
-                        slNo: record.S_No1,
-                        description: record.Item_Description,
-                        unit: record.Unit1,
-                        qty: record.Quantity1,
-                        unitPrice: record.Unit_Price1,
-                        totalPrice: record.Amount_AED,
-                      }))}
-                    />
-                  )}
-
-                  {showSubForm1 && (
-                    <FitoutSubformSectionTable
-                      header={data.Subform_Header2}
-                      subTotal={data.Sub_Total2}
-                      rows={subForm1.map((record) => ({
-                        slNo: record.S_No1,
-                        description: record.Item_Description,
-                        unit: record.Unit1,
-                        qty: record.Qty1,
-                        unitPrice: record.Unit_Price1,
-                        totalPrice: record.Amount_AED,
-                      }))}
-                    />
-                  )}
-
-                  {showSubForm2 && (
-                    <FitoutSubformSectionTable
-                      header={data.Subform_Header3}
-                      subTotal={data.Sub_Total3}
-                      rows={subForm2.map((record) => ({
-                        slNo: record.S_No1,
-                        description: record.Item_Description,
-                        unit: record.Unit1,
-                        qty: record.Qty1,
-                        unitPrice: record.Unit_Price1,
-                        totalPrice: record.Amount_AED,
-                      }))}
-                    />
-                  )}
+                  <FitoutCombinedProductTable
+                    sections={[
+                      {
+                        header: data.Subform_Header,
+                        subTotal: data.Sub_Total,
+                        rows: items.map((record) => ({
+                          slNo: record.S_No1,
+                          description: record.Item_Description,
+                          unit: record.Unit,
+                          qty: record.Quantity1,
+                          unitPrice: record.Unit_Price,
+                          totalPrice: record.Amount_AED1,
+                        })),
+                      },
+                      {
+                        header: data.Subform_Header1,
+                        subTotal: data.Sub_Total1,
+                        rows: items1.map((record) => ({
+                          slNo: record.S_No1,
+                          description: record.Item_Description,
+                          unit: record.Unit1,
+                          qty: record.Quantity1,
+                          unitPrice: record.Unit_Price1,
+                          totalPrice: record.Amount_AED,
+                        })),
+                      },
+                      {
+                        header: data.Subform_Header2,
+                        subTotal: data.Sub_Total2,
+                        rows: subForm1.map((record) => ({
+                          slNo: record.S_No1,
+                          description: record.Item_Description,
+                          unit: record.Unit1,
+                          qty: record.Qty1,
+                          unitPrice: record.Unit_Price1,
+                          totalPrice: record.Amount_AED,
+                        })),
+                      },
+                      {
+                        header: data.Subform_Header3,
+                        subTotal: data.Sub_Total3,
+                        rows: subForm2.map((record) => ({
+                          slNo: record.S_No1,
+                          description: record.Item_Description,
+                          unit: record.Unit1,
+                          qty: record.Qty1,
+                          unitPrice: record.Unit_Price1,
+                          totalPrice: record.Amount_AED,
+                        })),
+                      },
+                    ]}
+                  />
 
                   {/* Totals: only when there is at least one row in any section */}
                   {hasAnyRows && (hasTotalAmount || hasDiscount || hasVat || hasGrandTotal) && (
-                    <>
-                      <br />
+                    <div className="quotation-fitout-totals-block">
                       <table className="quotation-fitout-product-table quotation-fitout-totals-table">
                         <tbody>
                           {hasTotalAmount && (
@@ -649,7 +657,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                           )}
                         </tbody>
                       </table>
-                    </>
+                    </div>
                   )}
 
                 </div>
