@@ -8,7 +8,7 @@ html,
 body {
   max-width: 210mm;
   margin: 0 auto;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Cambria, serif;
   font-size: 11px;
   color: #000;
   background: #fff;
@@ -111,7 +111,7 @@ body {
        no page number — a safe no-op, nothing else about the page layout changes. */
     @bottom-center {
       content: "Page " counter(page) " of " counter(pages);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Cambria, serif;
       font-size: 9px;
       color: #555;
     }
@@ -135,7 +135,7 @@ body {
 
     @bottom-left {
       content: "Page " counter(page) " of " counter(pages);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Cambria, serif;
       font-size: 8.5px;
       font-weight: 700;
       color: #333;
@@ -169,7 +169,7 @@ body {
 
     @bottom-left {
       content: "Page " counter(page) " of " counter(pages);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Cambria, serif;
       font-size: 8.5px;
       font-weight: 700;
       color: #333;
@@ -199,7 +199,7 @@ body {
 
     @bottom-left {
       content: "Page " counter(page) " of " counter(pages);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Cambria, serif;
       font-size: 8.5px;
       font-weight: 700;
       color: #333;
@@ -1205,7 +1205,7 @@ body {
 
 /* ══ Door Core Quotation (Ideal Firestop / Core_Cover_page) ══ */
 .door-core-quotation-container {
-  font-family: Arial, sans-serif;
+  font-family: Cambria, serif;
   font-size: 12px;
   line-height: 1.45;
   background: #fff;
@@ -1429,7 +1429,7 @@ body {
   font-size: 8.5px;
   font-weight: 700;
   color: #333;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Cambria, serif;
   white-space: nowrap;
   min-width: 4.5em;
   text-align: left;
@@ -2691,7 +2691,7 @@ body {
 
 /* ══ Quotation Fitout (Quotation_Log_Fitout_2 – Ideal Fitouts template) ══ */
 .quotation-fitout-container {
-  font-family: Arial, sans-serif;
+  font-family: Cambria, serif;
   font-size: 8.5px;
   line-height: 1.45;
   margin: 0;
@@ -3220,7 +3220,7 @@ body {
   font-size: 8.5px;
   font-weight: 700;
   color: #333;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Cambria, serif;
   white-space: nowrap;
   min-width: 4.5em;
 }

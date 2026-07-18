@@ -95,7 +95,7 @@ export default function ExportQuotationContent({ data, shippingData, billingData
 
   return (
     <>
-      <div className="export-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '8mm 15mm 15mm 15mm', fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.4', border: '1px solid #000' }}>
+      <div className="export-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '8mm 15mm 15mm 15mm', fontFamily: 'Cambria, serif', fontSize: '11px', lineHeight: '1.4', border: '1px solid #000' }}>
 
         {/* Print table — thead repeats on every printed page */}
         <table className="export-print-table" style={{ width: '100%', borderCollapse: 'collapse', border: 'none', fontSize: '10px' }}>

@@ -1,7 +1,7 @@
 'use client'
 
 import { QuotationData } from '@/lib/types'
-import { formatCurrency, numberToWords } from '@/lib/quotation-utils'
+import { formatCurrency, numberToWords, formatQuotationNo } from '@/lib/quotation-utils'
 import PrintButton from './PrintButton'
 
 interface GKDQuotationContentProps {
@@ -35,7 +35,7 @@ export default function GKDQuotationContent({ data, shippingData, billingData, r
   // Use dynamic data from API
   const date = formatGKDDate(data.date || rawQuotationData?.Created_Date_and_time)
   const gstNo = billingData?.Billing_GST_No || rawQuotationData?.Billing_GST_No || shippingData?.Shipping_GST_No || ''
-  const refNo = data.quotationNumber || rawQuotationData?.Name || ''
+  const refNo = formatQuotationNo(data.quotationNumber || rawQuotationData?.Name || '')
   const recipientCompany = billingData?.Billing_Address_Name || rawQuotationData?.Billing_Address_Name || ''
   const recipientAddress = `${billingData?.Billing_Street || rawQuotationData?.Billing_Street || ''} ${billingData?.Billing_City || rawQuotationData?.Billing_City || ''} ${billingData?.Billing_Postal_Code || rawQuotationData?.Billing_Postal_Code || ''}-${billingData?.Billing_State || rawQuotationData?.Billing_State || ''}`.trim()
   
@@ -76,7 +76,7 @@ export default function GKDQuotationContent({ data, shippingData, billingData, r
 
   return (
     <>
-      <div className="gkd-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '20mm', fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.6' }}>
+      <div className="gkd-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '20mm', fontFamily: 'Cambria, serif', fontSize: '11px', lineHeight: '1.6' }}>
         <table className="gkd-print-table" style={{ width: '100%', borderCollapse: 'collapse', border: 'none' }}>
           {/* Header - Repeats on every page in print */}
           <thead className="gkd-print-header-row">

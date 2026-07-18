@@ -9,6 +9,7 @@ import {
   QuotationLogFitout2SubItem,
 } from '@/lib/types'
 import DirhamSymbol from './DirhamSymbol'
+import { formatQuotationNo } from '@/lib/quotation-utils'
 
 /** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
 function parseAED(value: string | number | undefined | null): number {
@@ -374,7 +375,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     {hasValue(data.Quotation_No) && (
                       <div className="quotation-fitout-details-row">
                         <div className="quotation-fitout-details-label">Ref:</div>
-                        <div className="quotation-fitout-details-value">{data.Quotation_No}</div>
+                        <div className="quotation-fitout-details-value">{formatQuotationNo(data.Quotation_No)}</div>
                       </div>
                     )}
                     {hasValue(data.Quotation_Submission_Date) && (

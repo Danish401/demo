@@ -43,7 +43,7 @@ function appendPrintPageStamps(clone: HTMLElement, totalPages: number): void {
       'display:flex',
       'align-items:flex-end',
       'padding-bottom:0.45cm',
-      'font-family:Arial, Helvetica, sans-serif',
+      'font-family:Cambria, serif',
       'font-size:8.5px',
       'font-weight:700',
       'color:#333',

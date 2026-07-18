@@ -1,7 +1,7 @@
 'use client'
 
 import { QuotationData } from '@/lib/types'
-import { formatCurrency } from '@/lib/quotation-utils'
+import { formatCurrency, formatQuotationNo } from '@/lib/quotation-utils'
 import PrintButton from './PrintButton'
 
 interface SLSQuotationContentProps {
@@ -55,7 +55,7 @@ export default function SLSQuotationContent({ data, shippingData, billingData, r
 
   // Use dynamic data from API
   const date = formatSLSDate(data.date || rawQuotationData?.Created_Date_and_time)
-  const quotationRefNo = data.quotationNumber || rawQuotationData?.Name || ''
+  const quotationRefNo = formatQuotationNo(data.quotationNumber || rawQuotationData?.Name || '')
   const inquiryDate = formatInquiryDate(data.customerReferenceDate || rawQuotationData?.Customer_Reference_Date)
   const recipientName = shippingData?.Contact_Name || rawQuotationData?.Contact_Name || ''
   const recipientCompany = shippingData?.Shipping_Address_Name || rawQuotationData?.Shipping_Address_Name || billingData?.Billing_Address_Name || ''
@@ -96,7 +96,7 @@ export default function SLSQuotationContent({ data, shippingData, billingData, r
 
   return (
     <>
-      <div className="sls-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '10mm 20mm 20mm 20mm', fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.6' }}>
+      <div className="sls-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '10mm 20mm 20mm 20mm', fontFamily: 'Cambria, serif', fontSize: '11px', lineHeight: '1.6' }}>
         {/* Header with Logo and Date */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px', marginTop: 0 }}>
           {/* Left side - Empty for recipient info */}

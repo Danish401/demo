@@ -14,7 +14,7 @@ import DoorCoreQuotationContent from './components/DoorCoreQuotationContent'
 import QuotationLogDoorSet2Content from './components/QuotationLogDoorSet2Content'
 import QuotationFitoutContent from './components/QuotationFitoutContent'
 import { ZohoQuotationResponse, ShippingMasterResponse, BillingMasterResponse, TemplateType, ZohoQuotation, QuotationData, DoorCoreQuotationResponse, CoreCoverPageData, DoorCoreBOQItem, QuotationLogDoorSet2Data, QuotationLogDoorSet2Response, QuotationLogFitout2Data, QuotationLogFitout2Response } from '@/lib/types'
-import { transformQuotationData, determineTemplateType } from '@/lib/quotation-utils'
+import { transformQuotationData, determineTemplateType, formatQuotationNo } from '@/lib/quotation-utils'
 import { parseZohoFileFieldPath } from '@/lib/zoho-file-utils'
 
 /** Normalize Door Set 1 / Door Set 2 records (Quotation_Door_Set1_Report & Quotation_Log_Door_Set_2): subforms + alternate API keys */
@@ -135,7 +135,7 @@ function buildQuotationFileName(
   data: { Quotation_No?: string; Organization_Name1?: string; Quotation_Submission_Date?: string } | null | undefined
 ): string | undefined {
   if (!data) return undefined
-  const parts = [data.Quotation_No, data.Organization_Name1, data.Quotation_Submission_Date]
+  const parts = [formatQuotationNo(data.Quotation_No), data.Organization_Name1, data.Quotation_Submission_Date]
     .map((value) => (value ?? '').toString().trim())
     .filter(Boolean)
     .map((value) => value.replace(/[\\/:*?"<>|]+/g, '-'))

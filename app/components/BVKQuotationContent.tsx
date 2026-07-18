@@ -1,7 +1,7 @@
 'use client'
 
 import { QuotationData } from '@/lib/types'
-import { formatCurrency, formatDate } from '@/lib/quotation-utils'
+import { formatCurrency, formatDate, formatQuotationNo } from '@/lib/quotation-utils'
 import PrintButton from './PrintButton'
 
 interface BVKQuotationContentProps {
@@ -47,7 +47,7 @@ export default function BVKQuotationContent({ data, shippingData, billingData, r
   }
 
   const quotationDate = formatBVKDate(data.date || rawQuotationData?.Created_Date_and_time)
-  const quotationRef = data.quotationNumber || rawQuotationData?.Name || ''
+  const quotationRef = formatQuotationNo(data.quotationNumber || rawQuotationData?.Name || '')
   
   // Get recipient info from shipping or billing data
   const recipientName = shippingData?.Shipping_Address_Name || rawQuotationData?.Shipping_Address_Name || billingData?.Billing_Address_Name || rawQuotationData?.Billing_Address_Name || ''
@@ -65,7 +65,7 @@ export default function BVKQuotationContent({ data, shippingData, billingData, r
 
   return (
     <>
-      <div className="bvk-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '20mm', fontFamily: 'Arial, sans-serif', fontSize: '11px', lineHeight: '1.6' }}>
+      <div className="bvk-quotation-container" style={{ maxWidth: '210mm', margin: '0 auto', padding: '20mm', fontFamily: 'Cambria, serif', fontSize: '11px', lineHeight: '1.6' }}>
         <table className="bvk-print-table" style={{ width: '100%', borderCollapse: 'collapse', border: 'none' }}>
           {/* Header - Repeats on every page in print */}
           <thead className="bvk-print-header-row">

@@ -40,6 +40,12 @@ export function formatDate(dateString?: string): string {
   }
 }
 
+/** Quotation No display: use "-" instead of "." (e.g. FSFUJ/00001/Qtn.26 → FSFUJ/00001/Qtn-26) */
+export function formatQuotationNo(value?: string | null): string {
+  if (value == null || value === '') return ''
+  return String(value).replace(/\./g, '-')
+}
+
 /**
  * Formats a number with Indian number formatting (commas)
  */
@@ -531,7 +537,7 @@ export function transformQuotationData(
   }
 
   return {
-    quotationNumber: zohoData.Name || `QT-${zohoData.ID}`,
+    quotationNumber: formatQuotationNo(zohoData.Name || `QT-${zohoData.ID}`),
     date: formatDate(zohoData.Created_Date_and_time),
     buyerEnquiryNo: zohoData.customer_Reference || '',
     termsOfPayment: zohoData.Term_of_Payment || zohoData.Method_of_Payment || '',

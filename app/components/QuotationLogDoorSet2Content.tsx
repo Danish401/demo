@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
-import { boldCivilDefenceHtml, formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { boldCivilDefenceHtml, formatAedAmountInWords, formatQuotationNo, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 import DirhamSymbol from './DirhamSymbol'
 
 /** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
@@ -442,6 +442,7 @@ export default function QuotationLogDoorSet2Content({
 
   // 4 subforms: Items_Details (main door table) + Section_1, Section_2, Section_3. Show Section_X only when it has at least one row.
   const items = toItemsArray(data.Items_Details)
+  const showRemarksColumn = items.some((record) => hasValue(record.Remarks))
   const section1 = toSectionArray(data.Section_1)
   const section2 = toSectionArray(data.Section_2)
   const section3 = toSectionArray(data.Section_3)
@@ -506,7 +507,7 @@ export default function QuotationLogDoorSet2Content({
                 {hasValue(data.Quotation_No) && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>Ref:</strong></div>
-                    <div className="door-core-details-value">{data.Quotation_No}</div>
+                    <div className="door-core-details-value">{formatQuotationNo(data.Quotation_No)}</div>
                   </div>
                 )}
                 {hasValue(data.Quotation_Submission_Date) && (
@@ -738,7 +739,7 @@ export default function QuotationLogDoorSet2Content({
                     <col className="ds2-col-qty" />
                     <col className="ds2-col-unitprice" />
                     <col className="ds2-col-totalprice" />
-                    <col className="ds2-col-remarks" />
+                    {showRemarksColumn && <col className="ds2-col-remarks" />}
                   </colgroup>
                   <thead>
                     <tr>
@@ -778,7 +779,7 @@ export default function QuotationLogDoorSet2Content({
                         Total Unit Price
                         <br />(<DirhamSymbol />)
                       </th>
-                      <th rowSpan={2}>Remarks</th>
+                      {showRemarksColumn && <th rowSpan={2}>Remarks</th>}
                     </tr>
                     <tr>
                       <th>Width (mm)</th>
@@ -822,7 +823,7 @@ export default function QuotationLogDoorSet2Content({
                         <td className="door-core-text-right">
                           {record.Amount_AED != null ? formatAED(record.Amount_AED) : ''}
                         </td>
-                        <td>{record.Remarks ?? ''}</td>
+                        {showRemarksColumn && <td>{record.Remarks ?? ''}</td>}
                       </tr>
                     ))}
                     {hasTotalQuantity && (
@@ -835,7 +836,7 @@ export default function QuotationLogDoorSet2Content({
                         </td>
                         <td />
                         <td />
-                        <td />
+                        {showRemarksColumn && <td />}
                       </tr>
                     )}
                     {hasSubTotal && (
@@ -844,7 +845,7 @@ export default function QuotationLogDoorSet2Content({
                           <strong>Sub Total:</strong>
                         </td>
                         <td className="door-core-text-right">{formatAED(data.Sub_Total)}</td>
-                        <td />
+                        {showRemarksColumn && <td />}
                       </tr>
                     )}
                   </tbody>

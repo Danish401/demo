@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { CoreCoverPageData } from '@/lib/types'
-import { boldCivilDefenceHtml, formatAedAmountInWords, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { boldCivilDefenceHtml, formatAedAmountInWords, formatQuotationNo, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 
 /** True if field has displayable value (hide row/section when false) */
 function hasValue(v: unknown): boolean {
@@ -445,6 +445,7 @@ export default function DoorCoreQuotationContent({
   const sealDescHTML = formatSealDescriptionHtml(data.Seal_Description)
   const boqRows = data.BOQ || []
   const hasBoqRows = boqRows.length > 0
+  const showRemarksColumn = boqRows.some((record) => hasValue(record.Remarks))
   const totalQty = boqRows.reduce((sum, record) => {
     const qty = typeof record.Qty1 === 'string' ? parseFloat(record.Qty1) : record.Qty1
     return sum + (typeof qty === 'number' && !isNaN(qty) ? qty : 0)
@@ -508,7 +509,7 @@ export default function DoorCoreQuotationContent({
                 {hasValue(data.Quotation_No) && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>Ref:</strong></div>
-                    <div className="door-core-details-value">{data.Quotation_No}</div>
+                    <div className="door-core-details-value">{formatQuotationNo(data.Quotation_No)}</div>
                   </div>
                 )}
                 {hasValue(data.Quotation_Submission_Date) && (
@@ -651,7 +652,7 @@ export default function DoorCoreQuotationContent({
                     <col className="door-core-boq-col-qty" />
                     <col className="door-core-boq-col-unitprice" />
                     <col className="door-core-boq-col-totalprice" />
-                    <col className="door-core-boq-col-remarks" />
+                    {showRemarksColumn && <col className="door-core-boq-col-remarks" />}
                   </colgroup>
                   <thead>
                     <tr>
@@ -705,7 +706,7 @@ export default function DoorCoreQuotationContent({
                         <div>Total Unit Price</div>
                         <div className="door-core-boq-th-currency"><DirhamSymbol /></div>
                       </th>
-                      <th rowSpan={2}>Remarks</th>
+                      {showRemarksColumn && <th rowSpan={2}>Remarks</th>}
                     </tr>
                     <tr>
                       <th>
@@ -740,7 +741,7 @@ export default function DoorCoreQuotationContent({
                         <td className="door-core-text-right">
                           {record.Total_Unit_Price_AED1 != null ? formatAED(record.Total_Unit_Price_AED1) : ''}
                         </td>
-                        <td>{record.Remarks ?? ''}</td>
+                        {showRemarksColumn && <td>{record.Remarks ?? ''}</td>}
                       </tr>
                     ))}
                     {hasBoqRows && totalQty > 0 && (
@@ -751,7 +752,7 @@ export default function DoorCoreQuotationContent({
                         <td className="door-core-total-value door-core-text-center">{totalQty}</td>
                         <td className="door-core-total-value" />
                         <td className="door-core-total-value" />
-                        <td className="door-core-total-value" />
+                        {showRemarksColumn && <td className="door-core-total-value" />}
                       </tr>
                     )}
                     {hasTotalAmount && (
@@ -760,7 +761,7 @@ export default function DoorCoreQuotationContent({
                           Total Amount
                         </td>
                         <td className="door-core-total-value door-core-text-right">{formatAED(data.Total_Amount_AED)}</td>
-                        <td className="door-core-total-value" />
+                        {showRemarksColumn && <td className="door-core-total-value" />}
                       </tr>
                     )}
                     {hasDiscount && (
@@ -772,7 +773,7 @@ export default function DoorCoreQuotationContent({
                           <td className="door-core-total-value door-core-text-right">
                             {formatAED(data.Provision_for_Less_Special_Discount_AED)}
                           </td>
-                          <td className="door-core-total-value" />
+                          {showRemarksColumn && <td className="door-core-total-value" />}
                         </tr>
                         <tr className="door-core-boq-totals-row">
                           <td colSpan={12} className="door-core-total-label">
@@ -781,7 +782,7 @@ export default function DoorCoreQuotationContent({
                           <td className="door-core-total-value door-core-text-right">
                             {formatAED(amountAfterDiscount)}
                           </td>
-                          <td className="door-core-total-value" />
+                          {showRemarksColumn && <td className="door-core-total-value" />}
                         </tr>
                       </>
                     )}
@@ -791,7 +792,7 @@ export default function DoorCoreQuotationContent({
                           VAT 5%
                         </td>
                         <td className="door-core-total-value door-core-text-right">{formatAED(data.VAT_5)}</td>
-                        <td className="door-core-total-value" />
+                        {showRemarksColumn && <td className="door-core-total-value" />}
                       </tr>
                     )}
                     {hasGrandTotal && (
@@ -802,7 +803,7 @@ export default function DoorCoreQuotationContent({
                           </div>
                         </td>
                         <td className="door-core-total-value door-core-text-right">{formatAED(data.Grand_Total_AED)}</td>
-                        <td className="door-core-total-value" />
+                        {showRemarksColumn && <td className="door-core-total-value" />}
                       </tr>
                     )}
                   </tbody>
