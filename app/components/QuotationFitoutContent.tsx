@@ -494,7 +494,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                   ) : null}
                 </div>
 
-                {/* Cover letter closes here with the signature; item pricing (when present) starts fresh on the next page */}
+                {/* Cover letter closes with closing lines + signature; pricing starts on the next page (CSS break-before). */}
                 <div className={`quotation-fitout-last-page-wrap${hasAnyRows ? ' quotation-fitout-cover-close' : ''}`}>
                   <div className="quotation-fitout-terms">
                     <p>We trust our offer meets with your requirement &amp; look forward to your valued order confirmation.</p>

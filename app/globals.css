@@ -850,11 +850,11 @@ body {
     border: none !important;
   }
 
-  /* Fitout @ 14px: footer band is taller — reserve enough so rows never enter the overlay zone */
+  /* Fitout @ 14px: reserve footer clearance so rows never paint under the fixed overlay */
   .quotation-fitout-page-layout tfoot .quotation-fitout-footer-cell {
     height: auto !important;
-    min-height: 72mm !important;
-    padding-top: 10mm !important;
+    min-height: 56mm !important;
+    padding-top: 8mm !important;
     box-sizing: border-box !important;
   }
 
@@ -891,26 +891,42 @@ body {
     flex: 0 0 auto !important;
   }
 
-  /* Closing + signature: size naturally and flow into leftover space on the cover page.
-     Do NOT use min-height:267mm or page-break-inside:avoid here — that forced the whole
-     block onto the next page whenever remaining space was short, leaving a large blank gap. */
+  /* Closing + signature: flow into leftover cover-page space — do not keep the whole signature
+     block together (that pushed "Thanks and Regards" onto page 2 while page 1 stayed half empty). */
   .quotation-fitout-last-page-wrap {
     display: flex !important;
     flex-direction: column !important;
     flex: 1 1 auto !important;
     min-height: 0 !important;
-    page-break-before: avoid !important;
-    break-before: avoid-page !important;
+    page-break-before: auto !important;
+    break-before: auto !important;
     page-break-inside: auto !important;
     break-inside: auto !important;
   }
 
-  /* Keep the signature name/image cluster together (small); allow the closing lines above to split */
+  .quotation-fitout-terms {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  .quotation-fitout-terms p {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Only keep the signature image + label on one line — not the whole name/phone block */
   .quotation-fitout-signature-block {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    page-break-before: auto !important;
+    break-before: auto !important;
+  }
+
+  .quotation-fitout-signature-image-wrap {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
-    page-break-before: avoid !important;
-    break-before: avoid-page !important;
   }
 
   /* When no line items: one page only, footer at bottom of A4 – table = full page height so body cell fills and footer sits at bottom */
@@ -940,11 +956,11 @@ body {
     min-height: 0 !important;
   }
 
-  /* Fitout: Payment Terms / Validity / Notes now live on the cover letter, sized naturally like the details block */
+  /* Fitout: Payment Terms / Validity / Notes on the cover letter — allow natural breaks after */
   .quotation-fitout-cover-terms-block {
     flex: 0 0 auto !important;
-    page-break-after: avoid !important;
-    break-after: avoid-page !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
 
   /* Fitout: optional Manually_Filled subform (Item/Description/Amount), sits between the intro and Payment Terms */
@@ -952,23 +968,23 @@ body {
     flex: 0 0 auto !important;
   }
 
-  /* Fitout: when there IS item pricing, close the cover letter then start BOQ on the next page.
-     Cover content above still flows onto one page when space allows. */
+  /* Fitout: when item pricing exists, let content flow naturally across pages.
+     Dynamic datasets can push the cover close to a page boundary; forcing a hard break here
+     can create a blank middle page in Chrome print preview. */
   .quotation-fitout-last-page-wrap.quotation-fitout-cover-close {
     flex: 0 0 auto !important;
     min-height: 0 !important;
-    page-break-after: always !important;
-    break-after: page !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
   }
 
-  /* Fitout: item pricing (tables + totals) — only rendered when there are rows — takes over the "grow to
-     fill the page" role that .quotation-fitout-last-page-wrap used to have, and always starts on a fresh
-     page after the cover letter above. */
   .quotation-fitout-pricing-section {
     flex: 1 1 auto !important;
     display: flex !important;
     flex-direction: column !important;
     min-height: 0 !important;
+    page-break-before: auto !important;
+    break-before: auto !important;
   }
 
   /* Fitout: pin footer to the bottom of every printed page (including short last pages).
@@ -2843,26 +2859,33 @@ body {
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+  page-break-before: auto;
+  break-before: auto;
 }
 
-/* Signature / closing: flow onto previous page when space allows; do not keep-together the whole wrap */
+/* Signature / closing: flow onto previous page when space allows */
 .quotation-fitout-last-page-wrap {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  page-break-before: avoid;
+  page-break-before: auto;
   page-break-inside: auto;
   break-inside: auto;
 }
 
 .quotation-fitout-signature-block {
   flex: 0 0 auto;
-  page-break-inside: avoid;
-  break-inside: avoid;
-  page-break-before: avoid;
+  page-break-inside: auto;
+  break-inside: auto;
+  page-break-before: auto;
   font-size: 14px;
   line-height: 1.45;
+}
+
+.quotation-fitout-signature-image-wrap {
+  page-break-inside: avoid;
+  break-inside: avoid;
 }
 
 .quotation-fitout-last-page-spacer {
