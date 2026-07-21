@@ -248,6 +248,289 @@ export function plainZohoDisplayText(raw: unknown, emptyFallback = '—'): strin
 }
 
 /**
+ * Strip Zoho rich-text inline font sizes (editor often defaults to 10) so CSS can enforce a cap
+ * (e.g. 8.5px on Quotation_Door_Set1_Report Notes1). Also clears nowrap / nbsp so text wraps cleanly.
+ * Keeps lists/bold/etc.
+ */
+export function stripZohoRichTextFontSize(html: string): string {
+  if (!html) return html
+  return html
+    .replace(/font-size\s*:\s*[^;}"']+;?/gi, '')
+    .replace(/white-space\s*:\s*[^;}"']+;?/gi, '')
+    .replace(/(?:min-|max-)?width\s*:\s*[^;}"']+;?/gi, '')
+    .replace(/text-align\s*:\s*[^;}"']+;?/gi, '')
+    .replace(/display\s*:\s*inline[^;}"']*;?/gi, '')
+    .replace(/\s*size\s*=\s*(["']?)\d+\1/gi, '')
+    .replace(/\s*style\s*=\s*(["'])\s*\1/gi, '')
+    .replace(/\s*style\s*=\s*(["'])\s*;\s*\1/gi, '')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+}
+
+/**
+ * Subform Description: each item ends with a qty like "4 Nos" / "4Nos" — break to a new line after Nos
+ * when more text follows (e.g. next "Supply of …" item on the same row).
+ */
+export function formatMultiLineDescription(raw: string | undefined | null): string {
+  if (raw == null) return ''
+  let s = String(raw).trim()
+  if (!s) return ''
+
+  s = s
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>\s*<p[^>]*>/gi, '\n')
+    .replace(/<\/div>\s*<div[^>]*>/gi, '\n')
+    .replace(/<\/?p[^>]*>/gi, '\n')
+    .replace(/<\/?div[^>]*>/gi, '\n')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+
+  if (/<[^>]+>/.test(s)) {
+    s = s.replace(/<[^>]*>/g, ' ')
+  }
+
+  s = s.replace(/\s+/g, ' ').trim()
+
+  /* Break after qty ending in Nos (4 Nos, 4Nos, etc.) when another item follows on the same line */
+  s = s.replace(/(\d+\s*Nos\b)\s*(?=\S)/gi, '$1\n')
+
+  /* Fallback: break before each additional "Supply of" on the same line */
+  s = s.replace(/\s+(?=Supply\s+of\b)/gi, '\n')
+
+  return s
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join('\n')
+}
+
+/** Detect main (1.) vs roman sub (i.) numbering at the start of an HTML fragment */
+function parseNotesBlockMarker(inner: string): { type: 'main' | 'sub' | 'plain'; body: string } {
+  const trimmed = inner.trim()
+  const mainMatch = trimmed.match(/^(\d+)\.\s+/i)
+  if (mainMatch) return { type: 'main', body: trimmed.slice(mainMatch[0].length) }
+  const romanMatch = trimmed.match(/^([ivxlcdm]+)\.\s+/i)
+  if (romanMatch) return { type: 'sub', body: trimmed.slice(romanMatch[0].length) }
+  return { type: 'plain', body: trimmed }
+}
+
+/** Turn flat Zoho <p>/<div> blocks with inline "1." / "i." prefixes into semantic lists */
+function convertPlainNumberedNotesToList(html: string): string {
+  const blockRegex = /<(p|div)([^>]*)>([\s\S]*?)<\/\1>/gi
+  const items: { type: 'main' | 'sub' | 'plain'; html: string }[] = []
+  let match: RegExpExecArray | null
+
+  while ((match = blockRegex.exec(html)) !== null) {
+    const parsed = parseNotesBlockMarker(match[3])
+    if (!parsed.body && parsed.type === 'plain') continue
+    if (parsed.type === 'plain' && items.length) {
+      items[items.length - 1].html += ` ${parsed.body}`
+    } else {
+      items.push({ type: parsed.type, html: parsed.body })
+    }
+  }
+
+  if (!items.some((i) => i.type === 'main' || i.type === 'sub')) return html
+
+  let result = '<ol class="door-core-notes-count-list">'
+  let openMain = false
+  let openSub = false
+
+  for (const item of items) {
+    if (item.type === 'main') {
+      if (openSub) {
+        result += '</ol>'
+        openSub = false
+      }
+      if (openMain) result += '</li>'
+      result += `<li>${item.html}`
+      openMain = true
+    } else if (item.type === 'sub') {
+      if (!openSub) {
+        result += '<ol class="door-core-notes-sublist">'
+        openSub = true
+      }
+      result += `<li>${item.html}</li>`
+    } else if (openMain) {
+      result += ` ${item.html}`
+    }
+  }
+
+  if (openSub) result += '</ol>'
+  if (openMain) result += '</li>'
+  result += '</ol>'
+  return result
+}
+
+/** Merge inline HTML blocks to a single text string (keeps inline tags like strong) */
+function flattenInlineHtml(html: string): string {
+  return html
+    .replace(/<br\s*\/?>/gi, ' ')
+    .replace(/<\/p>\s*<p[^>]*>/gi, ' ')
+    .replace(/<p[^>]*>/gi, '')
+    .replace(/<\/p>/gi, ' ')
+    .replace(/<div[^>]*>/gi, '')
+    .replace(/<\/div>/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function stripTagsToPlainText(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
+/** Pull orphan <p>/<div> blocks after a </li> into that list item's text (e.g. pt 4 "mandatory.") */
+function collectTrailingOrphanText(olInner: string, startPos: number): { text: string; endPos: number } {
+  let pos = startPos
+  let combined = ''
+
+  while (pos < olInner.length) {
+    const nextLi = olInner.indexOf('<li', pos)
+    const nextOlClose = olInner.indexOf('</ol>', pos)
+    const slice = olInner.slice(pos)
+    const orphanMatch = slice.match(/^\s*<(p|div)[^>]*>([\s\S]*?)<\/\1>/i)
+    if (!orphanMatch) break
+
+    const absStart = pos + (orphanMatch.index ?? 0)
+    if (nextLi !== -1 && absStart >= nextLi) break
+    if (nextOlClose !== -1 && absStart >= nextOlClose) break
+
+    const plain = stripTagsToPlainText(orphanMatch[2])
+    if (/^\d+\.\s/.test(plain) || /^[ivxlcdm]+\.\s/i.test(plain)) break
+
+    combined += ` ${flattenInlineHtml(orphanMatch[0])}`
+    pos = absStart + orphanMatch[0].length
+  }
+
+  return { text: combined.trim(), endPos: pos }
+}
+
+function injectTextIntoLi(itemHtml: string, extraText: string): string {
+  if (!extraText) return itemHtml
+  const m = itemHtml.match(/^<li([^>]*)>([\s\S]*)<\/li>$/i)
+  if (!m) return itemHtml
+
+  const [, attrs, content] = m
+  const nestedMatch = content.match(/((?:<ol[\s\S]*?<\/ol>|<ul[\s\S]*?<\/ul>)\s*)+$/i)
+  const nestedRaw = nestedMatch?.[0] ?? ''
+  const textPart = nestedRaw ? content.slice(0, content.length - nestedRaw.length) : content
+  const merged = `${flattenInlineHtml(textPart)} ${extraText}`.replace(/\s+/g, ' ').trim()
+
+  return `<li${attrs}>${merged}${nestedRaw}</li>`
+}
+
+function parseTopLevelListItems(olInner: string): string[] {
+  const items: string[] = []
+  let pos = 0
+
+  while (pos < olInner.length) {
+    const liStart = olInner.indexOf('<li', pos)
+    if (liStart === -1) break
+
+    let depth = 0
+    let j = liStart
+    while (j < olInner.length) {
+      if (/^<li[\s>]/i.test(olInner.slice(j))) {
+        depth++
+        j = olInner.indexOf('>', j) + 1
+        continue
+      }
+      if (/^<\/li>/i.test(olInner.slice(j))) {
+        depth--
+        j += 5
+        if (depth === 0) break
+        continue
+      }
+      j++
+    }
+
+    if (depth !== 0) break
+
+    let itemHtml = olInner.slice(liStart, j)
+    const orphan = collectTrailingOrphanText(olInner, j)
+    if (orphan.text) itemHtml = injectTextIntoLi(itemHtml, orphan.text)
+
+    items.push(itemHtml)
+    pos = orphan.endPos > j ? orphan.endPos : j
+  }
+
+  return items
+}
+
+function processNotesListItem(itemHtml: string, textClass: string): string {
+  const m = itemHtml.match(/^<li([^>]*)>([\s\S]*)<\/li>$/i)
+  if (!m) return itemHtml
+
+  const [, attrs, content] = m
+  const nestedMatch = content.match(/((?:<ol[\s\S]*?<\/ol>|<ul[\s\S]*?<\/ul>)\s*)+$/i)
+  const nestedRaw = nestedMatch?.[0]?.trim() ?? ''
+  const textPart = nestedRaw ? content.slice(0, content.length - nestedRaw.length) : content
+  let flat = flattenInlineHtml(textPart)
+  /* Number column comes from CSS counters — strip any Zoho/manual "4." / "i." prefix from text */
+  flat = flat.replace(
+    /^(\s*(?:<(?:strong|b|em|i|span|u)[^>]*>\s*)*)(\d+\.\s+|[ivxlcdm]+\.\s+)/i,
+    '$1'
+  )
+  const nested = nestedRaw ? processNotesOrderedList(nestedRaw, true) : ''
+
+  if (!flat && !nested) return `<li${attrs}></li>`
+  return `<li${attrs}>${flat ? `<span class="${textClass}">${flat}</span>` : ''}${nested}</li>`
+}
+
+function processNotesOrderedList(listHtml: string, isSub = false): string {
+  const olMatch = listHtml.match(/^<ol([^>]*)>([\s\S]*)<\/ol>$/i)
+  if (!olMatch) return listHtml
+
+  const [, attrs, inner] = olMatch
+  const listClass = isSub ? 'door-core-notes-sublist' : 'door-core-notes-count-list'
+  const textClass = isSub ? 'door-set-1-note-subtext' : 'door-set-1-note-text'
+  const items = parseTopLevelListItems(inner)
+  const body = items.map((item) => processNotesListItem(item, textClass)).join('')
+
+  let classAttr = attrs
+  if (/class\s*=/i.test(attrs)) {
+    if (!/door-core-notes-(count-list|sublist)/i.test(attrs)) {
+      classAttr = attrs.replace(/class\s*=\s*(["'])([^"']*)\1/i, (_, q, cls) => `class=${q}${cls} ${listClass}${q}`)
+    }
+  } else {
+    classAttr = `${attrs} class="${listClass}"`
+  }
+
+  return `<ol${classAttr}>${body}</ol>`
+}
+
+/**
+ * Normalize Zoho Notes1 rich text for Door Set 1: strip inline sizing, build proper lists,
+ * merge continuation lines into their parent point, and wrap text for hanging-indent CSS.
+ */
+export function normalizeDoorSetNotesHtml(html: string): string {
+  if (!html?.trim()) return html
+
+  let s = stripZohoRichTextFontSize(html)
+  s = s.replace(/<p>\s*<\/p>/gi, '').replace(/<div>\s*<\/div>/gi, '')
+
+  /* Zoho often puts "1." inside <li> while also using <ol> — drop duplicate prefix */
+  s = s.replace(/<li([^>]*)>([\s\S]*?)<\/li>/gi, (_, attrs, inner) => {
+    const cleaned = inner.replace(
+      /^(\s*(?:<(?:strong|b|em|i|span|u)[^>]*>\s*)*)(\d+\.\s+|[ivxlcdm]+\.\s+)/i,
+      '$1'
+    )
+    return `<li${attrs}>${cleaned}</li>`
+  })
+
+  if (/<ol[\s>]/i.test(s)) {
+    s = s.replace(/<ol[^>]*>[\s\S]*?<\/ol>/gi, (listBlock) => processNotesOrderedList(listBlock, false))
+  } else {
+    const converted = convertPlainNumberedNotesToList(s)
+    if (converted !== s) {
+      s = converted.replace(/<ol[^>]*>[\s\S]*?<\/ol>/gi, (listBlock) => processNotesOrderedList(listBlock, false))
+    }
+  }
+
+  return s
+}
+
+/**
  * Maps Template field value to Category data field names
  * Returns object with lineItemsField and productDetailsField
  */

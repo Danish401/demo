@@ -1099,6 +1099,26 @@ body {
     font-size: 8.5px !important;
   }
 
+  /* Notes1 print: same grid hanging indent as screen + 8.5px */
+  .door-set-1-quotation .door-set-1-notes-html,
+  .door-set-1-quotation .door-set-1-notes-html * {
+    font-size: 8.5px !important;
+  }
+
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li,
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
+    display: grid !important;
+    grid-template-columns: 2.1em minmax(0, 1fr) !important;
+    column-gap: 0.35em !important;
+    padding: 0 !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
+    grid-template-columns: 1.75em minmax(0, 1fr) !important;
+  }
+
   .door-set-2-quotation .door-core-subform-table,
   .door-set-2-quotation .door-core-totals-table {
     width: 100% !important;
@@ -1203,13 +1223,19 @@ body {
   .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
   .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
   .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16),
-  .door-set-2-quotation .door-core-subform-table td:nth-child(2),
   .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(2),
   .quotation-fitout-manual-items-table td:nth-child(1),
   .quotation-fitout-manual-items-table td:nth-child(2) {
     white-space: normal !important;
     overflow-wrap: anywhere !important;
     word-break: break-word !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table td.door-core-subform-description,
+  .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
+    white-space: pre-line !important;
+    overflow-wrap: break-word !important;
+    word-break: normal !important;
   }
 
   .door-core-product-table.door-core-boq-product-table th {
@@ -1593,6 +1619,163 @@ body {
 .door-set-1-quotation .door-core-distributor-text,
 .door-set-1-quotation .door-set-2-footer-signature-note {
   font-size: 8.5px !important;
+}
+
+/* Notes1 is Zoho rich text (editor default size 10) — force every nested node to 8.5px max */
+.door-set-1-quotation .door-core-notes-html,
+.door-set-1-quotation .door-core-notes-html * {
+  font-size: 8.5px !important;
+}
+
+/*
+ * Notes1 hanging indent (Quotation_Door_Set1_Report):
+ * CSS grid — fixed number column + text column.
+ * Wrapped lines always start under the first character of the sentence (never under the number).
+ * No manual spaces; works for any text length (points 1–11 and roman sub-points).
+ */
+.door-set-1-quotation .door-set-1-notes-html.door-core-notes-p {
+  margin-left: 1%;
+  max-width: 100%;
+  box-sizing: border-box;
+  line-height: 1.45;
+  text-align: left;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: normal !important;
+  white-space: normal !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list {
+  list-style: none !important;
+  counter-reset: door-set1-note-main;
+  margin: 0.15em 0 0.35em 0 !important;
+  padding: 0 !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li {
+  list-style: none !important;
+  counter-increment: door-set1-note-main;
+  display: grid !important;
+  grid-template-columns: 2.1em minmax(0, 1fr);
+  column-gap: 0.35em;
+  align-items: start;
+  margin: 0 0 0.35em 0 !important;
+  padding: 0 !important;
+  text-indent: 0 !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li::before {
+  content: counter(door-set1-note-main) ".";
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  white-space: nowrap;
+  text-align: left;
+  font-weight: inherit;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li > .door-set-1-note-text {
+  grid-column: 2;
+  grid-row: 1;
+  display: block !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-indent: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li > ol,
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li > ul {
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
+  min-width: 0;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist {
+  list-style: none !important;
+  counter-reset: door-set1-note-sub;
+  margin: 0.15em 0 0.25em 0 !important;
+  padding: 0 !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
+  list-style: none !important;
+  counter-increment: door-set1-note-sub;
+  display: grid !important;
+  grid-template-columns: 1.75em minmax(0, 1fr);
+  column-gap: 0.3em;
+  align-items: start;
+  margin: 0 0 0.25em 0 !important;
+  padding: 0 !important;
+  text-indent: 0 !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li::before {
+  content: counter(door-set1-note-sub, lower-roman) ".";
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li > .door-set-1-note-subtext {
+  grid-column: 2;
+  grid-row: 1;
+  display: block !important;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-indent: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+/* Any other ol/ul inside Notes1: outside markers so wraps stay under text */
+.door-set-1-quotation .door-set-1-notes-html ol:not(.door-core-notes-count-list):not(.door-core-notes-sublist),
+.door-set-1-quotation .door-set-1-notes-html ul {
+  list-style-position: outside !important;
+  margin: 0.15em 0 0.25em 0 !important;
+  padding-left: 1.5em !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html .door-set-1-note-text strong,
+.door-set-1-quotation .door-set-1-notes-html .door-set-1-note-text b,
+.door-set-1-quotation .door-set-1-notes-html .door-set-1-note-subtext strong,
+.door-set-1-quotation .door-set-1-notes-html .door-set-1-note-subtext b,
+.door-set-1-quotation .door-set-1-notes-html strong,
+.door-set-1-quotation .door-set-1-notes-html b {
+  font-weight: 700 !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html .door-set-1-note-text *,
+.door-set-1-quotation .door-set-1-notes-html .door-set-1-note-subtext * {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-indent: 0 !important;
+  white-space: normal !important;
+}
+
+/* Fallback: flat Zoho paragraphs that still include "1. …" in the text */
+.door-set-1-quotation .door-set-1-notes-html > p,
+.door-set-1-quotation .door-set-1-notes-html > div {
+  margin: 0 0 0.35em 0 !important;
+  padding-left: 2.1em !important;
+  text-indent: -2.1em !important;
+}
+
+.door-set-1-quotation .door-set-1-notes-html > div > p,
+.door-set-1-quotation .door-set-1-notes-html > div > div {
+  margin: 0 0 0.25em 0 !important;
+  padding-left: 2.1em !important;
+  text-indent: -2.1em !important;
 }
 
 .door-set-1-quotation.door-set-2-quotation .door-core-cover-title {
@@ -2275,12 +2458,14 @@ body {
   min-width: 0;
 }
 
-/* Subform Description: long item text must wrap inside the column */
+/* Subform Description: break after "4 Nos" / "4Nos" — each supply item on its own full line */
+.door-set-2-quotation .door-core-subform-table td.door-core-subform-description,
 .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  white-space: pre-line;
+  overflow-wrap: break-word;
+  word-break: normal;
   min-width: 0;
+  text-align: left !important;
 }
 
 /* Door Set 2: subform column widths */

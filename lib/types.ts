@@ -291,6 +291,10 @@ export interface QuotationLogDoorSet2Data {
   Quotation_No?: string
   Quotation_Submission_Date?: string
   Organization_Name1?: string
+  /** Zoho alternate for the "To:" customer block (same as Organization_Name1 when present) */
+  Customer_Information?: string
+  /** Zoho "To" prefix (typically "M/s.") shown before the customer name */
+  To?: string
   Emirates?: string
   Project_Name?: string
   Project_Location?: string
@@ -304,6 +308,8 @@ export interface QuotationLogDoorSet2Data {
   Facing?: string
   Lipping?: string
   Finish?: string
+  /** Zoho Delivery field on cover specs (shown when present) */
+  Delivery?: string
   Intumescent_seals?: string
   Seal_Description?: string
   Acoustic_Seals?: string
@@ -331,6 +337,7 @@ export interface QuotationLogDoorSet2Data {
   Grand_Total_AED?: string | number
   Payment_Terms1?: string
   Validity?: string
+  /** Zoho rich-text Notes; Door Set 1 renders at max 8.5px */
   Notes1?: string
   Sales_Person?: string
   /** When "Approved", signature can be shown when view=approved in URL */

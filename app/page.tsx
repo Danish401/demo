@@ -34,6 +34,16 @@ function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): Quot
   return {
     ...raw,
     ID: String(raw.ID ?? ''),
+    /** "To:" block — Organization_Name1, or Zoho Customer_Information / Customer_Name1 */
+    Organization_Name1: pick([
+      'Organization_Name1',
+      'Customer_Information',
+      'Customer_Name1',
+      'organization_name1',
+    ]) as string | undefined,
+    /** Prefix before customer name (Zoho field "To", usually "M/s.") */
+    To: pick(['To', 'to', 'To_field']) as string | undefined,
+    Delivery: pick(['Delivery', 'delivery', 'Delivery_Terms', 'Mode_of_Delivery']) as string | undefined,
     Items_Details: pick(['Items_Details', 'items_details', 'Items Details']) as QuotationLogDoorSet2Data['Items_Details'],
     Section_1: pick(['Section_1', 'section_1', 'Section 1']) as QuotationLogDoorSet2Data['Section_1'],
     Section_2: pick(['Section_2', 'section_2', 'Section 2']) as QuotationLogDoorSet2Data['Section_2'],
@@ -43,6 +53,7 @@ function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): Quot
     Trader_Name: traderName,
     Trader_Name1: traderName1,
     Width_Height: pick(['Width_Height', 'Width_height', 'width_Height', 'width_height']) as string | undefined,
+    Notes1: pick(['Notes1', 'Notes', 'notes1']) as string | undefined,
   } as QuotationLogDoorSet2Data
 }
 

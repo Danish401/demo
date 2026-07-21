@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
-import { boldCivilDefenceHtml, formatAedAmountInWords, formatQuotationNo, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { boldCivilDefenceHtml, formatAedAmountInWords, formatMultiLineDescription, formatQuotationNo, formatSealDescriptionHtml, normalizeDoorSetNotesHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 import DirhamSymbol from './DirhamSymbol'
 
 /** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
@@ -81,7 +81,7 @@ function DoorSetSubformSectionTable({
         {rows.map((row, idx) => (
           <tr key={idx}>
             <td>{row.S_No1 ?? ''}</td>
-            <td>{row.Description ?? ''}</td>
+            <td className="door-core-subform-description">{formatMultiLineDescription(row.Description)}</td>
             <td className="door-core-text-right">{row.Qty1 ?? ''}</td>
             <td className="door-core-text-right">
               {row.Unit_Price1 != null ? formatAED(row.Unit_Price1) : ''}
@@ -460,6 +460,21 @@ export default function QuotationLogDoorSet2Content({
 
   const footerPageLabel = isDoorSet1 ? pageLabel : undefined
 
+  /* Label "To:"; Zoho field `To` (e.g. M/s.) only when present, then customer + Emirates */
+  const customerInfo = plainZohoDisplayText(
+    data.Organization_Name1 ?? data.Customer_Information ?? data.Customer_Name1,
+    ''
+  )
+  const emiratesText = plainZohoDisplayText(data.Emirates, '')
+  const toField = plainZohoDisplayText(data.To, '').replace(/\s+$/, '')
+  const customerLine = [toField, customerInfo].filter(Boolean).join(' ')
+  const showToBlock = Boolean(customerLine || emiratesText)
+  const notes1Html = hasValue(data.Notes1)
+    ? isDoorSet1
+      ? normalizeDoorSetNotesHtml(data.Notes1 ?? '')
+      : (data.Notes1 ?? '')
+    : ''
+
   return (
     <div className={containerClassName}>
       <div
@@ -516,13 +531,13 @@ export default function QuotationLogDoorSet2Content({
                     <div className="door-core-details-value">{data.Quotation_Submission_Date}</div>
                   </div>
                 )}
-                {(hasValue(data.Organization_Name1) || hasValue(data.Emirates)) && (
+                {showToBlock && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>To:</strong></div>
                     <div className="door-core-details-value">
-                      {data.Organization_Name1 ?? ''}
-                      {(data.Organization_Name1 || data.Emirates) && <br />}
-                      {data.Emirates ?? ''}{data.Emirates ? ', U.A.E' : ''}
+                      {customerLine}
+                      {customerLine && emiratesText ? <br /> : null}
+                      {emiratesText ? `${emiratesText}, U.A.E` : ''}
                     </div>
                   </div>
                 )}
@@ -605,6 +620,12 @@ export default function QuotationLogDoorSet2Content({
                     <div className="door-core-details-value">{data.Finish}</div>
                   </div>
                 )}
+                {hasValue(data.Delivery) && (
+                  <div className="door-core-details-row">
+                    <div className="door-core-details-label"><strong>Delivery:</strong></div>
+                    <div className="door-core-details-value">{data.Delivery}</div>
+                  </div>
+                )}
                 {showIntumescentSeal && (
                   <div className="door-core-seal-row">
                     <div className="door-core-seal-label"><strong>Intumescent seal:</strong></div>
@@ -648,12 +669,12 @@ export default function QuotationLogDoorSet2Content({
                   </>
                 )}
 
-                {hasValue(data.Notes1) && (
+                {notes1Html && (
                   <>
                     <strong>3. Notes</strong>
                     <div
-                      className="door-core-notes-p door-core-notes-html"
-                      dangerouslySetInnerHTML={{ __html: data.Notes1 ?? '' }}
+                      className={`door-core-notes-p door-core-notes-html${isDoorSet1 ? ' door-set-1-notes-html' : ''}`}
+                      dangerouslySetInnerHTML={{ __html: notes1Html }}
                     />
                   </>
                 )}
