@@ -304,6 +304,8 @@ export interface QuotationLogDoorSet2Data {
   Outer_Frame?: string
   Architrave?: string
   FR_Core?: string
+  /** Zoho NFR field — shown after FR Core when present (Quotation_Door_Set1_Report) */
+  NFR?: string
   Acoustic_Core?: string
   Facing?: string
   Lipping?: string

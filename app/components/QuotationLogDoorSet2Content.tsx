@@ -596,6 +596,12 @@ export default function QuotationLogDoorSet2Content({
                     <div className="door-core-details-value">{data.FR_Core}</div>
                   </div>
                 )}
+                {hasValue(data.NFR) && (
+                  <div className="door-core-details-row">
+                    <div className="door-core-details-label"><strong>NFR:</strong></div>
+                    <div className="door-core-details-value">{data.NFR}</div>
+                  </div>
+                )}
                 {data.Acoustic_Core?.trim() && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>Acoustic Core:</strong></div>

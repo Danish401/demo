@@ -44,6 +44,7 @@ function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): Quot
     /** Prefix before customer name (Zoho field "To", usually "M/s.") */
     To: pick(['To', 'to', 'To_field']) as string | undefined,
     Delivery: pick(['Delivery', 'delivery', 'Delivery_Terms', 'Mode_of_Delivery']) as string | undefined,
+    NFR: pick(['NFR', 'Nfr', 'nfr', 'NFR_Core', 'Nfr_Core']) as string | undefined,
     Items_Details: pick(['Items_Details', 'items_details', 'Items Details']) as QuotationLogDoorSet2Data['Items_Details'],
     Section_1: pick(['Section_1', 'section_1', 'Section 1']) as QuotationLogDoorSet2Data['Section_1'],
     Section_2: pick(['Section_2', 'section_2', 'Section 2']) as QuotationLogDoorSet2Data['Section_2'],
