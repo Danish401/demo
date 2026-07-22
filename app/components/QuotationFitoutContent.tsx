@@ -179,7 +179,7 @@ function getFooterData(subDivisions?: string): FooterData {
   return {
     trade_name: 'Ideal Fitout Decoration Design & Fit-Out Co. L.L.C',
     part_of: 'Ideal Special Products F.Z.C',
-    location: 'Unit 1108, 51 Tower, Business Bay, Dubai, UAE PO.Box: 94956',
+    location: 'Unit 1004, Le Solarium Tower,\nDubai Silicon Oasis,\nDubai, U.A.E',
     phone: '+971 42986983',
     email1: 'fitouts@ideal.ae',
     email2: 'idealind@eim.ae',
@@ -256,9 +256,9 @@ function FooterBandContent({
             <circle cx="100" cy="80" r="18" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <span className="quotation-fitout-footer-address-lines">
-            Unit 1108, 51 Tower,<br />
-            Business Bay, Dubai, UAE<br />
-            PO.Box: 94956
+            Unit 1004, Le Solarium Tower,<br />
+            Dubai Silicon Oasis,<br />
+            Dubai, U.A.E
           </span>
         </span>
       </div>

@@ -45,7 +45,7 @@ function DoorSetSubformSectionTable({
   header?: string
   rows: QuotationLogDoorSet2SubItem[]
   subTotal?: number | string | null
-  /** Section_3 Description cells stay left; Section_1/2 stay centered */
+  /** Description cell alignment — Door Set 1 Section_1/2/3 use left */
   descriptionAlign?: 'left' | 'center'
 }) {
   const headerText = (header ?? '').trim()
@@ -127,7 +127,7 @@ interface DoorCoreStyleFooterData {
 }
 
 function getFooterData(subDivisions?: string): DoorCoreStyleFooterData {
-  const sub = (subDivisions || '').trim()
+  const sub = (subDivisions || '').trim().toUpperCase()
   switch (sub) {
     case 'ABU DHABI':
       return {
@@ -141,8 +141,8 @@ function getFooterData(subDivisions?: string): DoorCoreStyleFooterData {
     case 'DUBAI':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC',
-        phone: '+971 25513828',
-        location: '94956, Abu Dhabi',
+        phone: '+971 42986983',
+        location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
         website: 'www.idealfirestop.ae',
@@ -192,7 +192,7 @@ function getFooterData(subDivisions?: string): DoorCoreStyleFooterData {
         email2: '',
         website: 'www.ideal.ae',
       }
-    case 'Export':
+    case 'EXPORT':
       return {
         trade_name: '',
         phone: '+971 67404840',
@@ -280,9 +280,13 @@ function FooterBandContent({
         </div>
         <div className="door-core-footer-right">
           <img
-            src="/logo4.png"
-            className="door-core-footer-certs"
-            alt="AV CERT / UAF / FSC Certification"
+            src={isAjmanOrExportSubdivision ? '/special.png' : '/logo4.png'}
+            className={`door-core-footer-certs${isAjmanOrExportSubdivision ? ' door-core-footer-certs--special' : ''}`}
+            alt={
+              isAjmanOrExportSubdivision
+                ? 'AV CERT / UAF / Intertek / FSC Certification'
+                : 'AV CERT / UAF / FSC Certification'
+            }
           />
         </div>
       </div>
@@ -368,8 +372,8 @@ function FooterBandContent({
 
 const LOGO_IDEAL_FITOUTS = 'https://i.ibb.co/nsrVgzqF/Screenshot-2025-04-08-131618.png'
 const LOGO_IDEAL_FIRESTOP = 'https://i.ibb.co/3KVzWsK/Screenshot-2025-04-08-131639.png'
-/** Same header asset as Door Core when Sub_Divisions is AJMAN or Export */
-const LOGO_IDEAL_SPECIAL = 'https://i.ibb.co/Wvs029TQ/ideal-special.png'
+/** Same header asset when Sub_Divisions is AJMAN or Export */
+const LOGO_IDEAL_SPECIAL = '/specialheader.png'
 
 export type DoorSet2ViewMode = 'simple' | 'approved'
 export type DoorSetQuotationVariant = 'door-set-1' | 'door-set-2'
@@ -488,14 +492,16 @@ export default function QuotationLogDoorSet2Content({
 
   return (
     <div className={containerClassName}>
-      <div
-        className={
-          isAjmanOrExportSubdivision
-            ? 'door-core-static-pattern door-core-static-pattern--halftone'
-            : 'door-core-static-pattern'
-        }
-        aria-hidden
-      />
+      {isAjmanOrExportSubdivision ? (
+        <img
+          src="/special-watermark.png?v=4"
+          alt=""
+          aria-hidden
+          className="door-core-static-pattern door-core-static-pattern--halftone"
+        />
+      ) : (
+        <div className="door-core-static-pattern" aria-hidden />
+      )}
       <table className="door-core-page-layout">
         <thead>
           <tr>
@@ -896,6 +902,7 @@ export default function QuotationLogDoorSet2Content({
                     header={data.SubForm_Header}
                     rows={section1}
                     subTotal={data.Sub_Total1}
+                    descriptionAlign={isDoorSet1 ? 'left' : 'center'}
                   />
                 )}
 
@@ -905,6 +912,7 @@ export default function QuotationLogDoorSet2Content({
                     header={data.SubForm_Header1}
                     rows={section2}
                     subTotal={data.Sub_Total2}
+                    descriptionAlign={isDoorSet1 ? 'left' : 'center'}
                   />
                 )}
 

@@ -527,11 +527,61 @@ body {
     width: 100% !important;
     padding: 0 !important;
     border: none !important;
+    background: transparent !important;
+  }
+
+  /* Default corner pattern: fixed = repeats every printed page */
+  .door-core-static-pattern {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Ajman / Export dots: absolute = first page only; bleed to paper corner on print */
+  img.door-core-static-pattern.door-core-static-pattern--halftone,
+  .door-core-static-pattern.door-core-static-pattern--halftone {
+    display: block !important;
+    visibility: visible !important;
+    position: absolute !important;
+    top: -12mm !important;
+    right: -8mm !important;
+    width: 110mm !important;
+    height: 85mm !important;
+    max-width: none !important;
+    max-height: none !important;
+    aspect-ratio: auto !important;
+    clip-path: none !important;
+    opacity: 1 !important;
+    background: none !important;
+    background-image: none !important;
+    object-fit: fill !important;
+    object-position: top right !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    z-index: 0 !important;
+    pointer-events: none !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
   }
 
   .door-core-page-layout {
     height: 100% !important;
     border: none !important;
+    background: transparent !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .door-core-layout-header-cell,
+  .door-core-layout-footer-cell,
+  .door-core-layout-ell {
+    background: transparent !important;
   }
 
   .door-core-page-layout thead {
@@ -1396,6 +1446,8 @@ body {
   line-height: 1.45;
   background: #fff;
   max-width: 100%;
+  position: relative;
+  overflow: visible;
 }
 
 .door-core-static-pattern {
@@ -1410,6 +1462,37 @@ body {
   pointer-events: none;
   clip-path: polygon(100% 0%, 0% 50%, 100% 100%);
   z-index: 0;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/*
+ * Ajman / Export: top-right letterhead dots (first page only via absolute, not fixed).
+ * Screen: natural aspect, sits in corner under transparent header (no white cutout).
+ * Print overrides below add bleed so dots reach the paper edge.
+ */
+img.door-core-static-pattern.door-core-static-pattern--halftone,
+.door-core-static-pattern.door-core-static-pattern--halftone {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 38%;
+  max-width: 420px;
+  height: auto;
+  aspect-ratio: 235 / 181;
+  max-height: none;
+  clip-path: none;
+  opacity: 1;
+  background: none;
+  background-image: none;
+  object-fit: contain;
+  object-position: top right;
+  -webkit-mask-image: none;
+  mask-image: none;
+  z-index: 0;
+  pointer-events: none;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
 }
 
 .door-core-page-layout {
@@ -1431,7 +1514,8 @@ body {
 .door-core-layout-header-cell {
   padding: 10px 10% 6px 10%;
   border: none;
-  background: #fff;
+  /* Transparent so Ajman/Export corner dots show through (page bg is already white) */
+  background: transparent;
 }
 
 .door-core-header-no-logo .door-core-header-logo-crop {
@@ -1549,6 +1633,16 @@ body {
 
 .door-set-2-quotation .door-core-footer-certs {
   height: 62px;
+}
+
+/* Ajman / Export: wider cert strip (ISO + UAF + Intertek + FSC) from /special.png */
+.door-core-footer-certs.door-core-footer-certs--special,
+.door-set-2-quotation .door-core-footer-certs.door-core-footer-certs--special,
+.door-core-standalone .door-core-footer-certs.door-core-footer-certs--special {
+  height: 52px;
+  width: auto;
+  max-width: min(420px, 58vw);
+  object-fit: contain;
 }
 
 .door-core-footer-hr {
@@ -2554,7 +2648,7 @@ body {
   min-width: 0;
 }
 
-/* Subform Description: break after "4 Nos" / "4Nos" — each supply item on its own full line; centered */
+/* Subform Description: multi-line; default centered (Door Set 2 Section_1/2) */
 .door-set-2-quotation .door-core-subform-table td.door-core-subform-description,
 .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
   white-space: pre-line;
@@ -2564,7 +2658,7 @@ body {
   text-align: center !important;
 }
 
-/* Section_3 only: Description data left-aligned */
+/* Description data left-aligned (Door Set 1 Section_1/2/3, and Section_3 everywhere) */
 .door-set-2-quotation .door-core-subform-table.door-core-subform-table--desc-left td.door-core-subform-description,
 .door-set-2-quotation .door-core-subform-table.door-core-subform-table--desc-left td:nth-child(2) {
   text-align: left !important;

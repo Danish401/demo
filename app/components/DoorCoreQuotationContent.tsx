@@ -285,9 +285,13 @@ function FooterBandContent({
         </div>
         <div className="door-core-footer-right">
           <img
-            src="/logo4.png"
-            className="door-core-footer-certs"
-            alt="AV CERT / UAF / FSC Certification"
+            src={isAjmanOrExportSubdivision ? '/special.png' : '/logo4.png'}
+            className={`door-core-footer-certs${isAjmanOrExportSubdivision ? ' door-core-footer-certs--special' : ''}`}
+            alt={
+              isAjmanOrExportSubdivision
+                ? 'AV CERT / UAF / Intertek / FSC Certification'
+                : 'AV CERT / UAF / FSC Certification'
+            }
           />
         </div>
       </div>
@@ -458,19 +462,21 @@ export default function DoorCoreQuotationContent({
 
   const logoUrl =
     subDivision === 'AJMAN' || subDivision === 'EXPORT'
-      ? 'https://i.ibb.co/Wvs029TQ/ideal-special.png'
+      ? '/specialheader.png'
       : 'https://i.ibb.co/bjs2kFm4/Screenshot-2026-01-13-171206.png'
 
   return (
     <div className="door-core-quotation-container door-core-standalone">
-      <div
-        className={
-          isAjmanOrExportSubdivision
-            ? 'door-core-static-pattern door-core-static-pattern--halftone'
-            : 'door-core-static-pattern'
-        }
-        aria-hidden
-      />
+      {isAjmanOrExportSubdivision ? (
+        <img
+          src="/special-watermark.png?v=4"
+          alt=""
+          aria-hidden
+          className="door-core-static-pattern door-core-static-pattern--halftone"
+        />
+      ) : (
+        <div className="door-core-static-pattern" aria-hidden />
+      )}
       <table className="door-core-page-layout">
         <thead>
           <tr>
