@@ -1033,6 +1033,63 @@ body {
     display: none !important;
   }
 
+  /*
+   * Quotation_Door_Set1_Report: pack cover letter onto earlier pages.
+   * Keep closing/signature with Notes when remaining space exists (avoid large blank bottoms),
+   * then hard-break before item pricing. Soften unbreakable note rows so long Notes1 can fill
+   * the page instead of leaving a gap and pushing the signature alone onto the next sheet.
+   */
+  .door-set-1-quotation .door-set-2-cover-terms-block {
+    flex: 0 0 auto !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  .door-set-1-quotation .door-core-last-page-wrap {
+    display: block !important;
+    min-height: 0 !important;
+    flex: 0 0 auto !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  .door-set-1-quotation .door-core-closing-print-group {
+    flex: 0 0 auto !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .door-set-1-quotation .door-core-last-page-spacer {
+    display: none !important;
+    flex: none !important;
+    min-height: 0 !important;
+    height: 0 !important;
+  }
+
+  .door-set-1-quotation .door-core-signature-block-spacer {
+    margin-bottom: 20px !important;
+  }
+
+  .door-set-1-quotation .door-set-1-notes-html,
+  .door-set-1-quotation .door-set-1-notes-html ol,
+  .door-set-1-quotation .door-set-1-notes-html .door-set-1-note-text,
+  .door-set-1-quotation .door-set-1-notes-html .door-set-1-note-subtext {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li,
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+  }
+
   /* Door Set 2: Payment Terms / Validity / Notes now live on the cover letter, sized naturally like the details block */
   .door-set-2-quotation .door-set-2-cover-terms-block {
     flex: 0 0 auto !important;
@@ -1111,8 +1168,8 @@ body {
     grid-template-columns: 2.1em minmax(0, 1fr) !important;
     column-gap: 0.35em !important;
     padding: 0 !important;
-    page-break-inside: avoid;
-    break-inside: avoid;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
   }
 
   .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
@@ -1169,11 +1226,17 @@ body {
   .door-set-2-quotation .door-core-subform-table td:nth-child(4),
   .door-set-2-quotation .door-core-subform-table th:nth-child(5),
   .door-set-2-quotation .door-core-subform-table td:nth-child(5) {
-    min-width: 6.5em !important;
+    min-width: 0 !important;
     white-space: nowrap !important;
     overflow-wrap: normal !important;
     word-break: normal !important;
     overflow: visible !important;
+    text-align: right !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table th:nth-child(4),
+  .door-set-2-quotation .door-core-subform-table th:nth-child(5) {
+    text-align: center !important;
   }
 
   .door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td:last-child,
@@ -1236,7 +1299,36 @@ body {
     white-space: pre-line !important;
     overflow-wrap: break-word !important;
     word-break: normal !important;
+    text-align: center !important;
   }
+
+  .door-set-2-quotation .door-core-subform-table.door-core-subform-table--desc-left td.door-core-subform-description,
+  .door-set-2-quotation .door-core-subform-table.door-core-subform-table--desc-left td:nth-child(2) {
+    text-align: left !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table thead tr:not(.door-core-subform-section-header-row) th {
+    text-align: center !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table .door-core-subform-section-header-row th.door-core-subform-section-title {
+    text-align: left !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table td:nth-child(4),
+  .door-set-2-quotation .door-core-subform-table td:nth-child(5),
+  .door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td:last-child {
+    text-align: right !important;
+    min-width: 0 !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table {
+    table-layout: fixed !important;
+  }
+
+  .door-set-2-quotation .door-core-subform-table col.door-core-subform-col-unit { width: 8% !important; }
+  .door-set-2-quotation .door-core-subform-table col.door-core-subform-col-total { width: 9.5% !important; }
+  .door-set-2-quotation .door-core-subform-table col.door-core-subform-col-desc { width: 68.5% !important; }
 
   .door-core-product-table.door-core-boq-product-table th {
     font-size: 8.5px !important;
@@ -1961,6 +2053,10 @@ body {
   text-align: center;
 }
 
+.door-set-2-quotation .door-core-product-table.door-set-2-product-table td.door-core-text-center {
+  text-align: center !important;
+}
+
 /* ── Quotation_Log_Door_Core BOQ: match Door Set 1 table look (grid, header, alignment) ── */
 .door-core-boq-table-section {
   width: 100%;
@@ -2158,7 +2254,7 @@ body {
   color: #333;
 }
 
-/* Subform section title row — spans all columns inside the table border grid */
+/* Subform section title row — SubForm_Header / Header1/2 left-aligned */
 .door-set-2-quotation .door-core-subform-table .door-core-subform-section-header-row th.door-core-subform-section-title,
 .door-core-subform-table .door-core-subform-section-header-row th.door-core-subform-section-title {
   text-align: left !important;
@@ -2458,21 +2554,41 @@ body {
   min-width: 0;
 }
 
-/* Subform Description: break after "4 Nos" / "4Nos" — each supply item on its own full line */
+/* Subform Description: break after "4 Nos" / "4Nos" — each supply item on its own full line; centered */
 .door-set-2-quotation .door-core-subform-table td.door-core-subform-description,
 .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
   white-space: pre-line;
   overflow-wrap: break-word;
   word-break: normal;
   min-width: 0;
+  text-align: center !important;
+}
+
+/* Section_3 only: Description data left-aligned */
+.door-set-2-quotation .door-core-subform-table.door-core-subform-table--desc-left td.door-core-subform-description,
+.door-set-2-quotation .door-core-subform-table.door-core-subform-table--desc-left td:nth-child(2) {
   text-align: left !important;
 }
 
-/* Door Set 2: subform column widths */
+/* Door Set subforms (Section_1/2/3): column widths match Items_Details Unit/Total (8% / 9.5%) */
+.door-set-2-quotation .door-core-subform-table {
+  table-layout: fixed !important;
+  width: 100% !important;
+}
+
+.door-set-2-quotation .door-core-subform-table col.door-core-subform-col-slno { width: 8%; }
+.door-set-2-quotation .door-core-subform-table col.door-core-subform-col-desc { width: 68.5%; }
+.door-set-2-quotation .door-core-subform-table col.door-core-subform-col-qty { width: 6%; }
+.door-set-2-quotation .door-core-subform-table col.door-core-subform-col-unit { width: 8%; }
+.door-set-2-quotation .door-core-subform-table col.door-core-subform-col-total { width: 9.5%; }
+
+/* Door Set 2: subform column widths — all column headers centered */
+.door-set-2-quotation .door-core-subform-table thead tr:not(.door-core-subform-section-header-row) th {
+  text-align: center !important;
+}
+
 .door-set-2-quotation .door-core-subform-table th:nth-child(1),
 .door-set-2-quotation .door-core-subform-table td:nth-child(1) {
-  width: 8%;
-  min-width: 4.75em;
   box-sizing: border-box;
   text-align: center !important;
 }
@@ -2483,59 +2599,32 @@ body {
 
 .door-set-2-quotation .door-core-subform-table th:nth-child(2),
 .door-set-2-quotation .door-core-subform-table td:nth-child(2) {
-  width: 58%;
-  min-width: 8em;
-  text-align: left !important;
+  min-width: 0;
+  text-align: center !important;
 }
 
-/* Qty — right-aligned header + data */
-.door-set-2-quotation .door-core-subform-table th:nth-child(3) {
-  width: 6%;
-  text-align: right !important;
-}
-
+/* Qty — header centered; data centered */
+.door-set-2-quotation .door-core-subform-table th:nth-child(3),
 .door-set-2-quotation .door-core-subform-table td:nth-child(3) {
-  width: 6%;
-  text-align: right;
+  text-align: center !important;
 }
 
-/* Unit Price (AED) — right-aligned header + data; keep amounts on one line */
-.door-set-2-quotation .door-core-subform-table th:nth-child(4) {
-  width: 14%;
-  text-align: right !important;
-}
-
-.door-set-2-quotation .door-core-subform-table td:nth-child(4) {
-  width: 14%;
-  text-align: right;
-  white-space: nowrap;
-  overflow-wrap: normal;
-  word-break: normal;
-  min-width: 6.5em;
-}
-
-/* Total Price (AED) — right-aligned; wide enough for values like 690,000.00 */
+/* Unit Price / Total Price — headers centered (label on one line like Items_Details); amounts right */
+.door-set-2-quotation .door-core-subform-table th:nth-child(4),
 .door-set-2-quotation .door-core-subform-table th:nth-child(5) {
-  width: 14%;
-  min-width: 6.5em;
-  text-align: right !important;
+  text-align: center !important;
+  white-space: nowrap !important;
 }
 
-.door-set-2-quotation .door-core-subform-table td:nth-child(5) {
-  width: 14%;
-  min-width: 6.5em;
-  text-align: right;
+.door-set-2-quotation .door-core-subform-table td:nth-child(4),
+.door-set-2-quotation .door-core-subform-table td:nth-child(5),
+.door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td:last-child,
+.door-set-2-quotation .door-core-subform-table td.door-core-text-right {
+  text-align: right !important;
   white-space: nowrap;
   overflow-wrap: normal;
   word-break: normal;
-}
-
-/* Sub Total amount cell (last column of subtotal row — colspan changes nth-child) */
-.door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td:last-child {
-  white-space: nowrap !important;
-  overflow-wrap: normal !important;
-  word-break: normal !important;
-  text-align: right !important;
+  min-width: 0;
 }
 
 .door-set-2-quotation .door-core-subform-table tr.door-core-subtotal td {

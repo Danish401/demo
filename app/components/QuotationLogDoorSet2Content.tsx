@@ -40,15 +40,32 @@ function DoorSetSubformSectionTable({
   header,
   rows,
   subTotal,
+  descriptionAlign = 'center',
 }: {
   header?: string
   rows: QuotationLogDoorSet2SubItem[]
   subTotal?: number | string | null
+  /** Section_3 Description cells stay left; Section_1/2 stay centered */
+  descriptionAlign?: 'left' | 'center'
 }) {
   const headerText = (header ?? '').trim()
+  const tableClassName = [
+    'door-core-product-table',
+    'door-core-subform-table',
+    descriptionAlign === 'left' ? 'door-core-subform-table--desc-left' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
 
   return (
-    <table className="door-core-product-table door-core-subform-table">
+    <table className={tableClassName}>
+      <colgroup>
+        <col className="door-core-subform-col-slno" />
+        <col className="door-core-subform-col-desc" />
+        <col className="door-core-subform-col-qty" />
+        <col className="door-core-subform-col-unit" />
+        <col className="door-core-subform-col-total" />
+      </colgroup>
       <thead>
         {headerText && (
           <tr className="door-core-subform-section-header-row">
@@ -62,18 +79,12 @@ function DoorSetSubformSectionTable({
           <th>Description</th>
           <th>Qty</th>
           <th>
-            Unit
-            <br />
-            Price
-            <br />
-            (<DirhamSymbol />)
+            Unit Price
+            <br />(<DirhamSymbol />)
           </th>
           <th>
-            Total
-            <br />
-            Price
-            <br />
-            (<DirhamSymbol />)
+            Total Price
+            <br />(<DirhamSymbol />)
           </th>
         </tr>
       </thead>
@@ -82,7 +93,7 @@ function DoorSetSubformSectionTable({
           <tr key={idx}>
             <td>{row.S_No1 ?? ''}</td>
             <td className="door-core-subform-description">{formatMultiLineDescription(row.Description)}</td>
-            <td className="door-core-text-right">{row.Qty1 ?? ''}</td>
+            <td className="door-core-text-center">{row.Qty1 ?? ''}</td>
             <td className="door-core-text-right">
               {row.Unit_Price1 != null ? formatAED(row.Unit_Price1) : ''}
             </td>
@@ -858,7 +869,7 @@ export default function QuotationLogDoorSet2Content({
                         <td colSpan={12} className="door-core-text-right">
                           <strong>Total Quantity:</strong>
                         </td>
-                        <td className="door-core-text-right">
+                        <td className="door-core-text-center">
                           {Math.round(Number(data.Total_Quantity))}
                         </td>
                         <td />
@@ -903,6 +914,7 @@ export default function QuotationLogDoorSet2Content({
                     header={data.Subform_Header2}
                     rows={section3}
                     subTotal={data.Sub_Total3}
+                    descriptionAlign="left"
                   />
                 )}
 
