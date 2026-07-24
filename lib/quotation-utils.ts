@@ -307,9 +307,14 @@ export function formatMultiLineDescription(raw: string | undefined | null): stri
 /** Detect main (1.) vs roman sub (i.) numbering at the start of an HTML fragment */
 function parseNotesBlockMarker(inner: string): { type: 'main' | 'sub' | 'plain'; body: string } {
   const trimmed = inner.trim()
-  const mainMatch = trimmed.match(/^(\d+)\.\s+/i)
+  /* Allow optional bold/italic wrappers around "1." / "i." (common in Zoho rich text) */
+  const mainMatch = trimmed.match(
+    /^(?:<(?:strong|b|em|i|span|u)[^>]*>\s*)*(\d+)\.\s*(?:<\/(?:strong|b|em|i|span|u)>\s*)*/i
+  )
   if (mainMatch) return { type: 'main', body: trimmed.slice(mainMatch[0].length) }
-  const romanMatch = trimmed.match(/^([ivxlcdm]+)\.\s+/i)
+  const romanMatch = trimmed.match(
+    /^(?:<(?:strong|b|em|i|span|u)[^>]*>\s*)*([ivxlcdm]+)\.\s*(?:<\/(?:strong|b|em|i|span|u)>\s*)*/i
+  )
   if (romanMatch) return { type: 'sub', body: trimmed.slice(romanMatch[0].length) }
   return { type: 'plain', body: trimmed }
 }
@@ -466,11 +471,13 @@ function processNotesListItem(itemHtml: string, textClass: string): string {
   const nestedRaw = nestedMatch?.[0]?.trim() ?? ''
   const textPart = nestedRaw ? content.slice(0, content.length - nestedRaw.length) : content
   let flat = flattenInlineHtml(textPart)
-  /* Number column comes from CSS counters — strip any Zoho/manual "4." / "i." prefix from text */
+  /* Number comes from list-style — strip Zoho/manual "4." / "i." (incl. bold) and leftover spaces/nbsp */
   flat = flat.replace(
-    /^(\s*(?:<(?:strong|b|em|i|span|u)[^>]*>\s*)*)(\d+\.\s+|[ivxlcdm]+\.\s+)/i,
-    '$1'
+    /^(?:\s|&nbsp;|\u00a0)*(?:<(?:strong|b|em|i|span|u)[^>]*>\s*)*(?:\d+\.|[ivxlcdm]+\.)(?:\s*<\/(?:strong|b|em|i|span|u)>)*(?:\s|&nbsp;|\u00a0)*/i,
+    ''
   )
+  flat = flat.replace(/^(?:\d+\.|[ivxlcdm]+\.)(?:\s|&nbsp;|\u00a0)*/i, '')
+  flat = flat.replace(/^(?:&nbsp;|\u00a0|\s)+/g, '').trim()
   const nested = nestedRaw ? processNotesOrderedList(nestedRaw, true) : ''
 
   if (!flat && !nested) return `<li${attrs}></li>`
@@ -482,21 +489,81 @@ function processNotesOrderedList(listHtml: string, isSub = false): string {
   if (!olMatch) return listHtml
 
   const [, attrs, inner] = olMatch
-  const listClass = isSub ? 'door-core-notes-sublist' : 'door-core-notes-count-list'
-  const textClass = isSub ? 'door-set-1-note-subtext' : 'door-set-1-note-text'
+  const treatAsSub =
+    isSub ||
+    /\btype\s*=\s*["']?i["']?/i.test(attrs) ||
+    /list-style-type\s*:\s*lower-roman/i.test(attrs)
+  const listClass = treatAsSub ? 'door-core-notes-sublist' : 'door-core-notes-count-list'
+  const textClass = treatAsSub ? 'door-set-1-note-subtext' : 'door-set-1-note-text'
   const items = parseTopLevelListItems(inner)
   const body = items.map((item) => processNotesListItem(item, textClass)).join('')
 
   let classAttr = attrs
   if (/class\s*=/i.test(attrs)) {
-    if (!/door-core-notes-(count-list|sublist)/i.test(attrs)) {
-      classAttr = attrs.replace(/class\s*=\s*(["'])([^"']*)\1/i, (_, q, cls) => `class=${q}${cls} ${listClass}${q}`)
-    }
+    classAttr = attrs.replace(/class\s*=\s*(["'])([^"']*)\1/i, (_, q, cls) => {
+      const cleaned = String(cls)
+        .replace(/\bdoor-core-notes-(count-list|sublist)\b/gi, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+      return `class=${q}${cleaned ? `${cleaned} ` : ''}${listClass}${q}`
+    })
   } else {
     classAttr = `${attrs} class="${listClass}"`
   }
 
   return `<ol${classAttr}>${body}</ol>`
+}
+
+/** Replace only top-level <ol>…</ol> blocks so nested sublists stay intact */
+function mapTopLevelOrderedLists(html: string, mapFn: (olHtml: string) => string): string {
+  let result = ''
+  let pos = 0
+
+  while (pos < html.length) {
+    const start = html.indexOf('<ol', pos)
+    if (start === -1) {
+      result += html.slice(pos)
+      break
+    }
+    if (!/^<ol[\s>]/i.test(html.slice(start))) {
+      result += html.slice(pos, start + 3)
+      pos = start + 3
+      continue
+    }
+
+    result += html.slice(pos, start)
+    let depth = 0
+    let j = start
+    let end = -1
+    while (j < html.length) {
+      if (/^<ol[\s>]/i.test(html.slice(j))) {
+        depth++
+        const gt = html.indexOf('>', j)
+        j = gt === -1 ? html.length : gt + 1
+        continue
+      }
+      if (/^<\/ol>/i.test(html.slice(j))) {
+        depth--
+        j += 5
+        if (depth === 0) {
+          end = j
+          break
+        }
+        continue
+      }
+      j++
+    }
+
+    if (end === -1) {
+      result += html.slice(start)
+      break
+    }
+
+    result += mapFn(html.slice(start, end))
+    pos = end
+  }
+
+  return result
 }
 
 /**
@@ -508,8 +575,15 @@ export function normalizeDoorSetNotesHtml(html: string): string {
 
   let s = stripZohoRichTextFontSize(html)
   s = s.replace(/<p>\s*<\/p>/gi, '').replace(/<div>\s*<\/div>/gi, '')
+  /* Zoho editor indent styles create huge gaps in the report — strip them */
+  s = s.replace(/margin-left\s*:\s*[^;"']+;?/gi, '')
+  s = s.replace(/padding-left\s*:\s*[^;"']+;?/gi, '')
+  s = s.replace(/text-indent\s*:\s*[^;"']+;?/gi, '')
+  s = s.replace(/\s*mso-[a-z-]+\s*:\s*[^;"']+;?/gi, '')
+  s = s.replace(/&nbsp;/gi, ' ')
+  s = s.replace(/\u00a0/g, ' ')
 
-  /* Zoho often puts "1." inside <li> while also using <ol> — drop duplicate prefix */
+  /* Zoho often puts "1." / "i." inside <li> while also using <ol> — drop duplicate prefix */
   s = s.replace(/<li([^>]*)>([\s\S]*?)<\/li>/gi, (_, attrs, inner) => {
     const cleaned = inner.replace(
       /^(\s*(?:<(?:strong|b|em|i|span|u)[^>]*>\s*)*)(\d+\.\s+|[ivxlcdm]+\.\s+)/i,
@@ -519,11 +593,11 @@ export function normalizeDoorSetNotesHtml(html: string): string {
   })
 
   if (/<ol[\s>]/i.test(s)) {
-    s = s.replace(/<ol[^>]*>[\s\S]*?<\/ol>/gi, (listBlock) => processNotesOrderedList(listBlock, false))
+    s = mapTopLevelOrderedLists(s, (listBlock) => processNotesOrderedList(listBlock, false))
   } else {
     const converted = convertPlainNumberedNotesToList(s)
     if (converted !== s) {
-      s = converted.replace(/<ol[^>]*>[\s\S]*?<\/ol>/gi, (listBlock) => processNotesOrderedList(listBlock, false))
+      s = mapTopLevelOrderedLists(converted, (listBlock) => processNotesOrderedList(listBlock, false))
     }
   }
 

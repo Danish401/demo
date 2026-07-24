@@ -77,7 +77,10 @@ function DoorSetSubformSectionTable({
         <tr>
           <th>SL.{'\u00A0'}NO.</th>
           <th>Description</th>
-          <th>Qty</th>
+          <th>
+            Qty
+            <br />(Nos)
+          </th>
           <th>
             Unit Price
             <br />(<DirhamSymbol />)
@@ -681,14 +684,22 @@ export default function QuotationLogDoorSet2Content({
                 {hasValue(data.Payment_Terms1) && (
                   <>
                     <strong>1. Payment Terms</strong>
-                    <p className="door-core-terms-p">{data.Payment_Terms1}</p>
+                    <p
+                      className={`door-core-terms-p${isDoorSet1 ? ' door-set-1-terms-value' : ''}`}
+                    >
+                      {data.Payment_Terms1}
+                    </p>
                   </>
                 )}
 
                 {hasValue(data.Validity) && (
                   <>
                     <strong>2. Validity</strong>
-                    <p className="door-core-terms-p">{data.Validity}</p>
+                    <p
+                      className={`door-core-terms-p${isDoorSet1 ? ' door-set-1-terms-value' : ''}`}
+                    >
+                      {data.Validity}
+                    </p>
                   </>
                 )}
 

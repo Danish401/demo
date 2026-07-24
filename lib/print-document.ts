@@ -17,7 +17,7 @@ const A4_PAGE_CONTENT_HEIGHT_PX = (297 - 10 - 16) * PX_PER_MM
  * Absolute page-number stamps (one slab per estimated sheet). Works when print Margins = None,
  * because @page margin boxes are suppressed in that mode and cannot draw "Page X of Y".
  */
-function appendPrintPageStamps(clone: HTMLElement, totalPages: number): void {
+function appendPrintPageStamps(clone: HTMLElement, totalPages: number, fontSize: string = '8.5px'): void {
   if (totalPages < 1) return
 
   const prevPosition = clone.style.position
@@ -44,7 +44,7 @@ function appendPrintPageStamps(clone: HTMLElement, totalPages: number): void {
       'align-items:flex-end',
       'padding-bottom:0.45cm',
       'font-family:Cambria, serif',
-      'font-size:8.5px',
+      `font-size:${fontSize}`,
       'font-weight:700',
       'color:#333',
       'white-space:nowrap',
@@ -141,6 +141,35 @@ function fillDoorCoreLastPageSpacer(root: HTMLElement): () => void {
   return fillLastPageSpacer(root, '.door-core-print-end-spacer')
 }
 
+/**
+ * Recalculate last-page spacers after a live font-size change so pagination
+ * stays consistent between preview and print.
+ */
+export function refreshPrintLayoutAfterFontChange(): void {
+  if (typeof document === 'undefined') return
+
+  const main = document.querySelector<HTMLElement>('main.quotation-doc') ?? document.body
+  main
+    .querySelectorAll<HTMLElement>('.door-set-1-print-end-spacer, .door-core-print-end-spacer')
+    .forEach((el) => {
+      el.style.cssText = ''
+    })
+
+  requestAnimationFrame(() => {
+    const doorSet1 = main.querySelector<HTMLElement>('.door-set-1-quotation')
+    const doorSet2 =
+      !doorSet1 ? main.querySelector<HTMLElement>('.door-set-2-quotation') : null
+    const doorCore =
+      !doorSet1 && !doorSet2
+        ? main.querySelector<HTMLElement>('.door-core-standalone')
+        : null
+
+    if (doorSet1) fillDoorSetLastPageSpacer(doorSet1)
+    else if (doorSet2) fillDoorSetLastPageSpacer(doorSet2)
+    if (doorCore) fillDoorCoreLastPageSpacer(doorCore)
+  })
+}
+
 function estimateFitoutPageCount(root: HTMLElement): number | null {
   return estimatePagesFromLayout(root, {
     header: '.quotation-fitout-header-cell',
@@ -185,6 +214,19 @@ export function printQuotationDocument(fileName?: string): void {
     document.querySelector<HTMLElement>('.door-core-quotation-container') ??
     document.querySelector<HTMLElement>('.export-quotation-container') ??
     document.body
+
+  const printFontSize =
+    sourceRoot.style.getPropertyValue('--print-font-size')?.trim() ||
+    document.documentElement.style.getPropertyValue('--print-font-size')?.trim() ||
+    '8.5px'
+  const printFontScale =
+    sourceRoot.style.getPropertyValue('--print-font-scale')?.trim() ||
+    document.documentElement.style.getPropertyValue('--print-font-scale')?.trim() ||
+    String(Number.parseFloat(printFontSize) / 8.5)
+  // Ensure the cloned root carries the variables into the print iframe
+  sourceRoot.style.setProperty('--print-font-size', printFontSize)
+  sourceRoot.style.setProperty('--print-font-scale', printFontScale)
+  sourceRoot.setAttribute('data-print-font', printFontSize)
 
   // Containers may be nested under main.quotation-doc — check both root and descendants
   const doorSet1Root =
@@ -306,7 +348,7 @@ export function printQuotationDocument(fileName?: string): void {
     doorCorePages ??
     fitoutPages
   if (stampPages != null) {
-    appendPrintPageStamps(clone, stampPages)
+    appendPrintPageStamps(clone, stampPages, printFontSize)
   }
   resetSpacers()
 
@@ -359,8 +401,68 @@ export function printQuotationDocument(fileName?: string): void {
       print-color-adjust: exact;
       -webkit-print-color-adjust: exact;
       overflow: visible !important;
+      --print-font-size: ${printFontSize};
+      --print-font-scale: ${printFontScale};
     }
     * { overflow: visible !important; max-width: 100%; }
+    /* Match on-screen Font Size selector — layout-preserving print override */
+    html body main.quotation-doc[data-print-font][style],
+    html body main.quotation-doc[data-print-font][style] *:not(svg):not(svg *):not(img):not(picture),
+    html body [data-print-font][style],
+    html body [data-print-font][style] *:not(svg):not(svg *):not(img):not(picture) {
+      font-size: ${printFontSize} !important;
+      line-height: 1.35 !important;
+    }
+    html body main.quotation-doc[data-print-font][style] th,
+    html body main.quotation-doc[data-print-font][style] td,
+    html body [data-print-font][style] th,
+    html body [data-print-font][style] td {
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      vertical-align: middle !important;
+      padding-top: 0.3em !important;
+      padding-bottom: 0.3em !important;
+      box-sizing: border-box !important;
+    }
+    html body main.quotation-doc[data-print-font][style] table,
+    html body [data-print-font][style] table {
+      table-layout: fixed !important;
+      width: 100% !important;
+    }
+    html body main.quotation-doc[data-print-font][style] img,
+    html body [data-print-font][style] img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+    html body main.quotation-doc[data-print-font][style] .door-core-header-logo-img,
+    html body main.quotation-doc[data-print-font][style] .door-core-footer-certs,
+    html body main.quotation-doc[data-print-font][style] .quotation-fitout-footer-certs,
+    html body main.quotation-doc[data-print-font][style] .door-core-static-pattern {
+      height: auto !important;
+      max-height: none;
+    }
+    html body main.quotation-doc[data-print-font][style] .no-print,
+    html body main.quotation-doc[data-print-font][style] .no-print * {
+      font-size: revert !important;
+      line-height: revert !important;
+    }
+    /* "Quotation" title always 12px */
+    html body main.quotation-doc[data-print-font][style] .door-core-cover-title,
+    html body main.quotation-doc[data-print-font][style] .door-core-cover-title *,
+    html body main.quotation-doc[data-print-font][style] .quotation-fitout-title,
+    html body main.quotation-doc[data-print-font][style] .quotation-fitout-title *,
+    html body main.quotation-doc[data-print-font][style] .quotation-title,
+    html body main.quotation-doc[data-print-font][style] .quotation-title *,
+    html body [data-print-font][style] .door-core-cover-title,
+    html body [data-print-font][style] .door-core-cover-title *,
+    html body [data-print-font][style] .quotation-fitout-title,
+    html body [data-print-font][style] .quotation-fitout-title * {
+      font-size: 12px !important;
+      line-height: 1.3 !important;
+    }
     ${namedPageCss}
   </style>
 </head>
@@ -388,9 +490,25 @@ export function printQuotationDocument(fileName?: string): void {
       cleanup()
       return
     }
+
+    let parentNotified = false
+    const notifyParentAfterPrint = () => {
+      if (parentNotified) return
+      parentNotified = true
+      try {
+        window.dispatchEvent(new Event('afterprint'))
+      } catch {
+        /* ignore */
+      }
+      cleanup()
+    }
+
+    // Iframe print does not bubble afterprint to the parent — used to reset Font Size selector
+    win.addEventListener('afterprint', notifyParentAfterPrint)
     win.focus()
     win.print()
-    cleanup()
+    // Fallback if the browser never fires afterprint on the iframe
+    window.setTimeout(notifyParentAfterPrint, 120000)
   }
 
   iframe.onload = doPrint

@@ -464,7 +464,7 @@ export default function ExportQuotationContent({ data, shippingData, billingData
       </div>
 
       <div className="no-print" style={{ marginTop: '24px', textAlign: 'center' }}>
-        <PrintButton />
+        <PrintButton showFontSize={false} />
       </div>
     </>
   )

@@ -291,7 +291,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
   const hasDiscount =
     data.Provision_for_Less_Special_Discount_AED != null &&
     Number(data.Provision_for_Less_Special_Discount_AED) !== 0
-  const hasVat = data.VAT_5 != null && Number(data.VAT_5) !== 0
+  const hasVat = data.VAT_5 != null && parseAED(data.VAT_5) !== 0
   const hasTotalAmount = hasValue(data.Total_Amount_AED1)
   const hasGrandTotal = hasValue(data.Grand_Total_AED1)
   const hasAmountAfterDiscount = hasValue(data.Total_amount_after_discount_AED)
@@ -456,6 +456,18 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                             </td>
                           </tr>
                         ))}
+                        {hasVat && (
+                          <tr className="quotation-fitout-manual-items-vat">
+                            <td colSpan={2}>
+                              <strong>
+                                VAT 5% (<DirhamSymbol />)
+                              </strong>
+                            </td>
+                            <td className="quotation-fitout-text-right">
+                              <strong>{formatAED(data.VAT_5)}</strong>
+                            </td>
+                          </tr>
+                        )}
                         <tr className="quotation-fitout-manual-items-total">
                           <td colSpan={2}>
                             <strong>
@@ -463,7 +475,15 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                             </strong>
                           </td>
                           <td className="quotation-fitout-text-right">
-                            <strong>{formatAED(manuallyFilledTotal)}</strong>
+                            <strong>
+                              {formatAED(
+                                hasGrandTotal
+                                  ? data.Grand_Total_AED1
+                                  : hasTotalAmount
+                                    ? data.Total_Amount_AED1
+                                    : manuallyFilledTotal
+                              )}
+                            </strong>
                           </td>
                         </tr>
                       </tbody>
@@ -504,7 +524,7 @@ export default function QuotationFitoutContent({ data, viewMode = 'simple' }: Qu
                     <p className="quotation-fitout-signature-greeting">Thanks and Regards</p>
                     {hasValue(footerData.trade_name) && (
                       <p className="quotation-fitout-signature-team">
-                        <strong>For {footerData.trade_name}</strong>
+                        <strong>For Ideal Fitout Decspapers Design &amp; Fit-Out Co. L.L.C</strong>
                       </p>
                     )}
                     {hasSalesPerson && (

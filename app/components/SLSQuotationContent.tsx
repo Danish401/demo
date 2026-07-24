@@ -245,7 +245,7 @@ export default function SLSQuotationContent({ data, shippingData, billingData, r
       </div>
 
       <div className="no-print" style={{ marginTop: '24px', textAlign: 'center' }}>
-        <PrintButton />
+        <PrintButton showFontSize={false} />
       </div>
     </>
   )

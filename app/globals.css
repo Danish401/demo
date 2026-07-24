@@ -1018,14 +1018,12 @@ body {
     flex: 0 0 auto !important;
   }
 
-  /* Fitout: when item pricing exists, let content flow naturally across pages.
-     Dynamic datasets can push the cover close to a page boundary; forcing a hard break here
-     can create a blank middle page in Chrome print preview. */
+  /* Fitout: cover letter + signature end here; item pricing always starts on the next page */
   .quotation-fitout-last-page-wrap.quotation-fitout-cover-close {
     flex: 0 0 auto !important;
     min-height: 0 !important;
-    page-break-after: auto !important;
-    break-after: auto !important;
+    page-break-after: always !important;
+    break-after: page !important;
   }
 
   .quotation-fitout-pricing-section {
@@ -1033,8 +1031,8 @@ body {
     display: flex !important;
     flex-direction: column !important;
     min-height: 0 !important;
-    page-break-before: auto !important;
-    break-before: auto !important;
+    page-break-before: always !important;
+    break-before: page !important;
   }
 
   /* Fitout: pin footer to the bottom of every printed page (including short last pages).
@@ -1206,7 +1204,7 @@ body {
     font-size: 8.5px !important;
   }
 
-  /* Notes1 print: same grid hanging indent as screen + 8.5px */
+  /* Notes1 print: native outside markers (tight gap like Zoho) + 8.5px */
   .door-set-1-quotation .door-set-1-notes-html,
   .door-set-1-quotation .door-set-1-notes-html * {
     font-size: 8.5px !important;
@@ -1214,16 +1212,28 @@ body {
 
   .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li,
   .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
-    display: grid !important;
-    grid-template-columns: 2.1em minmax(0, 1fr) !important;
-    column-gap: 0.35em !important;
-    padding: 0 !important;
+    display: list-item !important;
+    list-style-position: outside !important;
+    padding: 0 0 0 0.15em !important;
+    margin-left: 0 !important;
     page-break-inside: auto !important;
     break-inside: auto !important;
   }
 
-  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
-    grid-template-columns: 1.75em minmax(0, 1fr) !important;
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list {
+    list-style-type: decimal !important;
+    padding-left: 1.4em !important;
+  }
+
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist {
+    list-style-type: lower-roman !important;
+    padding-left: 1.35em !important;
+  }
+
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li::before,
+  .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li::before {
+    content: none !important;
+    display: none !important;
   }
 
   .door-set-2-quotation .door-core-subform-table,
@@ -1342,6 +1352,12 @@ body {
     white-space: normal !important;
     overflow-wrap: anywhere !important;
     word-break: break-word !important;
+  }
+
+  /* Fitout subforms: Description data left-aligned when printing */
+  .quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(2),
+  .quotation-fitout-manual-items-table td:nth-child(2) {
+    text-align: left !important;
   }
 
   .door-set-2-quotation .door-core-subform-table td.door-core-subform-description,
@@ -1815,9 +1831,8 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
 
 /*
  * Notes1 hanging indent (Quotation_Door_Set1_Report):
- * CSS grid — fixed number column + text column.
- * Wrapped lines always start under the first character of the sentence (never under the number).
- * No manual spaces; works for any text length (points 1–11 and roman sub-points).
+ * Native list-style-position:outside — same look as Zoho (tight gap after "1." / "i.",
+ * wrapped lines align under the first letter of the sentence, not under the marker).
  */
 .door-set-1-quotation .door-set-1-notes-html.door-core-notes-p {
   margin-left: 1%;
@@ -1832,39 +1847,30 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list {
-  list-style: none !important;
-  counter-reset: door-set1-note-main;
+  list-style-type: decimal !important;
+  list-style-position: outside !important;
   margin: 0.15em 0 0.35em 0 !important;
-  padding: 0 !important;
+  padding: 0 0 0 1.4em !important;
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li {
-  list-style: none !important;
-  counter-increment: door-set1-note-main;
-  display: grid !important;
-  grid-template-columns: 2.1em minmax(0, 1fr);
-  column-gap: 0.35em;
-  align-items: start;
+  list-style-type: decimal !important;
+  list-style-position: outside !important;
+  display: list-item !important;
   margin: 0 0 0.35em 0 !important;
   padding: 0 !important;
   text-indent: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0.15em !important;
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li::before {
-  content: counter(door-set1-note-main) ".";
-  grid-column: 1;
-  grid-row: 1;
-  justify-self: start;
-  white-space: nowrap;
-  text-align: left;
-  font-weight: inherit;
+  content: none !important;
+  display: none !important;
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li > .door-set-1-note-text {
-  grid-column: 2;
-  grid-row: 1;
-  display: block !important;
-  min-width: 0;
+  display: inline !important;
   margin: 0 !important;
   padding: 0 !important;
   text-indent: 0 !important;
@@ -1876,45 +1882,37 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li > ol,
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-count-list > li > ul {
-  grid-column: 2;
-  grid-row: 2;
-  width: 100%;
+  display: block !important;
+  width: auto;
   min-width: 0;
+  margin-top: 0.2em !important;
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist {
-  list-style: none !important;
-  counter-reset: door-set1-note-sub;
-  margin: 0.15em 0 0.25em 0 !important;
-  padding: 0 !important;
+  list-style-type: lower-roman !important;
+  list-style-position: outside !important;
+  margin: 0.2em 0 0.3em 0.15em !important;
+  padding: 0 0 0 1.35em !important;
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li {
-  list-style: none !important;
-  counter-increment: door-set1-note-sub;
-  display: grid !important;
-  grid-template-columns: 1.75em minmax(0, 1fr);
-  column-gap: 0.3em;
-  align-items: start;
-  margin: 0 0 0.25em 0 !important;
+  list-style-type: lower-roman !important;
+  list-style-position: outside !important;
+  display: list-item !important;
+  margin: 0 0 0.28em 0 !important;
   padding: 0 !important;
   text-indent: 0 !important;
+  margin-left: 0 !important;
+  padding-left: 0.15em !important;
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li::before {
-  content: counter(door-set1-note-sub, lower-roman) ".";
-  grid-column: 1;
-  grid-row: 1;
-  justify-self: start;
-  white-space: nowrap;
-  text-align: left;
+  content: none !important;
+  display: none !important;
 }
 
 .door-set-1-quotation .door-set-1-notes-html ol.door-core-notes-sublist > li > .door-set-1-note-subtext {
-  grid-column: 2;
-  grid-row: 1;
-  display: block !important;
-  min-width: 0;
+  display: inline !important;
   margin: 0 !important;
   padding: 0 !important;
   text-indent: 0 !important;
@@ -1968,6 +1966,14 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   font-size: 12px !important;
   margin-top: -1%;
   margin-bottom: 14px;
+}
+
+/* Payment Terms / Validity values indented under the bold heading (matches Zoho template) */
+.door-set-1-quotation .door-set-1-terms-value {
+  margin-left: 1.5em;
+  margin-top: 0.15em;
+  margin-bottom: 0.65em;
+  padding-left: 0;
 }
 
 .door-set-1-quotation .door-core-subform-table .door-core-subform-section-title {
@@ -2929,36 +2935,51 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   font-weight: bold !important;
 }
 
-/* Print button – palette: #1A535C, #4ECDC4, #F7FFF7, #FF6B6B, #FFE66D + #CDB4DB, #FFC8DD, #A2D2FF */
+/* Print controls – soft teal chrome (matches Ideal print UI) */
 .print-button {
-  padding: 10px 24px;
+  padding: 11px 28px;
+  min-width: 7.5rem;
   font-size: 14px;
   font-weight: 600;
-  color: #F7FFF7;
-  background: linear-gradient(180deg, #1A535C 0%, #2a6b73 50%, #4ECDC4 100%);
-  border: none;
-  border-radius: 10px;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  background: #1a535c;
+  border: 1px solid #16484f;
+  border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 2px 10px rgba(26, 83, 92, 0.35), 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 4px 14px rgba(26, 83, 92, 0.28);
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease, border-color 0.18s ease;
 }
 
 .print-button:hover {
-  background: linear-gradient(180deg, #2a6b73 0%, #4ECDC4 50%, #5ee0d6 100%);
-  box-shadow: 0 4px 16px rgba(78, 205, 196, 0.45), 0 0 0 2px rgba(255, 230, 109, 0.35), 0 0 20px rgba(162, 210, 255, 0.25);
+  background: #246b76;
+  border-color: #1a535c;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.16) inset,
+    0 6px 18px rgba(26, 83, 92, 0.34);
   transform: translateY(-1px);
 }
 
 .print-button:active {
+  background: #16484f;
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(26, 83, 92, 0.3);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 2px 8px rgba(26, 83, 92, 0.28);
+}
+
+.print-button:focus-visible {
+  outline: 2px solid #4ecdc4;
+  outline-offset: 3px;
 }
 
 .print-button-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .print-hint {
@@ -2966,7 +2987,7 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   max-width: 360px;
   font-size: 12px;
   line-height: 1.45;
-  color: #4b5563;
+  color: #5b6570;
   text-align: center;
 }
 
@@ -3227,8 +3248,8 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  page-break-before: auto;
-  break-before: auto;
+  page-break-before: always;
+  break-before: page;
 }
 
 /* Signature / closing: flow onto previous page when space allows */
@@ -3265,7 +3286,7 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   text-align: center;
   margin-top: -1%;
   margin-bottom: 10px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.3;
 }
@@ -3404,9 +3425,8 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   min-width: 6.5em;
 }
 
-/* Description: wrap long API text (words first, mid-word only if needed) */
-.quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(2),
-.quotation-fitout-product-table th:nth-child(2) {
+/* Description header stays centered; Description data is left-aligned in every Fitout subform */
+.quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) th:nth-child(2) {
   text-align: center;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -3414,10 +3434,25 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   min-width: 0;
 }
 
-/* Manually_Filled table: Item + Description wrap; Amount column right-aligned */
-.quotation-fitout-manual-items-table td:nth-child(1),
-.quotation-fitout-manual-items-table td:nth-child(2) {
+.quotation-fitout-product-table:not(.quotation-fitout-manual-items-table):not(.quotation-fitout-totals-table) td:nth-child(2) {
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+/* Manually_Filled table: Item centered; Description left; Amount right */
+.quotation-fitout-manual-items-table td:nth-child(1) {
   text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+
+.quotation-fitout-manual-items-table td:nth-child(2) {
+  text-align: left;
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -3436,7 +3471,13 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   font-weight: bold;
 }
 
-.quotation-fitout-manual-items-total td:first-child {
+.quotation-fitout-manual-items-vat td {
+  background-color: #f9f9f9;
+  font-weight: bold;
+}
+
+.quotation-fitout-manual-items-total td:first-child,
+.quotation-fitout-manual-items-vat td:first-child {
   text-align: left;
 }
 
@@ -3811,4 +3852,258 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
 .quotation-doc .quotation-fitout-body-cell,
 .quotation-doc .quotation-fitout-footer-cell {
   border: none !important;
+}
+
+/* ══ Print preview Font Size selector (--print-font-size) ══ */
+:root {
+  --print-font-size: 8.5px;
+  --print-font-scale: 1;
+}
+
+.print-font-size-selector {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 4px;
+  padding: 0;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #ffffff;
+  border: 1px solid #d7e8e6;
+  border-radius: 10px;
+  box-shadow:
+    0 1px 2px rgba(26, 83, 92, 0.06),
+    0 4px 12px rgba(26, 83, 92, 0.05);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.print-font-size-selector:hover {
+  border-color: #b8d9d5;
+  box-shadow:
+    0 1px 2px rgba(26, 83, 92, 0.08),
+    0 6px 16px rgba(26, 83, 92, 0.08);
+}
+
+.print-font-size-selector:focus-within {
+  border-color: #4ecdc4;
+  box-shadow:
+    0 0 0 3px rgba(78, 205, 196, 0.22),
+    0 4px 12px rgba(26, 83, 92, 0.06);
+}
+
+.print-font-size-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  font-size: 12px !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #5f7a7e;
+  background: linear-gradient(180deg, #f7fbfb 0%, #eef6f5 100%);
+  border-right: 1px solid #e0eeec;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.print-font-size-field {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 9.75rem;
+  background: #ffffff;
+}
+
+.print-font-size-field::after {
+  content: '';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  transform: translateY(-50%);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1.5 1.75L6 6.25L10.5 1.75' stroke='%231A535C' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 7px;
+  opacity: 0.75;
+}
+
+.print-font-size-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+  font-size: 13px !important;
+  font-weight: 600;
+  color: #1a535c;
+  background: transparent;
+  padding: 10px 34px 10px 14px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.print-font-size-select:hover,
+.print-font-size-select:focus {
+  outline: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.print-font-size-select option {
+  font-weight: 500;
+  color: #1a535c;
+}
+
+/*
+ * Live preview + print: selected size via --print-font-size.
+ * --print-font-scale (size / 8.5) keeps vertical rhythm proportional so tables,
+ * labels, and footers stay aligned when switching 8.5→12px.
+ * Specificity beats report rules like .door-set-1-quotation.door-set-2-quotation .… (0,3,0).
+ */
+html body main.quotation-doc[data-print-font][style] {
+  font-size: var(--print-font-size, 8.5px) !important;
+  line-height: 1.35 !important;
+}
+
+html body main.quotation-doc[data-print-font][style] *:not(svg):not(svg *):not(img):not(picture) {
+  font-size: var(--print-font-size, 8.5px) !important;
+  line-height: 1.35 !important;
+}
+
+/* Tables: grow with type; keep fixed columns for alignment */
+html body main.quotation-doc[data-print-font][style] table {
+  table-layout: fixed !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+html body main.quotation-doc[data-print-font][style] th,
+html body main.quotation-doc[data-print-font][style] td {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  vertical-align: middle !important;
+  /* em padding scales with the cell font — denser at 8.5, roomier at 12 */
+  padding-top: 0.3em !important;
+  padding-bottom: 0.3em !important;
+  box-sizing: border-box !important;
+  line-height: 1.35 !important;
+}
+
+html body main.quotation-doc[data-print-font][style] tr {
+  height: auto !important;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Cover / details rows: keep label+value on one baseline */
+html body main.quotation-doc[data-print-font][style] .door-core-details-row,
+html body main.quotation-doc[data-print-font][style] .door-core-seal-row {
+  align-items: baseline !important;
+  overflow: visible !important;
+}
+
+html body main.quotation-doc[data-print-font][style] p,
+html body main.quotation-doc[data-print-font][style] li,
+html body main.quotation-doc[data-print-font][style] span,
+html body main.quotation-doc[data-print-font][style] div {
+  overflow: visible !important;
+  max-height: none;
+}
+
+/* Logos / certs / watermark: do not stretch with type size */
+html body main.quotation-doc[data-print-font][style] img {
+  font-size: inherit !important;
+  line-height: normal !important;
+}
+
+html body main.quotation-doc[data-print-font][style] .door-core-header-logo-img {
+  height: 80px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+
+html body main.quotation-doc[data-print-font][style] .door-core-footer-certs,
+html body main.quotation-doc[data-print-font][style] .quotation-fitout-footer-certs {
+  height: auto !important;
+  max-height: 48px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+html body main.quotation-doc[data-print-font][style] .door-core-static-pattern,
+html body main.quotation-doc[data-print-font][style] .door-core-static-pattern--halftone {
+  line-height: 0 !important;
+  font-size: 0 !important;
+}
+
+/* Toolbar keeps UI chrome sizes */
+html body main.quotation-doc[data-print-font][style] .no-print,
+html body main.quotation-doc[data-print-font][style] .no-print * {
+  font-size: revert !important;
+  line-height: revert !important;
+  padding-top: revert !important;
+  padding-bottom: revert !important;
+}
+
+html body main.quotation-doc[data-print-font][style] .print-button {
+  font-size: 14px !important;
+  line-height: normal !important;
+}
+
+html body main.quotation-doc[data-print-font][style] .print-hint,
+html body main.quotation-doc[data-print-font][style] .print-font-size-label,
+html body main.quotation-doc[data-print-font][style] .print-font-size-select {
+  font-size: 13px !important;
+  line-height: normal !important;
+}
+
+/* "Quotation" document title stays standard 12px (not scaled by Font Size selector) */
+html body main.quotation-doc[data-print-font][style] .door-core-cover-title,
+html body main.quotation-doc[data-print-font][style] .door-core-cover-title *,
+html body main.quotation-doc[data-print-font][style] .quotation-fitout-title,
+html body main.quotation-doc[data-print-font][style] .quotation-fitout-title *,
+html body main.quotation-doc[data-print-font][style] .quotation-title,
+html body main.quotation-doc[data-print-font][style] .quotation-title * {
+  font-size: 12px !important;
+  line-height: 1.3 !important;
+}
+
+@media print {
+  html body main.quotation-doc[data-print-font][style],
+  html body main.quotation-doc[data-print-font][style] *:not(svg):not(svg *):not(img):not(picture) {
+    font-size: var(--print-font-size, 8.5px) !important;
+    line-height: 1.35 !important;
+  }
+
+  html body main.quotation-doc[data-print-font][style] th,
+  html body main.quotation-doc[data-print-font][style] td {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-top: 0.3em !important;
+    padding-bottom: 0.3em !important;
+  }
+
+  html body main.quotation-doc[data-print-font][style] .door-core-cover-title,
+  html body main.quotation-doc[data-print-font][style] .door-core-cover-title *,
+  html body main.quotation-doc[data-print-font][style] .quotation-fitout-title,
+  html body main.quotation-doc[data-print-font][style] .quotation-fitout-title *,
+  html body main.quotation-doc[data-print-font][style] .quotation-title,
+  html body main.quotation-doc[data-print-font][style] .quotation-title * {
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+  }
 }
