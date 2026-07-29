@@ -55,6 +55,13 @@ function normalizeQuotationLogDoorSet2Record(raw: Record<string, unknown>): Quot
     Trader_Name1: traderName1,
     Width_Height: pick(['Width_Height', 'Width_height', 'width_Height', 'width_height']) as string | undefined,
     Notes1: pick(['Notes1', 'Notes', 'notes1']) as string | undefined,
+    Division: pick(['Division', 'division']) as string | undefined,
+    Sub_Divisions: pick([
+      'Sub_Divisions',
+      'Sub_Division',
+      'sub_divisions',
+      'Sub Divisions',
+    ]) as string | undefined,
   } as QuotationLogDoorSet2Data
 }
 
@@ -117,6 +124,13 @@ function normalizeCoreCoverPageRecord(raw: Record<string, unknown>): CoreCoverPa
     Trader_Name: traderName,
     Trader_Name1: traderName1,
     Width_Height: pick(['Width_Height', 'Width_height', 'width_Height', 'width_height']) as string | undefined,
+    Division: pick(['Division', 'division']) as string | undefined,
+    Sub_Divisions: pick([
+      'Sub_Divisions',
+      'Sub_Division',
+      'sub_divisions',
+      'Sub Divisions',
+    ]) as string | undefined,
   } as CoreCoverPageData
 }
 

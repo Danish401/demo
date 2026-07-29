@@ -1331,9 +1331,10 @@ body {
   }
 
   /* Print: long cell text wraps in Door Core / Door Set / Fitout tables
-     Door Core order: 3 Product Ref, 9 Door Type, 10 Vision, 14 Remarks
+     Door Core order: 2 Door Ref, 3 Product Ref, 9 Door Type, 10 Vision, 14 Remarks
      Door Set 2 order: 7 Door Type, 8 Product Ref, 12 Hardware, 16 Remarks
      Door Set 1 order: 3 Product Ref, 10 Door Type, 12 Hardware, 16 Remarks */
+  .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(2),
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(3),
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),
@@ -2221,20 +2222,20 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
 
 /* 14 columns via <colgroup>. Width/Height bumped slightly so "Width (mm)" / numbers stay in-cell at 8.5px.
    Sum = 100%. */
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-slno { width: 4.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doorref { width: 5.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-width { width: 7%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-height { width: 7%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-leafthick { width: 5.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doortype { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-slno { width: 4%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doorref { width: 9%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-width { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-height { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-leafthick { width: 5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-doortype { width: 6%; }
 .door-core-product-table.door-core-boq-product-table col.door-core-boq-col-productref { width: 9%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-acoustic { width: 6.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-acoustic { width: 6%; }
 .door-core-product-table.door-core-boq-product-table col.door-core-boq-col-fire { width: 5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-vision { width: 12.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-vision { width: 11.5%; }
 .door-core-product-table.door-core-boq-product-table col.door-core-boq-col-qty { width: 4%; }
 .door-core-product-table.door-core-boq-product-table col.door-core-boq-col-unitprice { width: 8%; }
 .door-core-product-table.door-core-boq-product-table col.door-core-boq-col-totalprice { width: 8.5%; }
-.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-remarks { width: 10.5%; }
+.door-core-product-table.door-core-boq-product-table col.door-core-boq-col-remarks { width: 11%; }
 
 /* Body data rows (excl. totals): every column except Unit Price / Total Unit Price centered
    horizontally and vertically, matching Door Set 2's table */
@@ -2259,9 +2260,8 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   text-align: right;
 }
 
-/* Door Ref, Fire, Acoustic, Width, Height, Leaf Thick, Qty: prefer one line; clip if too long
+/* Fire, Acoustic, Width, Height, Leaf Thick, Qty: prefer one line; clip if too long
    (order: 1 SL, 2 Door Ref, 3 Product Ref, 4 Fire, 5 Acoustic, 6 Width, 7 Height, 8 Leaf, 9 Type, 10 Vision, 11 Qty, …) */
-.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(2),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(4),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(5),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(6),
@@ -2273,7 +2273,8 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   text-overflow: clip;
 }
 
-/* Product Ref, Door Type, Vision Panel, Remarks: wrap long API text inside the cell (no overflow) */
+/* Door Ref, Product Ref, Door Type, Vision Panel, Remarks: wrap long API text inside the cell (no overflow) */
+.door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(2),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(3),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
 .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(10),

@@ -64,12 +64,13 @@ interface FooterData {
 }
 
 function getFooterData(subDivisions?: string): FooterData {
-  const sub = (subDivisions || '').trim()
+  /* Same Sub_Divisions conditions as Quotation_Door_Set1_Report (case-insensitive) */
+  const sub = (subDivisions || '').trim().toUpperCase()
   switch (sub) {
     case 'ABU DHABI':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING - L.L.C - S.P.C',
-        phone: '+971 2 551 3828',
+        phone: '+971 25513828',
         location: '94956, Abu Dhabi',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -78,7 +79,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'DUBAI':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC',
-        phone: '+971 4 298 6983',
+        phone: '+971 42986983',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -87,7 +88,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'FUJAIRAH':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC FUJAIRAH BRANCH 1',
-        phone: '+971 4 298 6983',
+        phone: '+971 42986983',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -96,7 +97,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'RAS AL KHAIMAH':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC OPC - RAK Branch',
-        phone: '+971 4 298 6983',
+        phone: '+971 42986983',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -105,7 +106,7 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'SHARJAH':
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC - SHJ.BR 1',
-        phone: '+971 4 298 6983',
+        phone: '+971 42986983',
         location: '66976, Sharjah, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -113,8 +114,8 @@ function getFooterData(subDivisions?: string): FooterData {
       }
     case 'IDEAL FITOUTS':
       return {
-        trade_name: 'Ideal Fitout Decoration Design & Fit-Out Co. L.L.C',
-        phone: '+971 4 298 6983',
+        trade_name: 'Ideal Fitout Decspapers Design & Fit-Out Co. L.L.C',
+        phone: '+97142986983',
         location: 'Unit 1108, 51 Tower, Business Bay, Dubai, UAE PO.Box: 94956',
         email1: 'fitouts@ideal.ae',
         email2: 'idealind@eim.ae',
@@ -123,16 +124,16 @@ function getFooterData(subDivisions?: string): FooterData {
     case 'AJMAN':
       return {
         trade_name: '',
-        phone: '+971 6 740 4840',
+        phone: '+971 67404840',
         location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
         email1: 'sales@ideal.ae',
         email2: '',
         website: 'www.ideal.ae',
       }
-    case 'Export':
+    case 'EXPORT':
       return {
         trade_name: '',
-        phone: '+971 6 740 4840',
+        phone: '+971 67404840',
         location: 'Gate No. 2, Ajman Free Zone\nAjman, UAE,PO.Box: 9033',
         email1: 'sales@ideal.ae',
         email2: '',
@@ -141,7 +142,7 @@ function getFooterData(subDivisions?: string): FooterData {
     default:
       return {
         trade_name: 'IDEAL FIRESTOP TRADING LLC',
-        phone: '+971 2 551 3828',
+        phone: '+971 25513828',
         location: '48143, Dubai, UAE',
         email1: 'sales@ideal.ae',
         email2: 'idealind@eim.ae',
