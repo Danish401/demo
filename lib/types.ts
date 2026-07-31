@@ -218,6 +218,8 @@ export interface CoreCoverPageData {
   Facing?: string
   Lipping?: string
   Finish?: string
+  /** Zoho Delivery field — shown between Validity and Notes when present */
+  Delivery?: string
   Intumescent_seals?: string
   Seal_Description?: string
   Acoustic_Seals?: string

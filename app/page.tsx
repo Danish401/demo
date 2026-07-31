@@ -131,6 +131,13 @@ function normalizeCoreCoverPageRecord(raw: Record<string, unknown>): CoreCoverPa
       'sub_divisions',
       'Sub Divisions',
     ]) as string | undefined,
+    Delivery: pick([
+      'Delivery',
+      'delivery',
+      'Delivery_Terms',
+      'Mode_of_Delivery',
+      'Delivery1',
+    ]) as string | undefined,
   } as CoreCoverPageData
 }
 

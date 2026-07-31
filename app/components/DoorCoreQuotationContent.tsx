@@ -374,29 +374,41 @@ function FooterBandContent({
   )
 }
 
-/** Payment Terms / Validity / Notes — rendered on the cover letter before BOQ */
+/** Payment Terms / Validity / Delivery / Notes — rendered on the cover letter before BOQ */
 function PaymentTermsValidityNotes({ data }: { data: CoreCoverPageData }) {
+  const deliveryText = String(
+    data.Delivery ??
+      (data as Record<string, unknown>).delivery ??
+      (data as Record<string, unknown>).Delivery_Terms ??
+      (data as Record<string, unknown>).Mode_of_Delivery ??
+      (data as Record<string, unknown>).Delivery1 ??
+      ''
+  ).trim()
+  const hasDelivery = hasValue(deliveryText)
+
   return (
     <>
       {hasValue(data.Payment_Terms1) && (
         <>
-          <div className="door-core-payment-section">
-            <strong>1. Payment Terms</strong>
-            <p className="door-core-terms-p">{data.Payment_Terms1}</p>
-          </div>
-          <br />
+          <strong>1. Payment Terms</strong>
+          <p className="door-core-terms-p door-core-terms-value">{data.Payment_Terms1}</p>
         </>
       )}
       {hasValue(data.Validity) && (
         <>
           <strong>2. Validity</strong>
-          <p className="door-core-terms-p">{data.Validity}</p>
-          <br />
+          <p className="door-core-terms-p door-core-terms-value">{data.Validity}</p>
+        </>
+      )}
+      {hasDelivery && (
+        <>
+          <strong>3. Delivery</strong>
+          <p className="door-core-terms-p door-core-terms-value">{deliveryText}</p>
         </>
       )}
       {hasValue(data.Notes1) && (
         <>
-          <strong>3. Notes</strong>
+          <strong>{hasDelivery ? '4. Notes' : '3. Notes'}</strong>
           <div
             className="door-core-notes-p door-core-notes-html"
             dangerouslySetInnerHTML={{ __html: data.Notes1 ?? '' }}

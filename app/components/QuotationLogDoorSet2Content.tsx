@@ -646,12 +646,6 @@ export default function QuotationLogDoorSet2Content({
                     <div className="door-core-details-value">{data.Finish}</div>
                   </div>
                 )}
-                {hasValue(data.Delivery) && (
-                  <div className="door-core-details-row">
-                    <div className="door-core-details-label"><strong>Delivery:</strong></div>
-                    <div className="door-core-details-value">{data.Delivery}</div>
-                  </div>
-                )}
                 {showIntumescentSeal && (
                   <div className="door-core-seal-row">
                     <div className="door-core-seal-label"><strong>Intumescent seal:</strong></div>
@@ -703,9 +697,20 @@ export default function QuotationLogDoorSet2Content({
                   </>
                 )}
 
+                {hasValue(data.Delivery) && (
+                  <>
+                    <strong>3. Delivery</strong>
+                    <p
+                      className={`door-core-terms-p${isDoorSet1 ? ' door-set-1-terms-value' : ''}`}
+                    >
+                      {data.Delivery}
+                    </p>
+                  </>
+                )}
+
                 {notes1Html && (
                   <>
-                    <strong>3. Notes</strong>
+                    <strong>{hasValue(data.Delivery) ? '4. Notes' : '3. Notes'}</strong>
                     <div
                       className={`door-core-notes-p door-core-notes-html${isDoorSet1 ? ' door-set-1-notes-html' : ''}`}
                       dangerouslySetInnerHTML={{ __html: notes1Html }}
