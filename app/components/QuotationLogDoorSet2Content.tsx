@@ -237,6 +237,8 @@ function getSalesPersonDetails(
       return { name, designation: 'Project Sales Manager', contact: '+971 52 804 6858', signature }
     case 'Jerry Thomas':
       return { name, designation: 'Sales Manager', contact: '+971 50 942 1886', signature }
+    case 'Shyni Thomas':
+      return { name, designation: 'Sales Executive', contact: '058 2458717', signature }
     case 'Antony Joy Panikulam':
       return { name, designation: 'Director', contact: '+971 50 351 3428', signature }
     case 'Ritu Antony':
