@@ -1333,7 +1333,7 @@ body {
   /* Print: long cell text wraps in Door Core / Door Set / Fitout tables
      Door Core order: 2 Door Ref, 3 Product Ref, 9 Door Type, 10 Vision, 14 Remarks
      Door Set 2 order: 7 Door Type, 8 Product Ref, 12 Hardware, 16 Remarks
-     Door Set 1 order: 3 Product Ref, 10 Door Type, 12 Hardware, 16 Remarks */
+     Door Set 1 order: 2 Door Ref, 3 Product Ref, 10 Door Type, 12 Hardware, 16 Remarks */
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(2),
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(3),
   .door-core-product-table.door-core-boq-product-table tbody tr:not(.door-core-boq-totals-row) td:nth-child(9),
@@ -1343,6 +1343,7 @@ body {
   .door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(8),
   .door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
   .door-set-2-quotation:not(.door-set-1-quotation) .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(16),
+  .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(2),
   .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(3),
   .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
   .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
@@ -2549,8 +2550,7 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   white-space: nowrap;
 }
 
-/* Door Set 1: Door Ref, Fire, Acoustic, Width, Height, Jamb, Leaf Thick, Vision, Qty */
-.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(2),
+/* Door Set 1: Fire, Acoustic, Width, Height, Jamb, Leaf Thick, Vision, Qty */
 .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(4),
 .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(5),
 .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(6),
@@ -2581,7 +2581,8 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   min-width: 0;
 }
 
-/* Door Set 1: Product Ref, Door Type, Hardware Set, Remarks */
+/* Door Set 1: Door Ref, Product Ref, Door Type, Hardware Set, Remarks */
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(2),
 .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(3),
 .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(10),
 .door-set-1-quotation .door-core-product-table.door-set-2-product-table tbody tr:not(.door-core-subtotal) td:nth-child(12),
