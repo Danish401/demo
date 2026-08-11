@@ -354,12 +354,14 @@ function FooterBandContent({
         </>
       )}
       <div className="door-core-footer-bottom">
-        <p className="door-core-distributor-text">
-          Exclusive distributors in UAE for{' '}
-          <span className="door-core-brand-name">
-            {plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, 'Ideal Special Products F.Z.C')}
-          </span>
-        </p>
+        {!isAjmanOrExportSubdivision && (
+          <p className="door-core-distributor-text">
+            Exclusive distributors in UAE for{' '}
+            <span className="door-core-brand-name">
+              {plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, 'Ideal Special Products F.Z.C')}
+            </span>
+          </p>
+        )}
         <div className="door-core-footer-bottom-bar">
           {pageLabel ? (
             <span className="door-core-page-number" data-door-set1-page-label>
@@ -640,6 +642,12 @@ export default function QuotationLogDoorSet2Content({
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>Lipping:</strong></div>
                     <div className="door-core-details-value">{data.Lipping}</div>
+                  </div>
+                )}
+                {data.Outer_Skin?.trim() && (
+                  <div className="door-core-details-row">
+                    <div className="door-core-details-label"><strong>Outer Skin:</strong></div>
+                    <div className="door-core-details-value">{data.Outer_Skin}</div>
                   </div>
                 )}
                 {data.Finish?.trim() && (

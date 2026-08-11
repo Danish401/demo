@@ -217,6 +217,8 @@ export interface CoreCoverPageData {
   Acoustic_Core?: string
   Facing?: string
   Lipping?: string
+  /** Zoho Outer_Skin — shown after Lipping when present */
+  Outer_Skin?: string
   Finish?: string
   /** Zoho Delivery field — shown between Validity and Notes when present */
   Delivery?: string
@@ -311,6 +313,8 @@ export interface QuotationLogDoorSet2Data {
   Acoustic_Core?: string
   Facing?: string
   Lipping?: string
+  /** Zoho Outer_Skin — shown after Lipping when present */
+  Outer_Skin?: string
   Finish?: string
   /** Zoho Delivery field on cover specs (shown when present) */
   Delivery?: string
