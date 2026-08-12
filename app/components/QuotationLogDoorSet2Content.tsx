@@ -644,16 +644,16 @@ export default function QuotationLogDoorSet2Content({
                     <div className="door-core-details-value">{data.Facing}</div>
                   </div>
                 )}
-                {data.Lipping?.trim() && (
-                  <div className="door-core-details-row">
-                    <div className="door-core-details-label"><strong>Lipping:</strong></div>
-                    <div className="door-core-details-value">{data.Lipping}</div>
-                  </div>
-                )}
                 {data.Outer_Skin?.trim() && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>Outer Skin:</strong></div>
                     <div className="door-core-details-value">{data.Outer_Skin}</div>
+                  </div>
+                )}
+                {data.Lipping?.trim() && (
+                  <div className="door-core-details-row">
+                    <div className="door-core-details-label"><strong>Lipping:</strong></div>
+                    <div className="door-core-details-value">{data.Lipping}</div>
                   </div>
                 )}
                 {data.Finish?.trim() && (
