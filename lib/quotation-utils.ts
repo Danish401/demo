@@ -304,6 +304,35 @@ export function formatMultiLineDescription(raw: string | undefined | null): stri
     .join('\n')
 }
 
+/**
+ * Section_3 Description (Quotation_Door_Set1_Report): "/" means a new line;
+ * the slash itself is not shown in the template.
+ */
+export function formatSlashLineDescription(raw: string | undefined | null): string {
+  if (raw == null) return ''
+  let s = String(raw).trim()
+  if (!s) return ''
+
+  s = s
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>\s*<p[^>]*>/gi, '\n')
+    .replace(/<\/div>\s*<div[^>]*>/gi, '\n')
+    .replace(/<\/?p[^>]*>/gi, '\n')
+    .replace(/<\/?div[^>]*>/gi, '\n')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\u00a0/g, ' ')
+
+  if (/<[^>]+>/.test(s)) {
+    s = s.replace(/<[^>]*>/g, ' ')
+  }
+
+  return s
+    .split('/')
+    .map((line) => line.replace(/\s+/g, ' ').trim())
+    .filter(Boolean)
+    .join('\n')
+}
+
 /** Detect main (1.) vs roman sub (i.) numbering at the start of an HTML fragment */
 function parseNotesBlockMarker(inner: string): { type: 'main' | 'sub' | 'plain'; body: string } {
   const trimmed = inner.trim()

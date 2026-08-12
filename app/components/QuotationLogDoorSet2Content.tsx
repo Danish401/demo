@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { QuotationLogDoorSet2Data, QuotationLogDoorSet2Item, QuotationLogDoorSet2SubItem } from '@/lib/types'
-import { boldCivilDefenceHtml, formatAedAmountInWords, formatMultiLineDescription, formatQuotationNo, formatSealDescriptionHtml, normalizeDoorSetNotesHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { boldCivilDefenceHtml, formatAedAmountInWords, formatMultiLineDescription, formatQuotationNo, formatSealDescriptionHtml, formatSlashLineDescription, normalizeDoorSetNotesHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
 import DirhamSymbol from './DirhamSymbol'
 
 /** Parse a Zoho AED value (may be a comma-formatted string) into a plain number, defaulting to 0 */
@@ -41,12 +41,15 @@ function DoorSetSubformSectionTable({
   rows,
   subTotal,
   descriptionAlign = 'center',
+  breakDescriptionOnSlash = false,
 }: {
   header?: string
   rows: QuotationLogDoorSet2SubItem[]
   subTotal?: number | string | null
   /** Description cell alignment — Door Set 1 Section_1/2/3 use left */
   descriptionAlign?: 'left' | 'center'
+  /** Section_3 (Door Set 1): treat "/" as a line break and hide the slash */
+  breakDescriptionOnSlash?: boolean
 }) {
   const headerText = (header ?? '').trim()
   const tableClassName = [
@@ -56,6 +59,9 @@ function DoorSetSubformSectionTable({
   ]
     .filter(Boolean)
     .join(' ')
+  const formatDescription = breakDescriptionOnSlash
+    ? formatSlashLineDescription
+    : formatMultiLineDescription
 
   return (
     <table className={tableClassName}>
@@ -95,7 +101,7 @@ function DoorSetSubformSectionTable({
         {rows.map((row, idx) => (
           <tr key={idx}>
             <td>{row.S_No1 ?? ''}</td>
-            <td className="door-core-subform-description">{formatMultiLineDescription(row.Description)}</td>
+            <td className="door-core-subform-description">{formatDescription(row.Description)}</td>
             <td className="door-core-text-center">{row.Qty1 ?? ''}</td>
             <td className="door-core-text-right">
               {row.Unit_Price1 != null ? formatAED(row.Unit_Price1) : ''}
@@ -949,6 +955,7 @@ export default function QuotationLogDoorSet2Content({
                     rows={section3}
                     subTotal={data.Sub_Total3}
                     descriptionAlign="left"
+                    breakDescriptionOnSlash={isDoorSet1}
                   />
                 )}
 
