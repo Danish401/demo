@@ -779,8 +779,14 @@ body {
 
   .door-core-standalone .door-core-page-layout > tfoot .door-core-layout-footer-cell {
     height: auto !important;
-    min-height: 52mm !important;
-    padding-top: 8mm !important;
+    /* --door-core-footer-reserved-height is set from JS (lib/print-document.ts) to the footer
+       band's real measured height for the current Font Size / subdivision content, so the space
+       reserved on every printed page always matches what the fixed footer overlay actually needs —
+       otherwise a larger Font Size (9.5px/10px) makes the real footer band taller than a fixed
+       guess, and body content overlaps it on page 1+. The calc() is only a fallback for when that
+       JS hasn't run yet. */
+    min-height: var(--door-core-footer-reserved-height, calc(52mm * var(--print-font-scale, 1))) !important;
+    padding-top: calc(8mm * var(--print-font-scale, 1)) !important;
     box-sizing: border-box !important;
   }
 
@@ -1482,6 +1488,14 @@ body {
   z-index: 0;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
+}
+
+/* Default corner dots now render as real SVG <circle> content (see DoorCoreQuotationContent.tsx)
+   instead of this CSS background-image, so the shared background-image above is redundant here —
+   turn it off only for this variant so the dots aren't doubled up on screen. */
+.door-core-static-pattern--dots {
+  display: block;
+  background-image: none;
 }
 
 /*

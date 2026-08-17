@@ -406,7 +406,12 @@ export default function QuotationLogDoorSet2Content({
 }: QuotationLogDoorSet2ContentProps) {
   const footerData = getFooterData(data.Sub_Divisions)
   const signatureForEntity =
-    plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, '') || footerData.trade_name
+    plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, '') ||
+    footerData.trade_name ||
+    /* Ajman/Export leave footerData.trade_name blank (no distributor line in their footer) —
+       fall back to the same distributor entity name used elsewhere so the closing "For ..."
+       signature line still has a name to show instead of disappearing for an empty Trader_Name. */
+    'Ideal Special Products F.Z.C'
   const salesDetails = getSalesPersonDetails(data.Sales_Person)
   const hasSalesPerson = hasValue(data.Sales_Person)
   const approvalStatus = (data.SalesPerson_Approval_Status ?? data.Approval ?? '').toString().trim()
@@ -428,6 +433,8 @@ export default function QuotationLogDoorSet2Content({
   const division = (data.Division ?? '').trim()
   const subDivision = (data.Sub_Divisions ?? '').trim().toUpperCase()
   const isAjmanOrExportSubdivision = subDivision === 'AJMAN' || subDivision === 'EXPORT'
+  /** Only Ajman omits the "For {entity}" closing signature line — Export still has a signing entity to show. */
+  const isAjmanSubdivision = subDivision === 'AJMAN'
   const isDoorSet1 = variant === 'door-set-1'
   const [pageLabel, setPageLabel] = useState('Page 1')
 
@@ -744,7 +751,7 @@ export default function QuotationLogDoorSet2Content({
                   </div>
                   <div className="door-core-signature-block">
                     <p className="door-core-signature-greeting">Thanks and Regards</p>
-                    {!isAjmanOrExportSubdivision && hasValue(signatureForEntity) && (
+                    {!isAjmanSubdivision && hasValue(signatureForEntity) && (
                       <p className="door-core-signature-for-line">
                         <strong>For {signatureForEntity}</strong>
                       </p>

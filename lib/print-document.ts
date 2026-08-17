@@ -59,14 +59,20 @@ function appendPrintPageStamps(clone: HTMLElement, totalPages: number, fontSize:
  * Estimates printed pages from header/footer/body heights vs printable A4 content height.
  * Needed because browsers don't support CSS `counter(pages)`, so margin-box "Page X of Y" total
  * is blank unless we inject a literal estimate at print time.
+ *
+ * `footerHeightOverridePx`, when given, replaces the measured footer height — used for Door Core
+ * so the estimate matches the same reserved footer space the print CSS actually uses (see
+ * measureDoorCoreFooterReservedHeightPx), instead of the unreserved on-screen footer height.
  */
 function estimatePagesFromLayout(
   root: HTMLElement,
   selectors: { header: string; footer: string; body: string },
-  pageHeightPx: number = A4_PAGE_CONTENT_HEIGHT_PX
+  pageHeightPx: number = A4_PAGE_CONTENT_HEIGHT_PX,
+  footerHeightOverridePx?: number
 ): number | null {
   const headerHeight = root.querySelector(selectors.header)?.getBoundingClientRect().height ?? 0
-  const footerHeight = root.querySelector(selectors.footer)?.getBoundingClientRect().height ?? 0
+  const footerHeight =
+    footerHeightOverridePx ?? (root.querySelector(selectors.footer)?.getBoundingClientRect().height ?? 0)
   const bodyHeight = root.querySelector(selectors.body)?.getBoundingClientRect().height ?? 0
 
   const availablePerPage = pageHeightPx - headerHeight - footerHeight
@@ -75,12 +81,51 @@ function estimatePagesFromLayout(
   return Math.max(1, Math.ceil(bodyHeight / availablePerPage))
 }
 
-function estimateDoorSet1PageCount(root: HTMLElement): number | null {
-  return estimatePagesFromLayout(root, {
-    header: '.door-core-layout-header-cell',
-    footer: '.door-core-layout-footer-cell',
-    body: '.door-core-layout-ell',
-  })
+function estimateDoorSet1PageCount(root: HTMLElement, footerHeightOverridePx?: number): number | null {
+  return estimatePagesFromLayout(
+    root,
+    {
+      header: '.door-core-layout-header-cell',
+      footer: '.door-core-layout-footer-cell',
+      body: '.door-core-layout-ell',
+    },
+    undefined,
+    footerHeightOverridePx
+  )
+}
+
+/**
+ * Buffer (px) added on top of the Door Core footer band's measured on-screen height when
+ * reserving print space for it. The on-screen measurement already reflects the live Font Size
+ * selection, but not the print-only extra top padding on `.door-core-layout-footer-cell`
+ * (see globals.css), so this buffer covers that gap plus a little rendering slack.
+ */
+const DOOR_CORE_FOOTER_RESERVE_BUFFER_PX = 48
+
+/**
+ * Real height (px) to reserve for the Door Core footer band on every printed page: the footer
+ * band's natural on-screen height (already reflects the selected print Font Size and the
+ * subdivision's actual footer content) plus DOOR_CORE_FOOTER_RESERVE_BUFFER_PX. Returns null when
+ * the footer cell isn't present/rendered.
+ */
+function measureDoorCoreFooterReservedHeightPx(root: HTMLElement): number | null {
+  const cell = root.querySelector<HTMLElement>(
+    '.door-core-page-layout > tfoot .door-core-layout-footer-cell'
+  )
+  const height = cell?.getBoundingClientRect().height ?? 0
+  return height > 0 ? Math.ceil(height) + DOOR_CORE_FOOTER_RESERVE_BUFFER_PX : null
+}
+
+/**
+ * Publishes the measured reserved height as --door-core-footer-reserved-height so the print
+ * stylesheet's tfoot min-height (globals.css) always matches the real footer content for any
+ * Font Size / subdivision — this is what stops body content from being laid out into space the
+ * fixed-position footer overlay then paints over.
+ */
+function syncDoorCoreFooterReservedHeight(root: HTMLElement): number | null {
+  const px = measureDoorCoreFooterReservedHeightPx(root)
+  if (px != null) root.style.setProperty('--door-core-footer-reserved-height', `${px}px`)
+  return px
 }
 
 /**
@@ -90,7 +135,11 @@ function estimateDoorSet1PageCount(root: HTMLElement): number | null {
  * Important: when the last page has only a little content, the remaining gap is nearly a full
  * page — that is exactly when we must apply the spacer. Do not reject large gaps.
  */
-function fillLastPageSpacer(root: HTMLElement, spacerSelector: string): () => void {
+function fillLastPageSpacer(
+  root: HTMLElement,
+  spacerSelector: string,
+  footerHeightOverridePx?: number
+): () => void {
   const spacer = root.querySelector<HTMLElement>(spacerSelector)
   if (!spacer) return () => {}
 
@@ -104,7 +153,7 @@ function fillLastPageSpacer(root: HTMLElement, spacerSelector: string): () => vo
     '.door-core-page-layout > tfoot .door-core-layout-footer-cell'
   )
   const headerH = headerEl?.getBoundingClientRect().height ?? 0
-  const footerH = footerEl?.getBoundingClientRect().height ?? 0
+  const footerH = footerHeightOverridePx ?? (footerEl?.getBoundingClientRect().height ?? 0)
 
   const available = A4_PAGE_CONTENT_HEIGHT_PX - headerH - footerH
   const tableSection = root.querySelector<HTMLElement>('.door-core-table-section')
@@ -137,8 +186,8 @@ function fillDoorSetLastPageSpacer(root: HTMLElement): () => void {
   return fillLastPageSpacer(root, '.door-set-1-print-end-spacer')
 }
 
-function fillDoorCoreLastPageSpacer(root: HTMLElement): () => void {
-  return fillLastPageSpacer(root, '.door-core-print-end-spacer')
+function fillDoorCoreLastPageSpacer(root: HTMLElement, footerHeightOverridePx?: number): () => void {
+  return fillLastPageSpacer(root, '.door-core-print-end-spacer', footerHeightOverridePx)
 }
 
 /**
@@ -166,7 +215,10 @@ export function refreshPrintLayoutAfterFontChange(): void {
 
     if (doorSet1) fillDoorSetLastPageSpacer(doorSet1)
     else if (doorSet2) fillDoorSetLastPageSpacer(doorSet2)
-    if (doorCore) fillDoorCoreLastPageSpacer(doorCore)
+    if (doorCore) {
+      const reservedPx = syncDoorCoreFooterReservedHeight(doorCore) ?? undefined
+      fillDoorCoreLastPageSpacer(doorCore, reservedPx)
+    }
   })
 }
 
@@ -252,16 +304,25 @@ export function printQuotationDocument(fileName?: string): void {
       ? sourceRoot
       : sourceRoot.querySelector<HTMLElement>('.quotation-fitout-container'))
 
+  // Real footer height for the current Font Size / subdivision content — reserved on every
+  // printed page (globals.css reads --door-core-footer-reserved-height) so body content never
+  // flows into the space the fixed footer overlay paints over.
+  const doorCoreFooterReservedPx = doorCoreRoot ? syncDoorCoreFooterReservedHeight(doorCoreRoot) ?? undefined : undefined
+
   // Fill last-page gap before measuring pages / cloning so footer sits at bottom without fixed overlay
   const resetDoorSetSpacer = doorSetRoot ? fillDoorSetLastPageSpacer(doorSetRoot) : () => {}
-  const resetDoorCoreSpacer = doorCoreRoot ? fillDoorCoreLastPageSpacer(doorCoreRoot) : () => {}
+  const resetDoorCoreSpacer = doorCoreRoot
+    ? fillDoorCoreLastPageSpacer(doorCoreRoot, doorCoreFooterReservedPx)
+    : () => {}
   const resetSpacers = () => {
     resetDoorSetSpacer()
     resetDoorCoreSpacer()
   }
 
   const doorSet1PageCount = doorSet1Root ? estimateDoorSet1PageCount(doorSet1Root) : null
-  const doorCorePageCount = doorCoreRoot ? estimateDoorSet1PageCount(doorCoreRoot) : null
+  const doorCorePageCount = doorCoreRoot
+    ? estimateDoorSet1PageCount(doorCoreRoot, doorCoreFooterReservedPx)
+    : null
   const fitoutPageCount = fitoutRoot ? estimateFitoutPageCount(fitoutRoot) : null
   const fitoutPages = fitoutPageCount ?? (fitoutRoot ? 1 : null)
   const doorCorePages = doorCorePageCount ?? (doorCoreRoot ? 1 : null)
@@ -330,7 +391,8 @@ export function printQuotationDocument(fileName?: string): void {
             footer: '.door-core-layout-footer-cell',
             body: '.door-core-layout-ell',
           },
-          A4_PAGE_HEIGHT_PX
+          A4_PAGE_HEIGHT_PX,
+          doorCoreFooterReservedPx
         )
       : null) ??
     (fitoutRoot
