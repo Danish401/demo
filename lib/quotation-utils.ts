@@ -596,6 +596,25 @@ function mapTopLevelOrderedLists(html: string, mapFn: (olHtml: string) => string
 }
 
 /**
+ * Strip Zoho/MS-Word rich-text indent artifacts (margin/padding incl. the "0in 0in 0in .5in"
+ * shorthand form Word pastes use, text-indent, mso-*) from arbitrary HTML without touching list
+ * structure — unlike normalizeDoorSetNotesHtml below, this doesn't rebuild <ol>/<li> markup, so
+ * it's safe for templates (e.g. Quotation_Log_Door_Core Notes1) that rely on the raw list nesting
+ * for CSS-driven numbering (list-style-type). Zoho's editor otherwise carries a different inline
+ * indent on each pasted block/list-item — often as a 4-value margin/padding shorthand rather than
+ * margin-left alone — so main points end up misaligned even though they're meant to share one left
+ * edge.
+ */
+export function stripZohoIndentStyles(html: string): string {
+  if (!html) return html
+  return html
+    .replace(/\bmargin(?:-left)?\s*:\s*[^;"'}]+;?/gi, '')
+    .replace(/\bpadding(?:-left)?\s*:\s*[^;"'}]+;?/gi, '')
+    .replace(/text-indent\s*:\s*[^;"'}]+;?/gi, '')
+    .replace(/\s*mso-[a-z-]+\s*:\s*[^;"'}]+;?/gi, '')
+}
+
+/**
  * Normalize Zoho Notes1 rich text for Door Set 1: strip inline sizing, build proper lists,
  * merge continuation lines into their parent point, and wrap text for hanging-indent CSS.
  */

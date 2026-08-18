@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState } from 'react'
 import { CoreCoverPageData } from '@/lib/types'
-import { boldCivilDefenceHtml, formatAedAmountInWords, formatQuotationNo, formatSealDescriptionHtml, plainZohoDisplayText } from '@/lib/quotation-utils'
+import { boldCivilDefenceHtml, formatAedAmountInWords, formatQuotationNo, formatSealDescriptionHtml, plainZohoDisplayText, stripZohoIndentStyles } from '@/lib/quotation-utils'
 
 /** True if field has displayable value (hide row/section when false) */
 function hasValue(v: unknown): boolean {
@@ -389,6 +389,7 @@ function PaymentTermsValidityNotes({ data }: { data: CoreCoverPageData }) {
       ''
   ).trim()
   const hasDelivery = hasValue(deliveryText)
+  const notesHtml = stripZohoIndentStyles(data.Notes1 ?? '')
 
   return (
     <>
@@ -410,12 +411,12 @@ function PaymentTermsValidityNotes({ data }: { data: CoreCoverPageData }) {
           <p className="door-core-terms-p door-core-terms-value">{deliveryText}</p>
         </>
       )}
-      {hasValue(data.Notes1) && (
+      {hasValue(notesHtml) && (
         <>
           <strong>{hasDelivery ? '4. Notes' : '3. Notes'}</strong>
           <div
             className="door-core-notes-p door-core-notes-html"
-            dangerouslySetInnerHTML={{ __html: data.Notes1 ?? '' }}
+            dangerouslySetInnerHTML={{ __html: notesHtml }}
           />
         </>
       )}
