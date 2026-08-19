@@ -2510,6 +2510,21 @@ img.door-core-static-pattern.door-core-static-pattern--halftone,
   border: 1.5px solid #333;
 }
 
+/* Quotation_Door_Set1_Report: the BOQ table's columns are sized with zero spare room for a fixed
+   8.5px font (see the column-width comment below) — words like "Jamb" and "Hardware" physically
+   cannot fit on one line at any larger size, so they wrap mid-word ("Jam"/"b", "Hardwar"/"e") once
+   the Font Size selector is set above 8.5px. The selector's universal override rule
+   (html body main.quotation-doc[data-print-font][style] *) has higher specificity than the plain
+   ".door-set-1-quotation …" 8.5px rules, so it was silently winning and breaking this table. Adding
+   the same [data-print-font][style] qualifiers here makes this win instead, regardless of which
+   Font Size is selected — this table always renders at 8.5px. Door Set 2's table (uses 11px in
+   print, has more column room) is untouched. */
+html body main.quotation-doc[data-print-font][style] .door-set-1-quotation .door-core-product-table.door-set-2-product-table,
+html body main.quotation-doc[data-print-font][style] .door-set-1-quotation .door-core-product-table.door-set-2-product-table th,
+html body main.quotation-doc[data-print-font][style] .door-set-1-quotation .door-core-product-table.door-set-2-product-table td {
+  font-size: 8.5px !important;
+}
+
 .door-set-2-quotation .door-core-subform-table {
   width: 100% !important;
   max-width: 100% !important;
