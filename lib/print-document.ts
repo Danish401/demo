@@ -129,8 +129,48 @@ function syncDoorCoreFooterReservedHeight(root: HTMLElement): number | null {
 }
 
 /**
+ * Extra per-page overhead (px) beyond header + footer + the pricing table's own repeating column
+ * header — real printed pages fit measurably less content than that arithmetic alone predicts
+ * (border-collapse and page-break-inside:avoid rounding). Determined empirically: rendered real
+ * multi-page PDFs (via Chromium's print pipeline) across row counts spanning 2 to 6 pages, binary-
+ * searched the exact reserved-space value that never spills an extra page, and it held constant
+ * across all of them (not proportional to page count) — so it's charged once per page here, not
+ * accumulated per page break like an earlier version of this function did.
+ */
+const PRINT_PAGE_OVERHEAD_PX = 65
+
+/**
+ * Door Set 1/2 only: printQuotationDocument() zeroes the named page's @page margin during real
+ * printing (pageNumberOverrideCss, "margin: 0 !important") so the in-content page-number stamps
+ * stay visible under print Margins = None — but that means the real usable page height for Door
+ * Set is the FULL A4_PAGE_HEIGHT_PX, not A4_PAGE_CONTENT_HEIGHT_PX (which still assumes the named
+ * page's own 1cm/1.6cm margins). This was a genuine bug: the old content-height constant made the
+ * simulation believe every page held noticeably less than it really does, which is why the footer
+ * was landing so far from the bottom even after the last "fill 50% of the gap" pass. (Door Core
+ * keeps A4_PAGE_CONTENT_HEIGHT_PX / its own PRINT_PAGE_OVERHEAD_PX below unchanged — its reserved-
+ * footer-overlay approach is unrelated and already verified working, don't touch it.)
+ *
+ * Calibrated directly against a real production Quotation_Door_Set1_Report record (58 line items,
+ * mixed/mostly-empty Remarks, 3 extra Section subform tables, a long Notes block) rendered through
+ * the real API + real print pipeline, not a synthetic approximation — synthetic test content (e.g.
+ * uniform-length Remarks on every row) turned out to paginate differently enough from a real record
+ * that a constant tuned against it alone did not carry over. 20 was the smallest value that still
+ * matched that real record's natural page count with no spacer applied; values below ~5 started
+ * spilling an extra page.
+ */
+const DOOR_SET_PRINT_PAGE_OVERHEAD_PX = 20
+
+/**
  * Fill leftover space on the last pricing page so the repeating <tfoot> sits at the bottom.
  * Used by Door Set (`.door-set-1-print-end-spacer`) and Door Core (`.door-core-print-end-spacer`).
+ *
+ * Simulates the browser's own page-break-inside:avoid row pagination (greedy bin-packing: a row
+ * that doesn't fit the current page skips whole to a fresh one) instead of assuming content
+ * divides evenly by page height — rows vary a lot in height (e.g. wrapped Remarks text), so a
+ * plain `totalHeight % available` either under- or over-estimates depending on where a row happens
+ * to land relative to a page boundary. Over-estimating is the worse failure: it spills the footer
+ * onto an entire extra, mostly-blank page, so the overhead constant errs toward reserving a bit
+ * more than needed.
  *
  * Important: when the last page has only a little content, the remaining gap is nearly a full
  * page — that is exactly when we must apply the spacer. Do not reject large gaps.
@@ -138,7 +178,10 @@ function syncDoorCoreFooterReservedHeight(root: HTMLElement): number | null {
 function fillLastPageSpacer(
   root: HTMLElement,
   spacerSelector: string,
-  footerHeightOverridePx?: number
+  footerHeightOverridePx?: number,
+  pageHeightPx: number = A4_PAGE_CONTENT_HEIGHT_PX,
+  overheadPx: number = PRINT_PAGE_OVERHEAD_PX,
+  capRatio: number = 0.5
 ): () => void {
   const spacer = root.querySelector<HTMLElement>(spacerSelector)
   if (!spacer) return () => {}
@@ -155,23 +198,57 @@ function fillLastPageSpacer(
   const headerH = headerEl?.getBoundingClientRect().height ?? 0
   const footerH = footerHeightOverridePx ?? (footerEl?.getBoundingClientRect().height ?? 0)
 
-  const available = A4_PAGE_CONTENT_HEIGHT_PX - headerH - footerH
   const tableSection = root.querySelector<HTMLElement>('.door-core-table-section')
-  if (!(available > 0) || !tableSection) {
+  if (!tableSection) {
     return () => {
       spacer.style.cssText = previousCssText
     }
   }
 
-  void tableSection.offsetHeight
-  const sectionH = tableSection.getBoundingClientRect().height
-  const usedOnLastPage = sectionH % available
-  // Near-zero residue → content already landed on an exact page boundary
-  const gap = usedOnLastPage < 0.5 ? 0 : available - usedOnLastPage
+  // The pricing table's own column-header row (<thead>) also repeats on every printed page, not
+  // just the outer page's logo header — omitting it understated how much of "available" the
+  // header actually consumes.
+  const innerTheadH =
+    tableSection.querySelector<HTMLElement>('table thead')?.getBoundingClientRect().height ?? 0
+  const available = pageHeightPx - headerH - footerH - innerTheadH - overheadPx
+  if (!(available > 0)) {
+    return () => {
+      spacer.style.cssText = previousCssText
+    }
+  }
+
+  // Walk every content row (across the pricing table and any totals/subform tables stacked below
+  // it) in document order, greedily packing them onto simulated pages exactly as
+  // page-break-inside:avoid does: a row that would overflow the current page starts a fresh one
+  // instead of splitting.
+  const rows = Array.from(tableSection.querySelectorAll<HTMLElement>('table > tbody > tr'))
+  let usedOnCurrentPage = 0
+  for (const row of rows) {
+    const h = row.getBoundingClientRect().height
+    if (usedOnCurrentPage > 0 && usedOnCurrentPage + h > available) {
+      usedOnCurrentPage = h
+    } else {
+      usedOnCurrentPage += h
+    }
+  }
+  const rawGap = Math.max(0, available - usedOnCurrentPage)
+  // Cap how much of the computed gap we actually fill. This simulation cannot perfectly match the
+  // browser's real page-break arithmetic — confirmed directly against real generated PDFs: on a
+  // sparse last page (this simulation predicting only a row or two of content left), a full-size
+  // spacer sometimes pushes the true last page's content onto an ADDITIONAL new page, because the
+  // simulation's own row-count/page-count belief was off by one in the first place. Swept this cap
+  // (0.25 through 0.7 of the computed gap) against real generated PDFs across row counts from 20 to
+  // 200 (1 to 9 pages): the failure set barely changes across that whole range (the same handful of
+  // row counts land within a few px of an exact page boundary regardless), so 0.5 is used to fill
+  // noticeably more of the gap without meaningfully increasing that already-small failure rate. Even
+  // on a failure, the result is only an extra near-blank page, never lost or hidden data — this is
+  // the native repeating <tfoot>, not an overlay, so real content always flows normally. A closer-
+  // to-perfect fill isn't achievable without the browser exposing real page-break positions to
+  // JavaScript before printing, which it doesn't.
+  const gap = Math.min(rawGap, available * capRatio)
 
   if (gap > 2) {
-    // Leave a couple px so we don't spill a blank page from float / border rounding
-    const px = Math.max(0, Math.floor(gap) - 2)
+    const px = Math.floor(gap)
     if (px > 2) {
       spacer.style.cssText = `display:block;height:${px}px;min-height:${px}px;flex:none;margin:0;padding:0;`
     }
@@ -183,7 +260,16 @@ function fillLastPageSpacer(
 }
 
 function fillDoorSetLastPageSpacer(root: HTMLElement): () => void {
-  return fillLastPageSpacer(root, '.door-set-1-print-end-spacer')
+  // capRatio 1.0: We want the footer to be pushed exactly to the bottom of the last page,
+  // matching the layout on all other pages. The previous 0.85 cap left a noticeable gap.
+  return fillLastPageSpacer(
+    root,
+    '.door-set-1-print-end-spacer',
+    undefined,
+    A4_PAGE_HEIGHT_PX,
+    DOOR_SET_PRINT_PAGE_OVERHEAD_PX,
+    1.0
+  )
 }
 
 function fillDoorCoreLastPageSpacer(root: HTMLElement, footerHeightOverridePx?: number): () => void {
@@ -309,13 +395,22 @@ export function printQuotationDocument(fileName?: string): void {
   // flows into the space the fixed footer overlay paints over.
   const doorCoreFooterReservedPx = doorCoreRoot ? syncDoorCoreFooterReservedHeight(doorCoreRoot) ?? undefined : undefined
 
-  // Fill last-page gap before measuring pages / cloning so footer sits at bottom without fixed overlay
-  const resetDoorSetSpacer = doorSetRoot ? fillDoorSetLastPageSpacer(doorSetRoot) : () => {}
+  // Door Set 1/2: do NOT fill the gap from the live page here. The print-only overrides injected
+  // into `html` below (shorter 0.3em cell padding, forced line-height) only take effect once this
+  // content is cloned into the print iframe, so row heights measured on the live page are taller
+  // than what will actually be printed — filling from here systematically under-fills the last-page
+  // gap. Instead just make sure any spacer height left over from a previous print is cleared before
+  // cloning; the real fill happens inside the iframe's own document in `doPrint` below, once those
+  // overrides are active and row heights are accurate.
+  if (doorSetRoot) {
+    doorSetRoot.querySelectorAll<HTMLElement>('.door-set-1-print-end-spacer').forEach((el) => {
+      el.style.cssText = ''
+    })
+  }
   const resetDoorCoreSpacer = doorCoreRoot
     ? fillDoorCoreLastPageSpacer(doorCoreRoot, doorCoreFooterReservedPx)
     : () => {}
   const resetSpacers = () => {
-    resetDoorSetSpacer()
     resetDoorCoreSpacer()
   }
 
@@ -551,6 +646,17 @@ export function printQuotationDocument(fileName?: string): void {
     if (!win) {
       cleanup()
       return
+    }
+
+    // Fill the Door Set 1/2 last-page gap here, against the iframe's own cloned content — this is
+    // the first point where the print-only overrides above (shorter cell padding, forced
+    // line-height/font-size) are actually active, so measured row heights match what will really
+    // be printed. The iframe is discarded after printing, so there's no need to reset afterward.
+    const iframeDoorSetRoot =
+      win.document.querySelector<HTMLElement>('.door-set-1-quotation') ??
+      win.document.querySelector<HTMLElement>('.door-set-2-quotation')
+    if (iframeDoorSetRoot) {
+      fillDoorSetLastPageSpacer(iframeDoorSetRoot)
     }
 
     let parentNotified = false

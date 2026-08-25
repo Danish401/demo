@@ -494,17 +494,14 @@ export default function DoorCoreQuotationContent({
           className="door-core-static-pattern door-core-static-pattern--halftone"
         />
       ) : (
-        /* Real SVG content (not a CSS background-image) so the dots always print — Chrome's
-           print-dialog "Background graphics" toggle, when off, suppresses CSS backgrounds but
-           has no effect on ordinary vector content. */
-        <svg className="door-core-static-pattern door-core-static-pattern--dots" aria-hidden="true" focusable="false">
-          <defs>
-            <pattern id={dotPatternId} width="16" height="16" patternUnits="userSpaceOnUse">
-              <circle cx="8" cy="8" r="2" fill="rgba(243, 156, 18, 0.35)" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill={`url(#${dotPatternId})`} />
-        </svg>
+        /* Real SVG content (not a CSS background-image) so the dots always print.
+           Using an <img> tag completely avoids Chrome's buggy SVG <rect> height calculation 
+           in print mode, while ensuring it tiles correctly. */
+        <img 
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'><defs><pattern id='dots' width='16' height='16' patternUnits='userSpaceOnUse'><circle cx='8' cy='8' r='2' fill='rgba(243,156,18,0.35)' /></pattern></defs><rect width='100%25' height='100%25' fill='url(%23dots)' /></svg>"
+          className="door-core-static-pattern door-core-static-pattern--dots"
+          aria-hidden="true"
+        />
       )}
       <table className="door-core-page-layout">
         <thead>

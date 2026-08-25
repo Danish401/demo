@@ -537,6 +537,7 @@ body {
     position: fixed !important;
     top: 0 !important;
     right: 0 !important;
+    height: 297mm !important;
     pointer-events: none !important;
     z-index: 0 !important;
     print-color-adjust: exact !important;
@@ -1156,7 +1157,8 @@ body {
   }
 
   /* Door Set 2: fixed layout 15-column table for print */
-  .door-set-2-quotation .door-core-table-section {
+  .door-set-2-quotation .door-core-table-section,
+  .door-set-1-quotation .door-core-table-section {
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -1164,11 +1166,13 @@ body {
   /* Door Set 1 / Set 2: use the REAL repeating <tfoot> only — never a fixed overlay.
      Fixed overlays were covering the last item row(s) on a page (e.g. SL.NO. 22 vanishing
      between page breaks). Visible tfoot lets Chrome reserve space for nested item tables. */
-  .door-set-2-quotation .door-core-page-layout > tfoot {
+  .door-set-2-quotation .door-core-page-layout > tfoot,
+  .door-set-1-quotation .door-core-page-layout > tfoot {
     visibility: visible !important;
   }
 
-  .door-set-2-quotation .door-core-layout-footer-cell {
+  .door-set-2-quotation .door-core-layout-footer-cell,
+  .door-set-1-quotation .door-core-layout-footer-cell {
     height: auto !important;
     min-height: 0 !important;
     padding-top: 6mm !important;
@@ -1181,11 +1185,13 @@ body {
   }
 
   /* Pricing body: spacer height is set in print-document.ts so the last page fills to the footer */
-  .door-set-2-quotation .door-core-layout-ell {
+  .door-set-2-quotation .door-core-layout-ell,
+  .door-set-1-quotation .door-core-layout-ell {
     min-height: 0 !important;
   }
 
-  .door-set-2-quotation .door-core-table-section {
+  .door-set-2-quotation .door-core-table-section,
+  .door-set-1-quotation .door-core-table-section {
     flex: 1 1 auto !important;
     display: flex !important;
     flex-direction: column !important;
@@ -1196,6 +1202,14 @@ body {
     display: block !important;
     flex: 0 0 auto !important;
     /* height / min-height applied inline at print time */
+  }
+
+  .door-set-1-quotation .door-set-1-print-end-spacer {
+    display: block !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    height: 200mm !important; /* Force to fill a dedicated last page */
+    flex: 0 0 auto !important;
   }
 
   .door-set-2-quotation .door-core-product-table.door-set-2-product-table {
@@ -2555,6 +2569,26 @@ html body main.quotation-doc[data-print-font][style] .door-set-1-quotation .door
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-unitprice { width: 8%; }
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-totalprice { width: 9.5%; }
 .door-set-2-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-remarks { width: 7.5%; }
+
+/* Quotation_Door_Set1_Report only: Remarks entries here run much longer than Door Set 2's
+   ("1160x200x18mm MDF Over head panel included. We cannot certify FR doors with width more than
+   1.2m."), so 7.5% wrapped them into 7-8 cramped lines per row. Widened by trimming a total of 6%
+   from columns whose header word already had slack at this table's locked 8.5px font (verified by
+   rendering the real header + longest real data at each width — no header word wraps mid-word, no
+   data value overflows its line): Door Ref, Product Ref., Acoustic, Door Type, Unit Price, Total
+   Unit Price. Jamb also widened from 4%→5% — its header word fit fine, but real data like
+   "200-250" (a range, wider than "Jamb") was overflowing the cell; that extra 1% comes out of
+   Remarks (13.5%→12.5%) rather than re-touching the other trimmed columns. Percentages still total
+   100%. Door Set 2's own widths above are untouched — this only fires when .door-set-1-quotation
+   is also present. */
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-jamb { width: 5%; }
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-doorref { width: 4.5%; }
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-productref { width: 8.5%; }
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-acoustic { width: 6%; }
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-doortype { width: 5.5%; }
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-unitprice { width: 7%; }
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-totalprice { width: 8%; }
+.door-set-1-quotation .door-core-product-table.door-set-2-product-table col.ds2-col-remarks { width: 12.5%; }
 
 /* Data column order (Door Set 2): 1 SL.NO, 2 Door Ref, 3 Width, 4 Height, 5 Jamb, 6 Leaf Thick, 7 Door Type,
    8 Product Ref, 9 Acoustic Rating, 10 Fire Rating, 11 Vision Panel, 12 Hardware Set, 13 Qty, 14 Unit Price,
@@ -4279,3 +4313,13 @@ html body main.quotation-doc[data-print-font][style] .quotation-title * {
   left: 0 !important;
   top: 0 !important;
 }
+
+/* NOTE: a fixed-overlay footer (matching Door Core's approach) was tried here and reverted.
+   With this table's structure (two stacked tables inside .door-core-table-section), reserving
+   space by giving the hidden <tfoot> cell a large explicit height had an unexpected side effect:
+   it caused MORE rows to be packed onto early pages, not fewer, producing worse overlap than
+   before — confirmed by generating real PDFs, the opposite of the intended effect. Since that
+   failure mode hides real data (unacceptable), Quotation_Door_Set1_Report stays on the plain
+   repeating <tfoot> from Door Set 2's rules above, with only the last-page gap estimated in JS
+   (see fillLastPageSpacer in lib/print-document.ts) — that approach can leave a gap above the
+   footer on a sparse last page, but it can never hide a row of real data. */
