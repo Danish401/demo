@@ -251,6 +251,8 @@ function getSalesPersonDetails(
       return { name, designation: 'Division Head - Fit Out', contact: '+971 50 306 3428', signature }
     case 'Noureddin Alzaben':
       return { name, designation: 'Business Development Manager', contact: '+971 52 853 1082', signature }
+     case 'Mir Faheem':
+      return { name, designation: 'Sales Manager-Projects', contact: '+971 52 804 6858', signature }  
     default:
       return {
         name: name || '—',
