@@ -1,0 +1,19 @@
+npm # dependencies
+/node_modules
+/.pnp
+.pnp.js
+# testing
+/coverage
+# next.js
+/.next/
+out
+# env (secrets)
+.env*.local
+.env
+.zoho-token.json
+# misc
+.DS_Store
+*.pem
+# debug
+npm-debug.log*
+next-development.log

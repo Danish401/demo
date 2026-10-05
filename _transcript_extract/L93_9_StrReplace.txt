@@ -1,0 +1,6 @@
+TOOL=StrReplace LINE=93
+LEN=104
+===OLD===
+                          <strong>Total Amount :</strong> <DirhamSymbol /> {formatAedAmountInWords(data.Grand_Total_AED)}
+===NEW===
+                          <strong>Total Amount :</strong> {formatAedAmountInWords(data.Grand_Total_AED)}

@@ -1,0 +1,37 @@
+TOOL=StrReplace LINE=73
+LEN=1378
+===OLD===
+  const [tenderPdfPages, setTenderPdfPages] = useState<string[]>([])
+  const [tenderPdfLoading, setTenderPdfLoading] = useState(false)
+  const [tenderPdfError, setTenderPdfError] = useState<string | null>(null)
+
+  /** Hide subform only when Tender has attachment and PDF is loading/loaded; fallback to table if no attachment or PDF fails */
+===NEW===
+  const [tenderPdfPages, setTenderPdfPages] = useState<string[]>([])
+  const [tenderPdfLoading, setTenderPdfLoading] = useState(false)
+  const [tenderPdfError, setTenderPdfError] = useState<string | null>(null)
+  const [pageLabel, setPageLabel] = useState('Page 1')
+
+  useEffect(() => {
+    const PX_PER_MM = 96 / 25.4
+    const pageContentPx = (297 - 10 - 14) * PX_PER_MM
+    const update = () => {
+      const root = document.querySelector<HTMLElement>('.door-core-standalone')
+      if (!root) return
+      const headerH = root.querySelector('.door-core-layout-header-cell')?.getBoundingClientRect().height ?? 0
+      const footerH = root.querySelector('.door-core-layout-footer-cell')?.getBoundingClientRect().height ?? 0
+      const bodyH = root.querySelector('.door-core-layout-ell')?.getBoundingClientRect().height ?? 0
+      const available = pageContentPx - headerH - footerH
+      const pages = available > 0 && bodyH > 0 ? Math.max(1, Math.ceil(bodyH / available)) : 1
+      setPageLabel(`Page 1 of ${pages}`)
+    }
+    update()
+    const t = window.setTimeout(update, 400)
+    window.addEventListener('resize', update)
+    return () => {
+      window.clearTimeout(t)
+      window.removeEventListener('resize', update)
+    }
+  }, [data])
+
+  /** Hide subform only when Tender has attachment and PDF is loading/loaded; fallback to table if no attachment or PDF fails */

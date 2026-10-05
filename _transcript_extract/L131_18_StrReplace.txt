@@ -1,0 +1,6 @@
+TOOL=StrReplace LINE=131
+LEN=53
+===OLD===
+    const pageContentPx = (297 - 10 - 14) * PX_PER_MM
+===NEW===
+    const pageContentPx = (297 - 10 - 16) * PX_PER_MM

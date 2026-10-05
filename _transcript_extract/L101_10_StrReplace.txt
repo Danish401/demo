@@ -1,0 +1,26 @@
+TOOL=StrReplace LINE=101
+LEN=327
+===OLD===
+      {/* Always show 3. Notes: use API Notes1 when present (Quotation_Log_Door_Core), else default (Core_Cover_page_Report) */}
+      <strong>3. Notes</strong>
+      <div
+        className="door-core-notes-p door-core-notes-html"
+        dangerouslySetInnerHTML={{ __html: hasValue(data.Notes1) ? (data.Notes1 ?? '') : DEFAULT_NOTES_HTML }}
+      />
+    </>
+  )
+}
+===NEW===
+      {/* 3. Notes: only when API returns Notes1 */}
+      {hasValue(data.Notes1) && (
+        <>
+          <strong>3. Notes</strong>
+          <div
+            className="door-core-notes-p door-core-notes-html"
+            dangerouslySetInnerHTML={{ __html: data.Notes1 ?? '' }}
+          />
+        </>
+      )}
+    </>
+  )
+}

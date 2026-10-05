@@ -1,0 +1,26 @@
+TOOL=StrReplace LINE=93
+LEN=495
+===OLD===
+/** "Total Quotation value: Ð x,xxx (Ð words Only)" note, shown once on the cover letter above the closing signature (Normal type only) */
+function QuotationValueNote({ data }: { data: CoreCoverPageData }) {
+  return (
+    <p className="door-core-quotation-value-note">
+      Total Quotation value: <DirhamSymbol /> {formatAED(data.Grand_Total_AED)} (<DirhamSymbol />{' '}
+      {formatAedAmountInWords(data.Grand_Total_AED)})
+      <br />
+      For detailed quotation refer the attached sheet.
+    </p>
+  )
+}
+===NEW===
+/** "Total Quotation value: Ð x,xxx (Dirhams … Fils Only)" note, shown once on the cover letter above the closing signature (Normal type only) */
+function QuotationValueNote({ data }: { data: CoreCoverPageData }) {
+  return (
+    <p className="door-core-quotation-value-note">
+      Total Quotation value: <DirhamSymbol /> {formatAED(data.Grand_Total_AED)} (
+      {formatAedAmountInWords(data.Grand_Total_AED)})
+      <br />
+      For detailed quotation refer the attached sheet.
+    </p>
+  )
+}

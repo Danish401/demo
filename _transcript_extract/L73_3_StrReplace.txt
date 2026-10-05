@@ -1,0 +1,215 @@
+TOOL=StrReplace LINE=73
+LEN=5680
+===OLD===
+function FooterBandContent({
+  footerData,
+  data,
+  isAjmanOrExportSubdivision,
+}: {
+  footerData: FooterData
+  data: CoreCoverPageData
+  isAjmanOrExportSubdivision: boolean
+}) {
+  return (
+    <>
+      <div className="door-core-footer-row door-core-footer-top">
+        <div className="door-core-footer-left">
+          {!isAjmanOrExportSubdivision && (
+            <>
+              <span className="door-core-footer-trade-label">Trade Name: </span>
+              <span className="door-core-footer-trade-name">{footerData.trade_name}</span>
+            </>
+          )}
+        </div>
+        <div className="door-core-footer-right">
+          <img
+            src="/logo4.png"
+            className="door-core-footer-certs"
+            alt="AV CERT / UAF / FSC Certification"
+          />
+        </div>
+      </div>
+      {(footerData.phone || footerData.email1 || footerData.website || footerData.location) && (
+        <>
+          <hr className="door-core-footer-hr" />
+          <div className="door-core-footer-contact">
+            {footerData.phone && (
+              <span className="door-core-footer-contact-item">
+                <svg className="door-core-icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path
+                    d="M60 40 C45 40 40 55 45 70 C55 100 100 145 130 155 C145 160 160 155 160 140 V120 C160 112 155 108 148 106 L125 100 C118 98 112 100 108 106 L100 118 C85 108 70 92 60 75 L72 65 C78 60 80 55 78 48 L72 25 C70 18 65 15 58 15 H40 C30 15 25 25 30 35 Z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                {footerData.phone}
+              </span>
+            )}
+            {(footerData.email1 || footerData.email2) && (
+              <span className="door-core-footer-contact-item door-core-footer-email-block">
+                <svg className="door-core-icon" viewBox="0 0 200 200" aria-hidden>
+                  <rect x="20" y="50" width="160" height="100" rx="10" ry="10" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <polyline points="20,50 100,110 180,50" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="door-core-footer-email-lines">
+                  {footerData.email1}
+                  {footerData.email1 && footerData.email2 && <br />}
+                  {footerData.email2}
+                </span>
+              </span>
+            )}
+            {footerData.website && (
+              <span className="door-core-footer-contact-item">
+                <svg className="door-core-globe-icon" viewBox="0 0 200 200" aria-hidden>
+                  <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="100" y1="15" x2="100" y2="185" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M70 20 C50 60 50 140 70 180" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M130 20 C150 60 150 140 130 180" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="15" y1="100" x2="185" y2="100" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 70 C60 50 140 50 180 70" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 130 C60 150 140 150 180 130" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {footerData.website}
+              </span>
+            )}
+            {footerData.location && (
+              <span className="door-core-footer-contact-item door-core-footer-location-text">
+                <svg className="door-core-icon" viewBox="0 0 200 200" aria-hidden>
+                  <path d="M100 20 C65 20 40 45 40 80 C40 120 100 180 100 180 C100 180 160 120 160 80 C160 45 135 20 100 20 Z" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="100" cy="80" r="18" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {footerData.location}
+              </span>
+            )}
+          </div>
+        </>
+      )}
+      <div className="door-core-footer-bottom">
+        <p className="door-core-distributor-text">
+          Exclusive distributors in UAE for{' '}
+          <span className="door-core-brand-name">
+            {plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, 'Ideal Special Products F.Z.C')}
+          </span>
+        </p>
+        <p className="door-core-footer-signature-note">
+          ** This is a computer generated quotation and hence does not require a signature. **
+        </p>
+      </div>
+    </>
+  )
+}
+===NEW===
+function FooterBandContent({
+  footerData,
+  data,
+  isAjmanOrExportSubdivision,
+  pageLabel,
+}: {
+  footerData: FooterData
+  data: CoreCoverPageData
+  isAjmanOrExportSubdivision: boolean
+  pageLabel?: string
+}) {
+  return (
+    <>
+      <div className="door-core-footer-row door-core-footer-top">
+        <div className="door-core-footer-left">
+          {!isAjmanOrExportSubdivision && (
+            <>
+              <span className="door-core-footer-trade-label">Trade Name: </span>
+              <span className="door-core-footer-trade-name">{footerData.trade_name}</span>
+            </>
+          )}
+        </div>
+        <div className="door-core-footer-right">
+          <img
+            src="/logo4.png"
+            className="door-core-footer-certs"
+            alt="AV CERT / UAF / FSC Certification"
+          />
+        </div>
+      </div>
+      {(footerData.phone || footerData.email1 || footerData.website || footerData.location) && (
+        <>
+          <hr className="door-core-footer-hr" />
+          <div className="door-core-footer-contact">
+            {footerData.phone && (
+              <span className="door-core-footer-contact-item">
+                <svg className="door-core-icon" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+                  <path
+                    d="M60 40 C45 40 40 55 45 70 C55 100 100 145 130 155 C145 160 160 155 160 140 V120 C160 112 155 108 148 106 L125 100 C118 98 112 100 108 106 L100 118 C85 108 70 92 60 75 L72 65 C78 60 80 55 78 48 L72 25 C70 18 65 15 58 15 H40 C30 15 25 25 30 35 Z"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                {footerData.phone}
+              </span>
+            )}
+            {(footerData.email1 || footerData.email2) && (
+              <span className="door-core-footer-contact-item door-core-footer-email-block">
+                <svg className="door-core-icon" viewBox="0 0 200 200" aria-hidden>
+                  <rect x="20" y="50" width="160" height="100" rx="10" ry="10" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <polyline points="20,50 100,110 180,50" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="door-core-footer-email-lines">
+                  {footerData.email1}
+                  {footerData.email1 && footerData.email2 && <br />}
+                  {footerData.email2}
+                </span>
+              </span>
+            )}
+            {footerData.website && (
+              <span className="door-core-footer-contact-item">
+                <svg className="door-core-globe-icon" viewBox="0 0 200 200" aria-hidden>
+                  <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="100" y1="15" x2="100" y2="185" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M70 20 C50 60 50 140 70 180" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M130 20 C150 60 150 140 130 180" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <line x1="15" y1="100" x2="185" y2="100" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 70 C60 50 140 50 180 70" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M20 130 C60 150 140 150 180 130" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {footerData.website}
+              </span>
+            )}
+            {footerData.location && (
+              <span className="door-core-footer-contact-item door-core-footer-location-text">
+                <svg className="door-core-icon" viewBox="0 0 200 200" aria-hidden>
+                  <path d="M100 20 C65 20 40 45 40 80 C40 120 100 180 100 180 C100 180 160 120 160 80 C160 45 135 20 100 20 Z" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="100" cy="80" r="18" fill="none" stroke="currentColor" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {footerData.location}
+              </span>
+            )}
+          </div>
+        </>
+      )}
+      <div className="door-core-footer-bottom">
+        <p className="door-core-distributor-text">
+          Exclusive distributors in UAE for{' '}
+          <span className="door-core-brand-name">
+            {plainZohoDisplayText(data.Trader_Name ?? data.Trader_Name1, 'Ideal Special Products F.Z.C')}
+          </span>
+        </p>
+        <div className="door-core-footer-bottom-bar">
+          {pageLabel ? (
+            <span className="door-core-page-number" data-door-core-page-label>
+              {pageLabel}
+            </span>
+          ) : (
+            <span className="door-core-page-number" aria-hidden="true" />
+          )}
+          <p className="door-core-footer-signature-note">
+            ** This is a computer generated quotation and hence does not require a signature. **
+          </p>
+        </div>
+      </div>
+    </>
+  )
+}

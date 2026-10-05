@@ -1,0 +1,6 @@
+TOOL=StrReplace LINE=108
+LEN=51
+===OLD===
+                    {(data.BOQ || []).map((record, idx) => (
+===NEW===
+                    {boqRows.map((record, idx) => (

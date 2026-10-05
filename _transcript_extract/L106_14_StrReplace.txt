@@ -1,0 +1,39 @@
+TOOL=StrReplace LINE=106
+LEN=763
+===OLD===
+              {!isTender && (
+                <div className="door-core-cover-terms-block">
+                  <QuotationValueNote data={data} />
+                  <PaymentTermsValidityNotes data={data} />
+                </div>
+              )}
+
+              {!isTender && (
+                <div className="door-core-last-page-wrap door-core-cover-close">
+                  <ClosingSignatureGroup
+                    signatureForEntity={signatureForEntity}
+                    isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
+                    salesDetails={salesDetails}
+                    showSignature={showSignature}
+                  />
+                </div>
+              )}
+===NEW===
+              {!isTender && (
+                <div className="door-core-cover-terms-block">
+                  {hasGrandTotal && <QuotationValueNote data={data} />}
+                  <PaymentTermsValidityNotes data={data} />
+                </div>
+              )}
+
+              {!isTender && (
+                <div className="door-core-last-page-wrap door-core-cover-close">
+                  <ClosingSignatureGroup
+                    signatureForEntity={signatureForEntity}
+                    isAjmanOrExportSubdivision={isAjmanOrExportSubdivision}
+                    salesDetails={salesDetails}
+                    showSignature={showSignature}
+                    hasSalesPerson={hasSalesPerson}
+                  />
+                </div>
+              )}
