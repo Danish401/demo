@@ -599,10 +599,10 @@ export default function DoorCoreQuotationContent({
                     <div className="door-core-details-value">{data.FR_Core}</div>
                   </div>
                 )}
-                {data.NFR?.trim() && (
+                {data.NFR_core?.trim() && (
                   <div className="door-core-details-row">
                     <div className="door-core-details-label"><strong>NFR Core:</strong></div>
-                    <div className="door-core-details-value">{data.NFR}</div>
+                    <div className="door-core-details-value">{data.NFR_core}</div>
                   </div>
                 )}
                 {data.Acoustic_Core?.trim() && (
