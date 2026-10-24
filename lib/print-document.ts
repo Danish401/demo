@@ -724,7 +724,8 @@ export function printQuotationDocument(fileName?: string): void {
   ${stylesheetLinks}
   ${inlineStyles}
   <style>
-    html, body { margin: 0; padding: 0; overflow: visible !important; height: auto !important; }
+    html, body { margin: 0; padding: 0; overflow: visible !important; height: auto !important; width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
+    main.quotation-doc { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
     body {
       print-color-adjust: exact;
       -webkit-print-color-adjust: exact;

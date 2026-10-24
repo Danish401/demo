@@ -4,14 +4,28 @@
   margin: 0;
 }
 
-html,
+html {
+  min-width: 210mm;
+  background: #fff;
+}
+
 body {
+  width: 210mm;
+  min-width: 210mm;
   max-width: 210mm;
   margin: 0 auto;
   font-family: Cambria, serif;
   font-size: 11px;
   color: #000;
   background: #fff;
+}
+
+.quotation-doc {
+  width: 210mm;
+  min-width: 210mm;
+  max-width: 210mm;
+  box-sizing: border-box;
+  margin: 0 auto;
 }
 
 /* Screen-only: hide when printing */
@@ -236,12 +250,20 @@ body {
   }
 
   body {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
     overflow: visible !important;
   }
 
   html {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
     overflow: visible !important;
   }
 
@@ -249,6 +271,9 @@ body {
   .door-core-boq-table-section,
   .door-core-table-section,
   .quotation-doc {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     overflow: visible !important;
     overflow-x: visible !important;
   }
